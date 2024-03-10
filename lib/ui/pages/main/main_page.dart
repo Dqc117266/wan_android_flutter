@@ -3,8 +3,6 @@ import 'package:wan_android_flutter/ui/pages/front/front_page.dart';
 import 'package:wan_android_flutter/ui/pages/mine/mine_page.dart';
 import 'package:wan_android_flutter/ui/pages/official/official_accounts_page.dart';
 import 'package:wan_android_flutter/ui/pages/projects/projects_page.dart';
-import 'package:wan_android_flutter/ui/widgets/navigation/navigation_bars.dart';
-import 'package:wan_android_flutter/ui/widgets/navigation/navigation_transition.dart';
 
 import '../../shared/constants.dart';
 
@@ -41,68 +39,32 @@ class MainScreen extends StatefulWidget {
 class _MainScreenState extends State<MainScreen>
     with SingleTickerProviderStateMixin {
   final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
-  late final AnimationController controller;
-  late final CurvedAnimation railAnimation;
-  bool controllerInitialized = false;
-  bool showMediumSizeLayout = false;
-  bool showLargeSizeLayout = false;
-
   int screenIndex = ScreenSelected.front.value;
 
   @override
-  initState() {
-    super.initState();
-    controller = AnimationController(
-      duration: Duration(milliseconds: transitionLength.toInt() * 2),
-      value: 0,
-      vsync: this,
-    );
-    railAnimation = CurvedAnimation(
-      parent: controller,
-      curve: const Interval(0.5, 1.0),
-    );
-  }
-
-  void handleScreenChanged(int screenSelected) {
-    setState(() {
-      screenIndex = screenSelected;
-    });
-  }
-
-  @override
-  void dispose() {
-    controller.dispose();
-    super.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
-    return AnimatedBuilder(
-        animation: controller,
-        builder: (context, child) {
-          return NavigationTransition(
-            scaffoldKey: scaffoldKey,
-            animationController: controller,
-            railAnimation: railAnimation,
-            navigationBar: NavigationBars(
-              onSelectItem: (index) {
-                setState(() {
-                  screenIndex = index;
-                  // handleScreenChanged(screenIndex);
-                });
-              },
-              selectedIndex: screenIndex,
-            ),
-            body: createScreenFor(
-                ScreenSelected.values[screenIndex], controller.value == 1),
-          );
-        });
+
+    return Scaffold(
+      key: scaffoldKey,
+      body: createScreenFor(ScreenSelected.values[screenIndex]),
+      bottomNavigationBar: Focus(
+        autofocus: false,
+        child: NavigationBar(
+          selectedIndex: screenIndex,
+          onDestinationSelected: (index) {
+            setState(() {
+              screenIndex = index;
+            });
+          },
+          destinations: bottomNavigationBarItems,
+        ),
+      ),
+    );
   }
 }
 
 Widget createScreenFor(
   ScreenSelected screenSelected,
-  bool showNavBarExample,
 ) =>
     switch (screenSelected) {
       ScreenSelected.front => const FrontScreen(),

@@ -2,8 +2,34 @@
 
 import 'package:flutter/material.dart';
 
+import '../../core/lang/locale_keys.g.dart';
+import 'package:easy_localization/easy_localization.dart';
+
 
 const double transitionLength = 500;
+
+final List<Widget> bottomNavigationBarItems = [
+  NavigationDestination(
+    tooltip: LocaleKeys.tableNames_frontPage.tr(),
+    icon: Icon(Icons.home),
+    label: LocaleKeys.tableNames_frontPage.tr(),
+  ),
+  NavigationDestination(
+    tooltip: LocaleKeys.tableNames_projects.tr(),
+    icon: Icon(Icons.layers),
+    label: LocaleKeys.tableNames_projects.tr(),
+  ),
+  NavigationDestination(
+    tooltip: LocaleKeys.tableNames_officialAccounts.tr(),
+    icon: Icon(Icons.wechat),
+    label: LocaleKeys.tableNames_officialAccounts.tr(),
+  ),
+  NavigationDestination(
+    tooltip: LocaleKeys.tableNames_mine.tr(),
+    icon: Icon(Icons.person),
+    label: LocaleKeys.tableNames_mine.tr(),
+  )
+];
 
 enum ColorSelectionMethod {
   colorSeed,
