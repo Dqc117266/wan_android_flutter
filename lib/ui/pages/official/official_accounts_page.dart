@@ -3,14 +3,13 @@ import 'package:flutter/material.dart';
 
 import '../../../core/lang/locale_keys.g.dart';
 
-class FrontScreen extends StatelessWidget {
-  static const routeName = "/front";
-  const FrontScreen({super.key});
+class OfficialAccountsScreen extends StatelessWidget {
+  const OfficialAccountsScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text(LocaleKeys.tableNames_frontPage.tr()),),
+      appBar: AppBar(title: Text(LocaleKeys.tableNames_officialAccounts.tr()),),
     );
   }
 }
