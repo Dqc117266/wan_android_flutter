@@ -1,6 +1,9 @@
 {
   "appName": "玩安卓",
   "tableNames": {
-
+    "frontPage": "首页",
+    "projects": "项目",
+    "officialAccounts": "公众号",
+    "mine": "我的"
   }
 }

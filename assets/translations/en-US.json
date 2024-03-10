@@ -1,0 +1,9 @@
+{
+  "appName": "WanAndroid",
+  "tableNames": {
+    "frontPage": "front",
+    "projects": "project",
+    "officialAccounts": "public",
+    "mine": "mine"
+  }
+}
