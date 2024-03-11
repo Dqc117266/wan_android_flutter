@@ -12,10 +12,10 @@ class FrontScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
 
-    var collectChapter = HttpCreator.collectChapter(1165);
-    collectChapter.then((value) => {
-      print(value.toString())
-    });
+    // var collectChapter = HttpCreator.collectChapter(1165);
+    // collectChapter.then((value) => {
+    //   print(value.toString())
+    // });
 
     return Scaffold(
       body: Center(

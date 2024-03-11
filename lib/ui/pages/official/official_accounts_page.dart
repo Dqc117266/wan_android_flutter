@@ -9,7 +9,9 @@ class OfficialAccountsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text(LocaleKeys.tableNames_officialAccounts.tr()),),
+      body: Center(
+        child: Text("公众号"),
+      ),
     );
   }
 }

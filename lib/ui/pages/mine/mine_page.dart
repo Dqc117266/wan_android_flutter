@@ -8,7 +8,9 @@ class MineScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text(LocaleKeys.tableNames_mine.tr()),),
+      body: Center(
+        child: Text("我的"),
+      ),
     );
   }
 }

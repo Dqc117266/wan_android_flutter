@@ -1,10 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:wan_android_flutter/ui/pages/front/front_page.dart';
-import 'package:wan_android_flutter/ui/pages/mine/mine_page.dart';
-import 'package:wan_android_flutter/ui/pages/official/official_accounts_page.dart';
-import 'package:wan_android_flutter/ui/pages/projects/projects_page.dart';
-
 import '../../shared/constants.dart';
+import 'initalize_items.dart';
 
 class MainScreen extends StatefulWidget {
   static const routeName = "/";
@@ -47,7 +43,10 @@ class _MainScreenState extends State<MainScreen>
     return Scaffold(
       appBar: AppBar(title: Text(appBarNames[screenIndex]),),
       key: scaffoldKey,
-      body: createScreenFor(ScreenSelected.values[screenIndex]),
+      body: IndexedStack(
+        index: screenIndex,
+        children: pages,
+      ),
       bottomNavigationBar: Focus(
         autofocus: false,
         child: NavigationBar(
@@ -63,13 +62,3 @@ class _MainScreenState extends State<MainScreen>
     );
   }
 }
-
-Widget createScreenFor(
-  ScreenSelected screenSelected,
-) =>
-    switch (screenSelected) {
-      ScreenSelected.front => const FrontScreen(),
-      ScreenSelected.projects => const ProjectsScreen(),
-      ScreenSelected.officialAccounts => const OfficialAccountsScreen(),
-      ScreenSelected.mine => const MineScreen()
-    };
