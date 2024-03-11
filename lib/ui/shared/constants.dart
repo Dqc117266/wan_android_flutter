@@ -1,10 +1,7 @@
-
-
 import 'package:flutter/material.dart';
 
 import '../../core/lang/locale_keys.g.dart';
 import 'package:easy_localization/easy_localization.dart';
-
 
 const double transitionLength = 500;
 
@@ -29,6 +26,13 @@ final List<Widget> bottomNavigationBarItems = [
     icon: Icon(Icons.person),
     label: LocaleKeys.tableNames_mine.tr(),
   )
+];
+
+final List<String> appBarNames = [
+  LocaleKeys.tableNames_frontPage.tr(),
+  LocaleKeys.tableNames_projects.tr(),
+  LocaleKeys.tableNames_officialAccounts.tr(),
+  LocaleKeys.tableNames_mine.tr(),
 ];
 
 enum ColorSelectionMethod {
