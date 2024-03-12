@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:wan_android_flutter/core/extensions/string_extension.dart';
 import 'package:wan_android_flutter/core/model/front_articles_model.dart';
 import 'package:wan_android_flutter/core/model/front_banner_model.dart';
 import 'package:wan_android_flutter/core/model/todo_model.dart';
@@ -8,6 +9,7 @@ import '../core/model/collects_model.dart';
 import '../core/model/result_model.dart';
 import '../core/model/todolist_model.dart';
 import '../core/model/user_info_model.dart';
+import '../core/model/wxartcle_model.dart';
 import 'api_service.dart';
 
 class HttpCreator {
@@ -33,7 +35,7 @@ class HttpCreator {
   }
 
   static Future<FrontArtclesModel> getFrontList(int page) async {
-    return fetchData<FrontArtclesModel>("${Api.frontList}$page/json",
+    return fetchData<FrontArtclesModel>(Api.frontList.addCeilUrl(page),
         (json) => FrontArtclesModel.fromJson(json));
   }
 
@@ -79,13 +81,13 @@ class HttpCreator {
   //收藏文章列表
   static Future<CollectsModel> getCollectList(int page) {
     return fetchData(
-        "${Api.collectList}$page/json", (json) => CollectsModel.fromJson(json));
+        Api.collectList.addCeilUrl(page), (json) => CollectsModel.fromJson(json));
   }
 
   //收藏站内文章 POST请求
   static Future<ResultModel> collectChapter(int id) {
     return fetchData(
-        "${Api.collect}$id/json", (json) => ResultModel.fromJson(json),
+        Api.collect.addCeilUrl(id), (json) => ResultModel.fromJson(json),
         queryParameters: {});
   }
 
@@ -99,21 +101,21 @@ class HttpCreator {
   //取消收藏
   static Future<ResultModel> uncollect(int id) {
     return fetchData(
-        "${Api.unCollect}$id/json", (json) => ResultModel.fromJson(json),
+        Api.unCollect.addCeilUrl(id), (json) => ResultModel.fromJson(json),
         queryParameters: {});
   }
 
   //取消我的收藏页面  (我的收藏页面（该页面包含自己录入的内容）)
   static Future<ResultModel> unMyCollect(int id, int originId) {
     return fetchData(
-        "${Api.unMyCollect}$id/json", (json) => ResultModel.fromJson(json),
+        Api.unMyCollect.addCeilUrl(id), (json) => ResultModel.fromJson(json),
         queryParameters: {"originId": originId});
   }
 
   //取消我的收藏页面  (我的收藏页面（该页面包含自己录入的内容）)
   static Future<FrontArtclesModel> query(int page, String k) {
     return fetchData(
-        "${Api.query}$page/json", (json) => FrontArtclesModel.fromJson(json),
+        Api.query.addCeilUrl(page), (json) => FrontArtclesModel.fromJson(json),
         queryParameters: {"k": k});
   }
 
@@ -159,13 +161,13 @@ class HttpCreator {
       "priority": priority
     };
 
-    return fetchData("${Api.todoUpdate}$id/json", (json) => TodoModel.fromJson(json),
+    return fetchData(Api.todoUpdate.addCeilUrl(id), (json) => TodoModel.fromJson(json),
         queryParameters: data);
   }
 
   static Future<ResultModel> todoDelete(int id) {
 
-    return fetchData("${Api.todoDelete}$id/json", (json) => ResultModel.fromJson(json),
+    return fetchData(Api.todoDelete.addCeilUrl(id), (json) => ResultModel.fromJson(json),
         queryParameters: {});
   }
 
@@ -178,7 +180,7 @@ class HttpCreator {
   * */
   static Future<ResultModel> todoDone(int id, int status) {
 
-    return fetchData("${Api.todoDone}$id/json", (json) => ResultModel.fromJson(json),
+    return fetchData(Api.todoDone.addCeilUrl(id), (json) => ResultModel.fromJson(json),
         queryParameters: {"status" : status});
   }
 
@@ -194,7 +196,7 @@ class HttpCreator {
   * */
   static Future<TodoListModel> todoList(int page) {
 
-    return fetchData("${Api.todoList}$page/json", (json) => TodoListModel.fromJson(json),
+    return fetchData(Api.todoList.addCeilUrl(page), (json) => TodoListModel.fromJson(json),
         queryParameters: {});
   }
 
@@ -203,7 +205,16 @@ class HttpCreator {
     return fetchData(Api.userInfo, (json) => UserInfoModel.fromJson(json));
   }
 
+  //获取公众号列表
+  static Future<WxartcleModel> wxarticleChapters() {
 
+    return fetchData(Api.wxarticleChapters, (json) => WxartcleModel.fromJson(json));
+  }
 
+  //查看某个公众号历史数据
+  static Future<FrontArtclesModel> wxarticleList(int id, int page) {
+
+    return fetchData("${Api.wxarticleList}$id/$page/json", (json) => FrontArtclesModel.fromJson(json));
+  }
 
 }

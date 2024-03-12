@@ -26,4 +26,5 @@ class Api {
 
   static const String wxarticleChapters = "/wxarticle/chapters/json";
   static const String wxarticleList = "/wxarticle/list/";
+
 }
