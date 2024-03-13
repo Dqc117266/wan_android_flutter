@@ -33,7 +33,7 @@ class _CreateCarouselState extends State<CreateCarousel> {
     return Stack(
       children: [
         Card(
-          margin: EdgeInsets.symmetric(horizontal: 16),
+          margin: EdgeInsets.symmetric(horizontal: 8, vertical: 6),
           child: CarouselSlider(
             items: _imageWidgets,
             options: CarouselOptions(
@@ -51,7 +51,7 @@ class _CreateCarouselState extends State<CreateCarousel> {
           ),
         ),
         Positioned(
-          bottom: 0,
+          bottom: 4,
           right: 0,
           left: 0,
           child: DotIndicatorRow(

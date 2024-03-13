@@ -28,11 +28,28 @@ class _FrontScreenState extends State<FrontScreen> {
           return Center(
             child: CircularProgressIndicator(),
           );
+        } else if (snapshot.hasError || snapshot.data == null) { // 检查是否有错误或数据为空
+          return Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text("数据加载失败，点击重试"),
+                SizedBox(height: 4,),
+                ElevatedButton(
+                  onPressed: () {
+                    setState(() {}); // 这里强制刷新，可以根据需要进行实际的重新加载操作
+                  },
+                  child: Icon(Icons.refresh),
+                ),
+              ],
+            ),
+          );
         } else {
-          final bannerData = (snapshot.data as List)[0] as FrontBannerModel;
-          final frontListData = (snapshot.data as List)[1] as FrontArtclesModel;
+          final List<Object> data = snapshot.data as List<Object>;
+          final FrontBannerModel? bannerData = data[0] as FrontBannerModel?;
+          final FrontArtclesModel? frontListData = data[1] as FrontArtclesModel?;
 
-          return LoadModeSliverList(bannerData, frontListData);
+          return LoadModeSliverList(bannerData!, frontListData!);
         }
       },
     );
