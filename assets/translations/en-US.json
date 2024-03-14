@@ -5,5 +5,8 @@
     "projects": "project",
     "officialAccounts": "public",
     "mine": "mine"
+  },
+  "front": {
+    "dataLoadingFailed": "Data loading failed, click to try again"
   }
 }

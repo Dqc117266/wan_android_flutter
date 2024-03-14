@@ -1,5 +1,7 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:wan_android_flutter/core/lang/locale_keys.g.dart';
 import 'package:wan_android_flutter/core/model/front_articles_model.dart';
 import 'package:wan_android_flutter/core/model/front_banner_model.dart';
 import 'package:wan_android_flutter/ui/pages/front/load_more_sliverlist.dart';
@@ -33,7 +35,7 @@ class _FrontScreenState extends State<FrontScreen> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Text("数据加载失败，点击重试"),
+                Text(LocaleKeys.front_dataLoadingFailed.tr()),
                 SizedBox(height: 4,),
                 ElevatedButton(
                   onPressed: () {
@@ -49,7 +51,10 @@ class _FrontScreenState extends State<FrontScreen> {
           final FrontBannerModel? bannerData = data[0] as FrontBannerModel?;
           final FrontArtclesModel? frontListData = data[1] as FrontArtclesModel?;
 
-          return LoadModeSliverList(bannerData!, frontListData!);
+          return RefreshIndicator(onRefresh: () {
+            return Future(() => setState(() {}));
+          },
+          child: LoadModeSliverList(bannerData!, frontListData!));
         }
       },
     );

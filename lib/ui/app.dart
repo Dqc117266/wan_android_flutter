@@ -1,6 +1,8 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:wan_android_flutter/ui/pages/web/web_page.dart';
 import '../core/lang/locale_keys.g.dart';
+import '../core/router/router.dart';
 import 'pages/main/main_page.dart';
 import 'shared/constants.dart';
 
@@ -81,18 +83,8 @@ class _MyAppState extends State<MyApp> {
         brightness: Brightness.dark,
       ),
       // initialRoute: MyRouter.initalRoute,
-      // routes: MyRouter.routes,
-      home: MainScreen(
-        useLightMode: useLightMode,
-        useMaterial3: useMaterial3,
-        colorSelected: colorSelected,
-        imageSelected: imageSelected,
-        handleBrightnessChange: handleBrightnessChange,
-        handleMaterialVersionChange: handleMaterialVersionChange,
-        handleColorSelect: handleColorSelect,
-        handleImageSelect: handleImageSelect,
-        colorSelectionMethod: colorSelectionMethod,
-      ),
+      routes: MyRouter.routes,
+      home: WebPageScreen(),
     );
   }
 }

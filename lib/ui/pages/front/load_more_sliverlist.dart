@@ -1,7 +1,10 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:wan_android_flutter/core/lang/locale_keys.g.dart';
 import 'package:wan_android_flutter/core/model/front_articles_model.dart';
 import 'package:wan_android_flutter/core/model/front_banner_model.dart';
 import 'package:wan_android_flutter/network/http_creator.dart';
+import 'package:wan_android_flutter/ui/shared/constants.dart';
 
 import 'banner/create_carousel.dart';
 
@@ -22,6 +25,7 @@ class _LoadModeSliverListState extends State<LoadModeSliverList> {
 
   bool _isLoading = false;
   int _page = 1;
+  LoadState _loadState = LoadState.success;
 
   @override
   void initState() {
@@ -44,24 +48,33 @@ class _LoadModeSliverListState extends State<LoadModeSliverList> {
 
   void _loadModeData() async {
     setState(() {
+      _loadState = LoadState.loading;
       _isLoading = true;
     });
 
-    final getFrontList = await HttpCreator.getFrontList(_page);
+    try {
+      final getFrontList = await HttpCreator.getFrontList(_page);
 
-    setState(() {
-      _datas!.addAll(getFrontList.data!.datas!);
-      _isLoading = false;
-      _page++;
-    });
+      if (getFrontList.errorCode != null && getFrontList.errorCode != 0) {
+        _setFailedState();
+      } else {
+        setState(() {
+          _datas!.addAll(getFrontList.data!.datas!);
+          _isLoading = false;
+          _page++;
+          _loadState = LoadState.success;
+        });
+      }
+    } catch (e) {
+      _setFailedState();
+    }
   }
 
-  void _scrollToBottom() {
-    _scrollController.animateTo(
-      _scrollController.position.maxScrollExtent,
-      duration: Duration(milliseconds: 500),
-      curve: Curves.ease,
-    );
+  void _setFailedState() {
+    setState(() {
+      _isLoading = false;
+      _loadState = LoadState.failed;
+    });
   }
 
   @override
@@ -93,32 +106,49 @@ class _LoadModeSliverListState extends State<LoadModeSliverList> {
           ),
 
           SliverToBoxAdapter(
-            child: _isLoading ? _buildLoadingIndicator() : SizedBox(height: 32),
+            child: _buildLoadStateIndicator(),
           ),
         ],
       ),
     );
   }
 
+  Widget _buildLoadStateIndicator() {
+    switch (_loadState) {
+      case LoadState.loading:
+        return _buildLoadingIndicator();
+      case LoadState.failed:
+        return _buildFailedIndicator();
+      case LoadState.success:
+        return SizedBox(height: 32);
+    }
+  }
+
   Widget _buildLoadingIndicator() {
-    return Builder(
-      builder: (context) {
-        return Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Center(
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text(
-                  "加载中...",
-                  style: Theme.of(context).textTheme.bodyMedium,
-                ),
-                Container(width: 20, height: 20, child: CircularProgressIndicator()),
-              ],
-            ),
-          ),
-        );
-      }
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Center(
+        child: Container(
+          width: 20,
+          height: 20,
+          child: CircularProgressIndicator(),
+        ),
+      ),
     );
   }
+
+  Widget _buildFailedIndicator() {
+    return GestureDetector(
+      onTap: () {
+        _loadModeData();
+      },
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Center(
+          child: Text(LocaleKeys.front_dataLoadingFailed.tr()),
+        ),
+      ),
+    );
+  }
+
 }

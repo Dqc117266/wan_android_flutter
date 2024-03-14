@@ -5,5 +5,8 @@
     "projects": "项目",
     "officialAccounts": "公众号",
     "mine": "我的"
+  },
+  "front": {
+    "dataLoadingFailed": "数据加载失败，点击重试"
   }
 }
