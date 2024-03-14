@@ -21,16 +21,31 @@ class _WebPageScreenState extends State<WebPageScreen> {
     // TODO: implement initState
     super.initState();
 
-    title = "AAA";
-    url = "https://www.baidu.com/";
+    _initialize();
+  }
 
+  void _initialize() async {
+    WidgetsBinding.instance!.addPostFrameCallback((_) {
+      _initModalRoute();
+      _initWebViewController();
+      setState(() {});
+    });
+  }
+
+  Future<void> _initModalRoute() async {
+    final Map<String, dynamic> data =
+        ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;
+    title = data["title"];
+    url = data["url"];
+  }
+
+  Future<void> _initWebViewController() async {
     _controller = WebViewController()
       ..setJavaScriptMode(JavaScriptMode.unrestricted)
       ..setBackgroundColor(Colors.white)
       ..setNavigationDelegate(
         NavigationDelegate(
           onProgress: (int progress) {
-            print(progress);
             setState(() {
               _progress = progress / 100;
             });
@@ -53,14 +68,28 @@ class _WebPageScreenState extends State<WebPageScreen> {
 
   @override
   Widget build(BuildContext context) {
-    // final Map<String, dynamic> data =
-    //     ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;
-    // String title = data['title'];
-    // String url = data['url'];
-
+    if (title == null || url == null) {
+      // 还未初始化完成，显示loading状态
+      return Scaffold(
+        body: Center(
+          child: CircularProgressIndicator(),
+        ),
+      );
+    }
 
     return Scaffold(
-      appBar: AppBar(title: Text(title!)),
+      appBar: AppBar(
+        title: Text(title!),
+        actions: [
+          IconButton(
+            icon: Icon(Icons.more_vert),
+            onPressed: () {
+              // 点击更多按钮时的操作
+              // _showPopupMenu(context);
+            },
+          ),
+        ],
+      ),
       body: Stack(
         children: [
           WebViewWidget(controller: _controller),
@@ -69,7 +98,7 @@ class _WebPageScreenState extends State<WebPageScreen> {
               value: _progress,
               minHeight: 2.0,
               backgroundColor: Colors.transparent,
-              valueColor: AlwaysStoppedAnimation<Color>(Colors.blue),
+              valueColor: AlwaysStoppedAnimation<Color>(Theme.of(context).primaryColor),
             ),
         ],
       ),
