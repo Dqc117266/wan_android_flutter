@@ -84,7 +84,17 @@ class _MyAppState extends State<MyApp> {
       ),
       // initialRoute: MyRouter.initalRoute,
       routes: MyRouter.routes,
-      home: WebPageScreen(),
+      home: MainScreen(
+        useLightMode: useLightMode,
+        useMaterial3: useMaterial3,
+        colorSelected: colorSelected,
+        handleBrightnessChange: handleBrightnessChange,
+        handleMaterialVersionChange: handleMaterialVersionChange,
+        handleColorSelect:handleColorSelect,
+        handleImageSelect:handleImageSelect,
+        colorSelectionMethod:colorSelectionMethod,
+        imageSelected: imageSelected,
+      ),
     );
   }
 }
