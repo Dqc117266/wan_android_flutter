@@ -26,46 +26,86 @@ class SliverListItem extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    datas.chapterName!,
-                    style: Theme.of(context).textTheme.labelMedium,
-                  ),
-                  Text(
-                    datas.niceDate!,
-                    style: Theme.of(context).textTheme.labelMedium,
-                  ),
-                ],
+              _buildAuthorDateRow(
+                context,
+                datas.author! != "" ? datas.author! : datas.shareUser!,
+                datas.niceDate!,
               ),
+
               SizedBox(
                 height: 8,
               ),
+
               Text(
                 datas.title!,
-                style: Theme.of(context).textTheme.bodyLarge,
+                style: Theme.of(context)
+                    .textTheme
+                    .bodyLarge!
+                    .copyWith(fontWeight: FontWeight.bold),
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
               ),
+
               SizedBox(
                 height: 8,
               ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    datas.superChapterName!,
-                    style: Theme.of(context).textTheme.labelMedium,
-                  ),
-                  GestureDetector(
-                    onTap: () {},
-                    child: Icon(Icons.favorite_border, color: Theme.of(context).primaryColor,),
-                  ),
-                ],
-              ),
+
+              _buildChapterAndFavoriteRow(context, datas.superChapterName!),
             ],
           ),
         ),
       ),
+    );
+  }
+
+  Widget _buildAuthorDateRow(BuildContext context, String author, String date) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Text(
+          author.isNotEmpty ? author : 'Unknown',
+          style: TextStyle(
+              color: Theme.of(context)
+                  .textTheme
+                  .labelMedium!
+                  .color!
+                  .withOpacity(0.6)),
+        ),
+        Text(
+          date,
+          style: TextStyle(
+              color: Theme.of(context)
+                  .textTheme
+                  .labelMedium!
+                  .color!
+                  .withOpacity(0.6)),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildChapterAndFavoriteRow(BuildContext context, String chapterName) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Text(
+          chapterName,
+          style: TextStyle(
+              color: Theme.of(context)
+                  .textTheme
+                  .labelMedium!
+                  .color!
+                  .withOpacity(0.6)),
+        ),
+        InkWell(
+          borderRadius: BorderRadius.all(Radius.circular(100)),
+          onTap: () {
+            // Your favorite onTap logic
+          },
+          child: Icon(Icons.favorite_border,
+              color: Theme.of(context).colorScheme.primary),
+        ),
+      ],
     );
   }
 }

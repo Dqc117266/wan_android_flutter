@@ -9,5 +9,17 @@
   "front": {
     "dataLoadingFailed": "数据加载失败，点击重试",
     "dataEnd": "已经到底了～"
+  },
+  "webpage": {
+    "labelList": {
+      "refresh": "刷新",
+      "toBrowser": "用浏览器打开",
+      "share": "分享",
+      "copyLink": "复制链接"
+    },
+    "toastContent": {
+      "toastSuccess": "已复制链接",
+      "toastFailed": "复制失败"
+    }
   }
 }

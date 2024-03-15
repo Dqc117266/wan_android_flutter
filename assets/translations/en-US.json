@@ -9,5 +9,17 @@
   "front": {
     "dataLoadingFailed": "Data loading failed, click to try again",
     "dataEnd": "It’s the end~"
+  },
+  "webpage": {
+    "labelList": {
+      "refresh": "refresh",
+      "toBrowser": "Open with browser",
+      "share": "share",
+      "copyLink": "copy Link"
+    },
+    "toastContent": {
+      "toastSuccess": "Link copied",
+      "toastFailed": "Copy failed"
+    }
   }
 }
