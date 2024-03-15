@@ -90,5 +90,6 @@ enum ScreenSelected {
 enum LoadState {
   loading,
   success,
-  failed;
+  failed,
+  end;
 }

@@ -7,6 +7,7 @@
     "mine": "我的"
   },
   "front": {
-    "dataLoadingFailed": "数据加载失败，点击重试"
+    "dataLoadingFailed": "数据加载失败，点击重试",
+    "dataEnd": "已经到底了～"
   }
 }

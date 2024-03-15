@@ -4,15 +4,18 @@ import 'package:wan_android_flutter/core/lang/locale_keys.g.dart';
 import 'package:wan_android_flutter/core/model/front_articles_model.dart';
 import 'package:wan_android_flutter/core/model/front_banner_model.dart';
 import 'package:wan_android_flutter/network/http_creator.dart';
+import 'package:wan_android_flutter/ui/pages/front/sliver_list_item.dart';
 import 'package:wan_android_flutter/ui/shared/constants.dart';
 
+import '../../../core/model/front_top_artcles_model.dart';
 import 'banner/create_carousel.dart';
 
 class LoadModeSliverList extends StatefulWidget {
   final FrontBannerModel? bannerData;
+  final FrontTopArtclesModel? frontTopListData;
   final FrontArtclesModel? frontListData;
 
-  const LoadModeSliverList(this.bannerData, this.frontListData, {super.key});
+  const LoadModeSliverList(this.bannerData, this.frontTopListData, this.frontListData, {super.key});
 
   @override
   State<LoadModeSliverList> createState() => _LoadModeSliverListState();
@@ -31,7 +34,10 @@ class _LoadModeSliverListState extends State<LoadModeSliverList> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    _datas = widget.frontListData!.data!.datas;
+    // _datas!.addAll(widget.frontTopListData!.data as Iterable<Datas>);
+    _datas!.addAll(widget.frontTopListData!.data!);
+    _datas!.addAll(widget.frontListData!.data!.datas!);
+
     maxPage = widget.frontListData!.data!.pageCount!;
 
     print("maxPage: ${maxPage}");
@@ -42,7 +48,13 @@ class _LoadModeSliverListState extends State<LoadModeSliverList> {
     if (_scrollController.position.pixels ==
             _scrollController.position.maxScrollExtent &&
         !_isLoading) {
-      _loadModeData();
+      if (_page <= maxPage) {
+        _loadModeData();
+      } else {
+        setState(() {
+          _loadState = LoadState.end;
+        });
+      }
     }
   }
 
@@ -94,12 +106,7 @@ class _LoadModeSliverListState extends State<LoadModeSliverList> {
           SliverList(
             delegate: SliverChildBuilderDelegate(
               (context, index) {
-                return Card(
-                  margin: EdgeInsets.symmetric(horizontal: 8, vertical: 6),
-                  child: ListTile(
-                    title: Text(_datas![index].title!),
-                  ),
-                );
+                return SliverListItem(datas: _datas![index]);
               },
               childCount: _datas!.length,
             ),
@@ -121,6 +128,9 @@ class _LoadModeSliverListState extends State<LoadModeSliverList> {
         return _buildFailedIndicator();
       case LoadState.success:
         return SizedBox(height: 32);
+      case LoadState.end:
+        return _buildEndIndicator();
+
     }
   }
 
@@ -133,6 +143,15 @@ class _LoadModeSliverListState extends State<LoadModeSliverList> {
           height: 20,
           child: CircularProgressIndicator(),
         ),
+      ),
+    );
+  }
+
+  Widget _buildEndIndicator() {
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Center(
+        child: Text(LocaleKeys.front_dataEnd.tr()),
       ),
     );
   }

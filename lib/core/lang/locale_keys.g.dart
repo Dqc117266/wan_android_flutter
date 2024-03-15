@@ -8,6 +8,7 @@ abstract class  LocaleKeys {
   static const tableNames_mine = 'tableNames.mine';
   static const tableNames = 'tableNames';
   static const front_dataLoadingFailed = 'front.dataLoadingFailed';
+  static const front_dataEnd = 'front.dataEnd';
   static const front = 'front';
 
 }

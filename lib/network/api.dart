@@ -2,6 +2,7 @@ class Api {
   static const String baseUrl = "https://www.wanandroid.com";
 
   static const String frontList = "/article/list/";
+  static const String frontTopList = "/article/top/json";
   static const String frontBanner = "/banner/json";
   static const String treesList = "/tree/json";
   static const String treesDetailList = "/article/list/";

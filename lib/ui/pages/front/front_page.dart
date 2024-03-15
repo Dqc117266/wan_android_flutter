@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:wan_android_flutter/core/lang/locale_keys.g.dart';
 import 'package:wan_android_flutter/core/model/front_articles_model.dart';
 import 'package:wan_android_flutter/core/model/front_banner_model.dart';
+import 'package:wan_android_flutter/core/model/front_top_artcles_model.dart';
 import 'package:wan_android_flutter/ui/pages/front/load_more_sliverlist.dart';
 
 import '../../../network/http_creator.dart';
@@ -23,6 +24,7 @@ class _FrontScreenState extends State<FrontScreen> {
     return FutureBuilder(
       future: Future.wait([
         HttpCreator.getBanner(),
+        HttpCreator.getFrontTopList(),
         HttpCreator.getFrontList(0),
       ]),
       builder: (context, snapshot) {
@@ -49,12 +51,13 @@ class _FrontScreenState extends State<FrontScreen> {
         } else {
           final List<Object> data = snapshot.data as List<Object>;
           final FrontBannerModel? bannerData = data[0] as FrontBannerModel?;
-          final FrontArtclesModel? frontListData = data[1] as FrontArtclesModel?;
+          final FrontTopArtclesModel? frontTopListData = data[1] as FrontTopArtclesModel?;
+          final FrontArtclesModel? frontListData = data[2] as FrontArtclesModel?;
 
           return RefreshIndicator(onRefresh: () {
             return Future(() => setState(() {}));
           },
-          child: LoadModeSliverList(bannerData!, frontListData!));
+          child: LoadModeSliverList(bannerData!, frontTopListData, frontListData!));
         }
       },
     );

@@ -6,6 +6,7 @@ import 'package:wan_android_flutter/core/model/todo_model.dart';
 import 'package:wan_android_flutter/core/model/tree_model.dart';
 import 'package:wan_android_flutter/network/api.dart';
 import '../core/model/collects_model.dart';
+import '../core/model/front_top_artcles_model.dart';
 import '../core/model/result_model.dart';
 import '../core/model/todolist_model.dart';
 import '../core/model/user_info_model.dart';
@@ -37,6 +38,11 @@ class HttpCreator {
   static Future<FrontArtclesModel> getFrontList(int page) async {
     return fetchData<FrontArtclesModel>(Api.frontList.addCeilUrl(page),
         (json) => FrontArtclesModel.fromJson(json));
+  }
+
+  static Future<FrontTopArtclesModel> getFrontTopList() async {
+    return fetchData<FrontTopArtclesModel>(Api.frontTopList,
+            (json) => FrontTopArtclesModel.fromJson(json));
   }
 
   static Future<FrontBannerModel> getBanner() async {
