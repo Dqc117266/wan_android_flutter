@@ -2,6 +2,7 @@ import 'package:dio/dio.dart';
 import 'package:wan_android_flutter/core/extensions/string_extension.dart';
 import 'package:wan_android_flutter/core/model/front_articles_model.dart';
 import 'package:wan_android_flutter/core/model/front_banner_model.dart';
+import 'package:wan_android_flutter/core/model/hotkey_model.dart';
 import 'package:wan_android_flutter/core/model/todo_model.dart';
 import 'package:wan_android_flutter/core/model/tree_model.dart';
 import 'package:wan_android_flutter/network/api.dart';
@@ -118,11 +119,15 @@ class HttpCreator {
         queryParameters: {"originId": originId});
   }
 
-  //取消我的收藏页面  (我的收藏页面（该页面包含自己录入的内容）)
+  //搜索页面
   static Future<FrontArtclesModel> query(int page, String k) {
     return fetchData(
         Api.query.addCeilUrl(page), (json) => FrontArtclesModel.fromJson(json),
         queryParameters: {"k": k});
+  }
+
+  static Future<HotKeyModel> getHotKey() {
+    return fetchData(Api.hotkey, (json) => HotKeyModel.fromJson(json));
   }
 
   //新增一个TODO

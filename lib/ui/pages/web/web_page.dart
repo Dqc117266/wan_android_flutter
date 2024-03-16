@@ -3,6 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:share_plus/share_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:wan_android_flutter/core/lang/locale_keys.g.dart';
 import 'package:webview_flutter/webview_flutter.dart';
@@ -56,6 +57,7 @@ class _WebPageScreenState extends State<WebPageScreen> {
       IconButton(
           onPressed: () {
             Navigator.of(context).pop();
+            _shareContent(url!);
           },
           icon: const Icon(Icons.share)),
       IconButton(
@@ -197,7 +199,9 @@ class _WebPageScreenState extends State<WebPageScreen> {
     }
   }
 
-  void _shareContent(String content) {}
+  void _shareContent(String content) {
+    Share.share(content);
+  }
 
   void _showToast(String msg) {
     Fluttertoast.showToast(

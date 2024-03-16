@@ -18,6 +18,7 @@ class Api {
   static const String unCollect = "/lg/uncollect_originId/";
   static const String unMyCollect = "/lg/uncollect/";
   static const String query = "/article/query/";
+  static const String hotkey = "/hotkey/json";
 
   static const String todoAdd = "/lg/todo/add/json";
   static const String todoUpdate = "/lg/todo/update/";
