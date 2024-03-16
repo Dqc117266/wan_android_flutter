@@ -126,7 +126,7 @@ class _WebPageScreenState extends State<WebPageScreen> {
   @override
   Widget build(BuildContext context) {
     if (title == null || url == null) {
-      // 还未初始化完成，显示loading状态
+      // 还未初始化完成，显示 loading 状态
       return Scaffold(
         body: Center(
           child: CircularProgressIndicator(),
