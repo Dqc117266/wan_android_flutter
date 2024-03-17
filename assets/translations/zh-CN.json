@@ -21,5 +21,18 @@
       "toastSuccess": "已复制链接",
       "toastFailed": "复制失败"
     }
+  },
+  "user": {
+    "loginName": "登陆",
+    "registerName": "注册",
+    "toRegister": "没有账号，去注册",
+    "toLogin": "已有账号，去登陆",
+    "userLabel": "用户名",
+    "userHint": "输入用户名",
+    "passwordLable": "密码",
+    "passwordHint": "输入密码",
+    "rePasswordLable": "确认密码",
+    "rePasswordHint": "确认输入密码"
   }
+
 }

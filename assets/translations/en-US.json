@@ -21,5 +21,17 @@
       "toastSuccess": "Link copied",
       "toastFailed": "Copy failed"
     }
+  },
+  "user": {
+    "loginName": "Login",
+    "registerName": "Register",
+    "toRegister": "Don't have an account? Register now",
+    "toLogin": "Already have an account? Log in",
+    "userLabel": "Username",
+    "userHint": "Enter username",
+    "passwordLable": "Password",
+    "passwordHint": "Enter password",
+    "rePasswordLable": "Confirm password",
+    "rePasswordHint": "Confirm password"
   }
 }

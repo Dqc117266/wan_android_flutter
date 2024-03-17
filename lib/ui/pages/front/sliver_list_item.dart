@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import 'package:wan_android_flutter/core/model/front_articles_model.dart';
+import 'package:wan_android_flutter/core/utils/http_utils.dart';
 import 'package:wan_android_flutter/ui/pages/web/web_page.dart';
 
 class SliverListItem extends StatelessWidget {
@@ -16,10 +17,7 @@ class SliverListItem extends StatelessWidget {
       margin: EdgeInsets.symmetric(horizontal: 8, vertical: 6),
       child: InkWell(
         onTap: () {
-          Navigator.of(context).pushNamed(WebPageScreen.routeName, arguments: {
-            "title": datas.title,
-            "url": datas.link,
-          });
+          Navigator.of(context).pushNamed(WebPageScreen.routeName, arguments: datas);
         },
         child: Padding(
           padding: EdgeInsets.fromLTRB(8, 12, 8, 12),
@@ -101,6 +99,7 @@ class SliverListItem extends StatelessWidget {
           borderRadius: BorderRadius.all(Radius.circular(100)),
           onTap: () {
             // Your favorite onTap logic
+            HttpUtils.collectChapter(context, datas.id!);
           },
           child: Icon(Icons.favorite_border,
               color: Theme.of(context).colorScheme.primary),
@@ -108,4 +107,5 @@ class SliverListItem extends StatelessWidget {
       ],
     );
   }
+
 }

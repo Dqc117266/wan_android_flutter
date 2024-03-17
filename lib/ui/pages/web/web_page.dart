@@ -2,11 +2,14 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:wan_android_flutter/core/lang/locale_keys.g.dart';
+import 'package:wan_android_flutter/core/utils/http_utils.dart';
+import 'package:wan_android_flutter/core/utils/toast_utils.dart';
 import 'package:webview_flutter/webview_flutter.dart';
+
+import '../../../core/model/front_articles_model.dart';
 
 class WebPageScreen extends StatefulWidget {
   static final routeName = "/webview";
@@ -20,8 +23,7 @@ class _WebPageScreenState extends State<WebPageScreen> {
   late List<Widget> _buttonList;
   double _progress = 0.0;
   bool _isLoading = true;
-  String? title;
-  String? url;
+  late Datas datas;
 
   @override
   void initState() {
@@ -51,19 +53,19 @@ class _WebPageScreenState extends State<WebPageScreen> {
       IconButton(
           onPressed: () {
             Navigator.of(context).pop();
-            _launchUrl(url!);
+            _launchUrl(datas.link!);
           },
           icon: const Icon(Icons.open_in_browser)),
       IconButton(
           onPressed: () {
             Navigator.of(context).pop();
-            _shareContent(url!);
+            _shareContent(datas.link!);
           },
           icon: const Icon(Icons.share)),
       IconButton(
           onPressed: () {
             Navigator.of(context).pop();
-            _copyToClipboard(url!);
+            _copyToClipboard(datas.link!);
           },
           icon: const Icon(Icons.copy)),
     ];
@@ -90,10 +92,7 @@ class _WebPageScreenState extends State<WebPageScreen> {
   }
 
   Future<void> _initModalRoute() async {
-    final Map<String, dynamic> data =
-        ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;
-    title = data["title"];
-    url = data["url"];
+    datas = ModalRoute.of(context)!.settings.arguments as Datas;
   }
 
   Future<void> _initWebViewController() async {
@@ -120,12 +119,12 @@ class _WebPageScreenState extends State<WebPageScreen> {
           onWebResourceError: (WebResourceError error) {},
         ),
       )
-      ..loadRequest(Uri.parse(url!));
+      ..loadRequest(Uri.parse(datas.link!));
   }
 
   @override
   Widget build(BuildContext context) {
-    if (title == null || url == null) {
+    if (datas == null) {
       // 还未初始化完成，显示 loading 状态
       return Scaffold(
         body: Center(
@@ -136,9 +135,14 @@ class _WebPageScreenState extends State<WebPageScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(title!),
+        title: Text(datas.title!),
         actions: [
-          IconButton(onPressed: () {}, icon: Icon(Icons.favorite_border)),
+          IconButton(
+            onPressed: () {
+              HttpUtils.collectChapter(context, datas.id!);
+            },
+            icon: Icon(Icons.favorite_border),
+          ),
           IconButton(
             icon: Icon(Icons.more_vert),
             onPressed: () {
@@ -185,10 +189,12 @@ class _WebPageScreenState extends State<WebPageScreen> {
   void _copyToClipboard(String text) {
     Clipboard.setData(ClipboardData(text: text)).then((value) {
       print('Text copied to clipboard: $text');
-      _showToast(LocaleKeys.webpage_toastContent_toastSuccess.tr());
+      ToastUtils.showShortToast(
+          LocaleKeys.webpage_toastContent_toastSuccess.tr());
     }).catchError((error) {
       print('Error copying to clipboard: $error');
-      _showToast(LocaleKeys.webpage_toastContent_toastFailed.tr());
+      ToastUtils.showShortToast(
+          LocaleKeys.webpage_toastContent_toastFailed.tr());
     });
   }
 
@@ -201,15 +207,5 @@ class _WebPageScreenState extends State<WebPageScreen> {
 
   void _shareContent(String content) {
     Share.share(content);
-  }
-
-  void _showToast(String msg) {
-    Fluttertoast.showToast(
-      msg: msg,
-      toastLength: Toast.LENGTH_SHORT,
-      gravity: ToastGravity.BOTTOM,
-      backgroundColor: Colors.black54,
-      textColor: Colors.white,
-    );
   }
 }
