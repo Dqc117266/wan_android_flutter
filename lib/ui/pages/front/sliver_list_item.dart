@@ -17,7 +17,11 @@ class SliverListItem extends StatelessWidget {
       margin: EdgeInsets.symmetric(horizontal: 8, vertical: 6),
       child: InkWell(
         onTap: () {
-          Navigator.of(context).pushNamed(WebPageScreen.routeName, arguments: datas);
+          Navigator.of(context).pushNamed(WebPageScreen.routeName, arguments: {
+            "title": datas.title,
+            "url": datas.link,
+            "id": datas.id
+          });
         },
         child: Padding(
           padding: EdgeInsets.fromLTRB(8, 12, 8, 12),
@@ -29,11 +33,7 @@ class SliverListItem extends StatelessWidget {
                 datas.author! != "" ? datas.author! : datas.shareUser!,
                 datas.niceDate!,
               ),
-
-              SizedBox(
-                height: 8,
-              ),
-
+              SizedBox(height: 8),
               Text(
                 datas.title!,
                 style: Theme.of(context)
@@ -43,11 +43,7 @@ class SliverListItem extends StatelessWidget {
                 maxLines: 2,
                 overflow: TextOverflow.ellipsis,
               ),
-
-              SizedBox(
-                height: 8,
-              ),
-
+              SizedBox(height: 8),
               _buildChapterAndFavoriteRow(context, datas.superChapterName!),
             ],
           ),
@@ -107,5 +103,4 @@ class SliverListItem extends StatelessWidget {
       ],
     );
   }
-
 }

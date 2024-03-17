@@ -23,7 +23,10 @@ class _WebPageScreenState extends State<WebPageScreen> {
   late List<Widget> _buttonList;
   double _progress = 0.0;
   bool _isLoading = true;
-  late Datas datas;
+
+  late String title;
+  late String url;
+  late int id;
 
   @override
   void initState() {
@@ -53,19 +56,19 @@ class _WebPageScreenState extends State<WebPageScreen> {
       IconButton(
           onPressed: () {
             Navigator.of(context).pop();
-            _launchUrl(datas.link!);
+            _launchUrl(url);
           },
           icon: const Icon(Icons.open_in_browser)),
       IconButton(
           onPressed: () {
             Navigator.of(context).pop();
-            _shareContent(datas.link!);
+            _shareContent(url);
           },
           icon: const Icon(Icons.share)),
       IconButton(
           onPressed: () {
             Navigator.of(context).pop();
-            _copyToClipboard(datas.link!);
+            _copyToClipboard(url);
           },
           icon: const Icon(Icons.copy)),
     ];
@@ -92,7 +95,10 @@ class _WebPageScreenState extends State<WebPageScreen> {
   }
 
   Future<void> _initModalRoute() async {
-    datas = ModalRoute.of(context)!.settings.arguments as Datas;
+    final arguments = ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;
+    title = arguments['title'];
+    url = arguments['url'];
+    id = arguments['id'];
   }
 
   Future<void> _initWebViewController() async {
@@ -119,12 +125,12 @@ class _WebPageScreenState extends State<WebPageScreen> {
           onWebResourceError: (WebResourceError error) {},
         ),
       )
-      ..loadRequest(Uri.parse(datas.link!));
+      ..loadRequest(Uri.parse(url));
   }
 
   @override
   Widget build(BuildContext context) {
-    if (datas == null) {
+    if (url == null || title == null) {
       // 还未初始化完成，显示 loading 状态
       return Scaffold(
         body: Center(
@@ -135,11 +141,11 @@ class _WebPageScreenState extends State<WebPageScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(datas.title!),
+        title: Text(title),
         actions: [
           IconButton(
             onPressed: () {
-              HttpUtils.collectChapter(context, datas.id!);
+              HttpUtils.collectChapter(context, id);
             },
             icon: Icon(Icons.favorite_border),
           ),

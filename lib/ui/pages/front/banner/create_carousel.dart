@@ -45,10 +45,11 @@ class _CreateCarouselState extends State<CreateCarousel> {
                   // _launchURL(url!);
                   final title = this.widget.frontBannerModel.data![index].title;
                   final url = this.widget.frontBannerModel.data![index].url;
+                  final id = this.widget.frontBannerModel.data![index].id;
 
                   Navigator.of(context).pushNamed(
                     WebPageScreen.routeName,
-                    arguments: {"title": title, "url": url},
+                    arguments: {"title": title, "url": url, "id" : id},
                   );
 
                   print('Item tapped at index $index');

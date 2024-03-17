@@ -46,12 +46,13 @@ class _MainScreenState extends State<MainScreen>
       appBar: AppBar(
         title: Text(appBarNames[screenIndex]),
         actions: [
-          IconButton(
-            onPressed: () {
-              showSearch(context: context, delegate: CustomSearchDelegate());
-            },
-            icon: Icon(Icons.search),
-          ),
+          if (screenIndex == 0)
+            IconButton(
+              onPressed: () {
+                showSearch(context: context, delegate: CustomSearchDelegate());
+              },
+              icon: Icon(Icons.search),
+            ),
         ],
       ),
       key: scaffoldKey,
