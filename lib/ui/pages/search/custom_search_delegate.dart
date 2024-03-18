@@ -8,9 +8,12 @@ import 'package:wan_android_flutter/core/lang/locale_keys.g.dart';
 import 'package:wan_android_flutter/core/model/hotkey_model.dart';
 import 'package:wan_android_flutter/network/http_creator.dart';
 import 'package:wan_android_flutter/ui/pages/search/search_page.dart';
+import 'package:wan_android_flutter/ui/shared/shared_preferences_helper.dart';
 
 class CustomSearchDelegate extends SearchDelegate<String> {
+  static final String historyKeysName = "history_keys";
   late List<String?> _hotKeys = [];
+  List<String>? _historyKeys = SharedPreferencesHelper.getStringList(historyKeysName) == null ? [] : SharedPreferencesHelper.getStringList(historyKeysName);
 
   @override
   List<Widget>? buildActions(BuildContext context) {
@@ -71,16 +74,15 @@ class CustomSearchDelegate extends SearchDelegate<String> {
               } else if (snapshot.hasError) {
                 return Text('Error: ${snapshot.error}');
               } else {
-                final List<String> suggestions = ['flutter', 'test aa'];
 
                 final List<String?>? hotKeys = snapshot.data;
-                final List<String> filteredSuggestions = suggestions
+                final List<String>? filteredSuggestions = _historyKeys == null ? [] : _historyKeys!
                     .where((suggestion) =>
                         suggestion.toLowerCase().contains(query.toLowerCase()))
                     .toList();
 
                 return _buildSuggestionsLayout(
-                    context, filteredSuggestions, hotKeys!);
+                    context, filteredSuggestions!, hotKeys!);
               }
             },
           )
@@ -204,6 +206,13 @@ class CustomSearchDelegate extends SearchDelegate<String> {
     query = '';
   }
 
+  Future<void> _saveSearchKey(String key) async {
+    print("_saveSearchKey ${key}");
+    _historyKeys!.add(key);
+
+    await SharedPreferencesHelper.setValue(historyKeysName, _historyKeys);
+  }
+
   void _toSearchPage(BuildContext context) {
     final String queryCopy = query;
     Navigator.push(
@@ -215,6 +224,7 @@ class CustomSearchDelegate extends SearchDelegate<String> {
         ),
       ),
     );
+    _saveSearchKey(queryCopy);
   }
 
 }
