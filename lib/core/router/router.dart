@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:wan_android_flutter/ui/pages/search/search_page.dart';
 import 'package:wan_android_flutter/ui/pages/user/login_page.dart';
 import 'package:wan_android_flutter/ui/pages/user/register_page.dart';
 import 'package:wan_android_flutter/ui/pages/web/web_page.dart';
 
-import '../../ui/pages/front/front_page.dart';
 import '../../ui/pages/main/main_page.dart';
 
 class MyRouter {
@@ -13,5 +13,6 @@ class MyRouter {
     WebPageScreen.routeName: (context) => WebPageScreen(),
     LoginScreen.routeName: (context) => LoginScreen(),
     RegisterScreen.routeName: (context) => RegisterScreen(),
+    SearchScreen.routeName: (context) => SearchScreen(),
   };
 }

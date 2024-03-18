@@ -9,6 +9,7 @@ abstract class  LocaleKeys {
   static const tableNames = 'tableNames';
   static const front_dataLoadingFailed = 'front.dataLoadingFailed';
   static const front_dataEnd = 'front.dataEnd';
+  static const front_dataEmpty = 'front.dataEmpty';
   static const front = 'front';
   static const webpage_labelList_refresh = 'webpage.labelList.refresh';
   static const webpage_labelList_toBrowser = 'webpage.labelList.toBrowser';
@@ -30,5 +31,9 @@ abstract class  LocaleKeys {
   static const user_rePasswordLable = 'user.rePasswordLable';
   static const user_rePasswordHint = 'user.rePasswordHint';
   static const user = 'user';
+  static const search_searchName = 'search.searchName';
+  static const search_historyTitle = 'search.historyTitle';
+  static const search_hotKeysTitle = 'search.hotKeysTitle';
+  static const search = 'search';
 
 }

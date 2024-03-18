@@ -15,19 +15,25 @@ class LoadModeSliverList extends StatefulWidget {
   final FrontTopArtclesModel? frontTopListData;
   final FrontArtclesModel? frontListData;
 
-  const LoadModeSliverList(this.bannerData, this.frontTopListData, this.frontListData, {super.key});
+  const LoadModeSliverList({
+    super.key,
+    this.bannerData,
+    this.frontTopListData,
+    this.frontListData,
+  });
 
   @override
   State<LoadModeSliverList> createState() => _LoadModeSliverListState();
 }
 
 class _LoadModeSliverListState extends State<LoadModeSliverList> {
-  late int maxPage;
   ScrollController _scrollController = ScrollController();
   late List<Datas>? _datas = [];
 
   bool _isLoading = false;
   int _page = 1;
+  int maxPage = 0;
+
   LoadState _loadState = LoadState.success;
 
   @override
@@ -35,20 +41,33 @@ class _LoadModeSliverListState extends State<LoadModeSliverList> {
     // TODO: implement initState
     super.initState();
     // _datas!.addAll(widget.frontTopListData!.data as Iterable<Datas>);
-    _datas!.addAll(widget.frontTopListData!.data!);
-    _datas!.addAll(widget.frontListData!.data!.datas!);
+    if (widget.frontTopListData != null &&
+        widget.frontTopListData!.data! != null) {
+      _datas!.addAll(widget.frontTopListData!.data!);
+    }
 
-    maxPage = widget.frontListData!.data!.pageCount!;
+    if (widget.frontListData!.data! != null &&
+        widget.frontListData!.data!.datas! != null) {
+      _datas!.addAll(widget.frontListData!.data!.datas!);
+      maxPage = widget.frontListData!.data!.pageCount!;
+    }
 
     print("maxPage: ${maxPage}");
     _scrollController.addListener(_onScroll);
+
+    //只有一页或者只有0页数据为0的时候 为加载到底状态
+    if (maxPage == _page || (maxPage == 0 && _datas!.length != 0)) {
+      _loadState = LoadState.end;
+    } else if (maxPage == 0 && _datas!.length == 0) {
+      _loadState = LoadState.empty;
+    }
   }
 
   void _onScroll() {
     if (_scrollController.position.pixels ==
             _scrollController.position.maxScrollExtent &&
         !_isLoading) {
-      if (_page <= maxPage) {
+      if (_page < maxPage) {
         _loadModeData();
       } else {
         setState(() {
@@ -94,14 +113,17 @@ class _LoadModeSliverListState extends State<LoadModeSliverList> {
     return Scrollbar(
       controller: _scrollController,
       child: CustomScrollView(
+        physics: AlwaysScrollableScrollPhysics(),
         controller: _scrollController,
         slivers: [
           //加载轮播图
-          SliverToBoxAdapter(
-            child: CreateCarousel(
-              frontBannerModel: widget.bannerData!,
+
+          if (widget.bannerData != null)
+            SliverToBoxAdapter(
+              child: CreateCarousel(
+                frontBannerModel: widget.bannerData!,
+              ),
             ),
-          ),
 
           SliverList(
             delegate: SliverChildBuilderDelegate(
@@ -130,7 +152,8 @@ class _LoadModeSliverListState extends State<LoadModeSliverList> {
         return SizedBox(height: 32);
       case LoadState.end:
         return _buildEndIndicator();
-
+      case LoadState.empty:
+        return _buildEmptyIndicator();
     }
   }
 
@@ -170,4 +193,9 @@ class _LoadModeSliverListState extends State<LoadModeSliverList> {
     );
   }
 
+  Widget _buildEmptyIndicator() {
+    return Center(
+      child: Text(LocaleKeys.front_dataEmpty.tr()),
+    );
+  }
 }

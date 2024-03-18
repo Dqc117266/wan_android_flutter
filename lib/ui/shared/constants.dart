@@ -91,5 +91,6 @@ enum LoadState {
   loading,
   success,
   failed,
-  end;
+  end,
+  empty;
 }

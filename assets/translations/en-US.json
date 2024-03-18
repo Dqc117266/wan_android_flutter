@@ -8,7 +8,8 @@
   },
   "front": {
     "dataLoadingFailed": "Data loading failed, click to try again",
-    "dataEnd": "It’s the end~"
+    "dataEnd": "It’s the end~",
+    "dataEmpty": "No search results～"
   },
   "webpage": {
     "labelList": {
@@ -33,5 +34,11 @@
     "passwordHint": "Enter password",
     "rePasswordLable": "Confirm password",
     "rePasswordHint": "Confirm password"
+  },
+  "search": {
+    "searchName": "search",
+    "historyTitle": "Historical searches",
+    "hotKeysTitle": "Search hot keys"
   }
+
 }

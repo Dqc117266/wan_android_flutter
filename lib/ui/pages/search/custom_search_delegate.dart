@@ -1,13 +1,15 @@
 import 'dart:async';
 
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:wan_android_flutter/core/lang/locale_keys.g.dart';
 import 'package:wan_android_flutter/core/model/hotkey_model.dart';
 import 'package:wan_android_flutter/network/http_creator.dart';
+import 'package:wan_android_flutter/ui/pages/search/search_page.dart';
 
 class CustomSearchDelegate extends SearchDelegate<String> {
-
   late List<String?> _hotKeys = [];
 
   @override
@@ -20,8 +22,7 @@ class CustomSearchDelegate extends SearchDelegate<String> {
           color: Theme.of(context).colorScheme.onBackground,
         ),
         onPressed: () {
-          if (!query.isEmpty)
-            query = '';
+          if (!query.isEmpty) _clearQuery();
         },
       ),
     ];
@@ -43,9 +44,20 @@ class CustomSearchDelegate extends SearchDelegate<String> {
 
   @override
   Widget buildResults(BuildContext context) {
-    return Center(
-      child: Text('搜索结果：$query'),
-    );
+    // _toSearchPage(context);
+    // _clearQuery();
+    return SizedBox.shrink();
+  }
+
+  @override
+  void showResults(BuildContext context) {
+    // TODO: implement showResults
+    print("showResults search page");
+    _toSearchPage(context);
+    _clearQuery();
+    super.showResults(context);
+
+    showSuggestions(context);
   }
 
   @override
@@ -88,7 +100,10 @@ class CustomSearchDelegate extends SearchDelegate<String> {
 
   Widget _buildSearchingWidget(BuildContext context) {
     return InkWell(
-      onTap: () {},
+      onTap: () {
+        _toSearchPage(context);
+        _clearQuery();
+      },
       child: DecoratedBox(
         decoration: BoxDecoration(
           border: Border(
@@ -102,17 +117,16 @@ class CustomSearchDelegate extends SearchDelegate<String> {
           padding: EdgeInsets.all(16),
           child: Row(
             children: [
-              SizedBox(
-                width: 16,
-              ),
+              SizedBox(width: 16),
               Icon(Icons.search),
-              SizedBox(
-                width: 16,
-              ),
+              SizedBox(width: 16),
               Expanded(
                 child: Text(
-                  '搜索"$query"',
-                  style: Theme.of(context).textTheme.titleMedium!.copyWith(overflow: TextOverflow.ellipsis),
+                  '${LocaleKeys.search_searchName.tr()}"$query"',
+                  style: Theme.of(context)
+                      .textTheme
+                      .titleMedium!
+                      .copyWith(overflow: TextOverflow.ellipsis),
                 ),
               )
             ],
@@ -133,7 +147,7 @@ class CustomSearchDelegate extends SearchDelegate<String> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
-                "历史搜索",
+                LocaleKeys.search_historyTitle.tr(),
                 style: TextStyle(
                     fontWeight: FontWeight.bold,
                     fontSize: Theme.of(context).textTheme.bodyLarge!.fontSize),
@@ -144,9 +158,7 @@ class CustomSearchDelegate extends SearchDelegate<String> {
               ),
             ],
           ),
-          SizedBox(
-            height: 8,
-          ),
+          SizedBox(height: 8),
           Wrap(
             spacing: 8.0,
             children: [
@@ -161,18 +173,14 @@ class CustomSearchDelegate extends SearchDelegate<String> {
               }),
             ],
           ),
-          SizedBox(
-            height: 8,
-          ),
+          SizedBox(height: 8),
           Text(
-            "搜索热词",
+            LocaleKeys.search_hotKeysTitle.tr(),
             style: TextStyle(
                 fontWeight: FontWeight.bold,
                 fontSize: Theme.of(context).textTheme.bodyLarge!.fontSize),
           ),
-          SizedBox(
-            height: 8,
-          ),
+          SizedBox(height: 8),
           Wrap(
             spacing: 8.0,
             children: [
@@ -191,4 +199,22 @@ class CustomSearchDelegate extends SearchDelegate<String> {
       ),
     );
   }
+
+  void _clearQuery() {
+    query = '';
+  }
+
+  void _toSearchPage(BuildContext context) {
+    final String queryCopy = query;
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => SearchScreen(
+          key: GlobalKey(), // 这里传递一个 GlobalKey 对象作为 key
+          query: queryCopy,
+        ),
+      ),
+    );
+  }
+
 }
