@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_widget_from_html/flutter_widget_from_html.dart';
 
 import 'package:wan_android_flutter/core/model/front_articles_model.dart';
 import 'package:wan_android_flutter/core/utils/http_utils.dart';
@@ -34,15 +35,15 @@ class SliverListItem extends StatelessWidget {
                 datas.niceDate!,
               ),
               SizedBox(height: 8),
-              Text(
+
+              HtmlWidget(
                 datas.title!,
-                style: Theme.of(context)
-                    .textTheme
-                    .bodyLarge!
-                    .copyWith(fontWeight: FontWeight.bold),
-                maxLines: 2,
-                overflow: TextOverflow.ellipsis,
+                textStyle: Theme.of(context).textTheme.bodyLarge!.copyWith(
+                      fontWeight: FontWeight.bold,
+                      overflow: TextOverflow.ellipsis,
+                    ),
               ),
+
               SizedBox(height: 8),
               _buildChapterAndFavoriteRow(context, datas.superChapterName!),
             ],

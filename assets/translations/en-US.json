@@ -33,12 +33,20 @@
     "passwordLable": "Password",
     "passwordHint": "Enter password",
     "rePasswordLable": "Confirm password",
-    "rePasswordHint": "Confirm password"
+    "rePasswordHint": "Confirm password",
+    "notLogin": "Not logged in!",
+    "networkError": "Network error, please try again later"
   },
   "search": {
     "searchName": "search",
     "historyTitle": "Historical searches",
-    "hotKeysTitle": "Search hot keys"
+    "hotKeysTitle": "Search hot keys",
+    "clearHistoryDialogTitle": "Clear All History",
+    "clearHistoryDialogContent": "Do you want to clear all history?",
+    "removeHistoryDialogTitle": "Remove History",
+    "removeHistoryDialogContent": "Do you want to remove this record?",
+    "historyDialogDismiss": "Cancel",
+    "historyDialogAction": "OK"
   }
 
 }

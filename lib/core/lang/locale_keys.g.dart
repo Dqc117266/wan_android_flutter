@@ -30,10 +30,18 @@ abstract class  LocaleKeys {
   static const user_passwordHint = 'user.passwordHint';
   static const user_rePasswordLable = 'user.rePasswordLable';
   static const user_rePasswordHint = 'user.rePasswordHint';
+  static const user_notLogin = 'user.notLogin';
+  static const user_networkError = 'user.networkError';
   static const user = 'user';
   static const search_searchName = 'search.searchName';
   static const search_historyTitle = 'search.historyTitle';
   static const search_hotKeysTitle = 'search.hotKeysTitle';
+  static const search_clearHistoryDialogTitle = 'search.clearHistoryDialogTitle';
+  static const search_clearHistoryDialogContent = 'search.clearHistoryDialogContent';
+  static const search_removeHistoryDialogTitle = 'search.removeHistoryDialogTitle';
+  static const search_removeHistoryDialogContent = 'search.removeHistoryDialogContent';
+  static const search_historyDialogDismiss = 'search.historyDialogDismiss';
+  static const search_historyDialogAction = 'search.historyDialogAction';
   static const search = 'search';
 
 }

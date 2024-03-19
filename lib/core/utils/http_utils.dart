@@ -1,4 +1,6 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:wan_android_flutter/core/lang/locale_keys.g.dart';
 import 'package:wan_android_flutter/core/model/result_model.dart';
 import 'package:wan_android_flutter/network/http_creator.dart';
 import 'package:wan_android_flutter/ui/pages/user/login_page.dart';
@@ -12,11 +14,11 @@ class HttpUtils {
       ResultModel resultModel = await HttpCreator.collectChapter(id);
       print("HttpUtils errorCode ${resultModel.errorCode}");
       if (resultModel.errorCode != 0) {
-        ToastUtils.showShortToast('请先登录！');
+        ToastUtils.showShortToast(LocaleKeys.user_notLogin.tr());
         Navigator.of(context).pushNamed(LoginScreen.routeName, arguments: {"id": id});
       }
     } catch(e) {
-      ToastUtils.showShortToast("网络错误，请稍后再试");
+      ToastUtils.showShortToast(LocaleKeys.user_networkError.tr());
     }
 
   }

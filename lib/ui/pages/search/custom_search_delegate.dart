@@ -8,12 +8,17 @@ import 'package:wan_android_flutter/core/lang/locale_keys.g.dart';
 import 'package:wan_android_flutter/core/model/hotkey_model.dart';
 import 'package:wan_android_flutter/network/http_creator.dart';
 import 'package:wan_android_flutter/ui/pages/search/search_page.dart';
+import 'package:wan_android_flutter/ui/shared/dialog_helper.dart';
 import 'package:wan_android_flutter/ui/shared/shared_preferences_helper.dart';
 
 class CustomSearchDelegate extends SearchDelegate<String> {
   static final String historyKeysName = "history_keys";
-  late List<String?> _hotKeys = [];
-  List<String>? _historyKeys = SharedPreferencesHelper.getStringList(historyKeysName) == null ? [] : SharedPreferencesHelper.getStringList(historyKeysName);
+  static final String hotKeysName = "hot_keys";
+
+  List<String> _hotKeys =
+      SharedPreferencesHelper.getStringList(hotKeysName) ?? [];
+  late List<String>? _historyKeys =
+      SharedPreferencesHelper.getStringList(historyKeysName) ?? [];
 
   @override
   List<Widget>? buildActions(BuildContext context) {
@@ -56,8 +61,7 @@ class CustomSearchDelegate extends SearchDelegate<String> {
   void showResults(BuildContext context) {
     // TODO: implement showResults
     print("showResults search page");
-    _toSearchPage(context);
-    _clearQuery();
+    _toSearchAndClearQuery(context, query);
     super.showResults(context);
 
     showSuggestions(context);
@@ -65,24 +69,18 @@ class CustomSearchDelegate extends SearchDelegate<String> {
 
   @override
   Widget buildSuggestions(BuildContext context) {
-    return query.isEmpty
+    return query.trim().isEmpty
         ? FutureBuilder(
             future: _getHotKey(),
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
                 return Center(child: CircularProgressIndicator());
-              } else if (snapshot.hasError) {
-                return Text('Error: ${snapshot.error}');
               } else {
-
-                final List<String?>? hotKeys = snapshot.data;
-                final List<String>? filteredSuggestions = _historyKeys == null ? [] : _historyKeys!
-                    .where((suggestion) =>
-                        suggestion.toLowerCase().contains(query.toLowerCase()))
-                    .toList();
+                // final List<String?>? hotKeys = snapshot.data as List<String>;
+                final List<String>? filteredSuggestions = _historyKeys;
 
                 return _buildSuggestionsLayout(
-                    context, filteredSuggestions!, hotKeys!);
+                    context, filteredSuggestions!, _hotKeys);
               }
             },
           )
@@ -95,7 +93,9 @@ class CustomSearchDelegate extends SearchDelegate<String> {
     }
 
     HotKeyModel hotKeyModel = await HttpCreator.getHotKey();
-    _hotKeys = hotKeyModel.data!.map((e) => e.name).toList();
+    _hotKeys = hotKeyModel.data!.map((e) => e.name!).toList();
+
+    SharedPreferencesHelper.setValue(hotKeysName, _hotKeys);
 
     return _hotKeys;
   }
@@ -103,8 +103,7 @@ class CustomSearchDelegate extends SearchDelegate<String> {
   Widget _buildSearchingWidget(BuildContext context) {
     return InkWell(
       onTap: () {
-        _toSearchPage(context);
-        _clearQuery();
+        _toSearchAndClearQuery(context, query);
       },
       child: DecoratedBox(
         decoration: BoxDecoration(
@@ -139,36 +138,40 @@ class CustomSearchDelegate extends SearchDelegate<String> {
   }
 
   Widget _buildSuggestionsLayout(BuildContext context,
-      List<String> filteredSuggestions, List<String?> hotKeys) {
+      List<String> filteredSuggestions, List<String?>? hotKeys) {
     return Padding(
       padding: const EdgeInsets.all(16),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(
-                LocaleKeys.search_historyTitle.tr(),
-                style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: Theme.of(context).textTheme.bodyLarge!.fontSize),
-              ),
-              GestureDetector(
-                onTap: () {},
-                child: Icon(Icons.delete_outline),
-              ),
-            ],
-          ),
+          if (!_historyKeys!.isEmpty)
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  LocaleKeys.search_historyTitle.tr(),
+                  style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize:
+                          Theme.of(context).textTheme.bodyLarge!.fontSize),
+                ),
+                GestureDetector(
+                  onTap: () => _openClearHistoryDialog(context),
+                  child: Icon(Icons.delete_outline),
+                ),
+              ],
+            ),
           SizedBox(height: 8),
           Wrap(
             spacing: 8.0,
             children: [
               ...filteredSuggestions.map((suggestion) {
                 return GestureDetector(
+                  onLongPress: () =>
+                      _removeAtHistoryDialog(context, suggestion),
                   onTap: () {
-                    // query = suggestion;
-                    // showResults(context);
+                    query = suggestion;
+                    _toSearchAndClearQuery(context, query);
                   },
                   child: Chip(label: Text(suggestion)),
                 );
@@ -176,21 +179,21 @@ class CustomSearchDelegate extends SearchDelegate<String> {
             ],
           ),
           SizedBox(height: 8),
-          Text(
-            LocaleKeys.search_hotKeysTitle.tr(),
-            style: TextStyle(
-                fontWeight: FontWeight.bold,
-                fontSize: Theme.of(context).textTheme.bodyLarge!.fontSize),
-          ),
+          if (!_hotKeys.isEmpty)
+            Text(
+              LocaleKeys.search_hotKeysTitle.tr(),
+              style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: Theme.of(context).textTheme.bodyLarge!.fontSize),
+            ),
           SizedBox(height: 8),
           Wrap(
             spacing: 8.0,
             children: [
-              ...hotKeys.map((hotKey) {
+              ...hotKeys!.map((hotKey) {
                 return GestureDetector(
                   onTap: () {
-                    // query = hotKey!;
-                    // showResults(context);
+                    _toSearchAndClearQuery(context, hotKey);
                   },
                   child: Chip(label: Text(hotKey!)),
                 );
@@ -207,24 +210,76 @@ class CustomSearchDelegate extends SearchDelegate<String> {
   }
 
   Future<void> _saveSearchKey(String key) async {
-    print("_saveSearchKey ${key}");
-    _historyKeys!.add(key);
+    if (_historyKeys!.contains(key)) {
+      _historyKeys!.remove(key);
+    }
 
-    await SharedPreferencesHelper.setValue(historyKeysName, _historyKeys);
+    _historyKeys!.insert(0, key);
+
+    await SharedPreferencesHelper.setValue(historyKeysName, _historyKeys!);
   }
 
-  void _toSearchPage(BuildContext context) {
-    final String queryCopy = query;
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => SearchScreen(
-          key: GlobalKey(), // 这里传递一个 GlobalKey 对象作为 key
-          query: queryCopy,
-        ),
-      ),
+  void _openClearHistoryDialog(BuildContext context) {
+    DialogHelper.showAlertDialog(
+      context: context,
+      title: LocaleKeys.search_clearHistoryDialogTitle.tr(),
+      content: LocaleKeys.search_clearHistoryDialogContent.tr(),
+      dismissText: LocaleKeys.search_historyDialogDismiss.tr(),
+      actionText: LocaleKeys.search_historyDialogAction.tr(),
+      onAction: () {
+        _clearAllHistoryKeys();
+        _clearQuery();
+        showSuggestions(context);
+      },
     );
-    _saveSearchKey(queryCopy);
   }
 
+  void _removeAtHistoryDialog(BuildContext context, String content) {
+    DialogHelper.showAlertDialog(
+      context: context,
+      title: LocaleKeys.search_removeHistoryDialogTitle.tr(),
+      content: LocaleKeys.search_removeHistoryDialogContent.tr(),
+      dismissText: LocaleKeys.search_historyDialogDismiss.tr(),
+      actionText: LocaleKeys.search_historyDialogAction.tr(),
+      onAction: () {
+        _removeAtIndexHistoryKey(content);
+        _clearQuery();
+        showSuggestions(context);
+      },
+    );
+  }
+
+  Future<void> _clearAllHistoryKeys() async {
+    _historyKeys!.clear();
+    await SharedPreferencesHelper.clear();
+  }
+
+  void _removeAtIndexHistoryKey(String content) {
+    int index = _historyKeys!.indexOf(content);
+    if (index != -1) {
+      _historyKeys!.removeAt(index);
+    }
+
+    SharedPreferencesHelper.setValue(historyKeysName, _historyKeys);
+  }
+
+  void _toSearchPage(BuildContext context, String query) {
+    if (!query.trim().isEmpty) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => SearchScreen(
+            key: GlobalKey(), // 这里传递一个 GlobalKey 对象作为 key
+            query: query,
+          ),
+        ),
+      );
+      _saveSearchKey(query);
+    }
+  }
+
+  void _toSearchAndClearQuery(BuildContext context, query) {
+    _toSearchPage(context, query);
+    _clearQuery();
+  }
 }
