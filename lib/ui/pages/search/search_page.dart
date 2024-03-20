@@ -33,46 +33,49 @@ class _SearchScreenState extends State<SearchScreen> {
 
     return Scaffold(
       appBar: AppBar(title: Text(widget.query!),),
-      body: FutureBuilder(
-        future: HttpCreator.query(page, widget.query!),
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return Center(
-              child: CircularProgressIndicator(),
-            );
-          } else if (snapshot.hasError || snapshot.data == null) {
-            // 检查是否有错误或数据为空
-            return Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(LocaleKeys.front_dataLoadingFailed.tr()),
-                  SizedBox(
-                    height: 4,
-                  ),
-                  ElevatedButton(
-                    onPressed: () {
-                      setState(() {}); // 这里强制刷新，可以根据需要进行实际的重新加载操作
-                    },
-                    child: Icon(Icons.refresh),
-                  ),
-                ],
-              ),
-            );
-          } else {
-            final FrontArtclesModel frontListData =
-                snapshot.data as FrontArtclesModel;
+      body: Container(
+        color: Theme.of(context).colorScheme.surfaceVariant.withOpacity(0.3),
+        child: FutureBuilder(
+          future: HttpCreator.query(page, widget.query!),
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return Center(
+                child: CircularProgressIndicator(),
+              );
+            } else if (snapshot.hasError || snapshot.data == null) {
+              // 检查是否有错误或数据为空
+              return Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(LocaleKeys.front_dataLoadingFailed.tr()),
+                    SizedBox(
+                      height: 4,
+                    ),
+                    ElevatedButton(
+                      onPressed: () {
+                        setState(() {}); // 这里强制刷新，可以根据需要进行实际的重新加载操作
+                      },
+                      child: Icon(Icons.refresh),
+                    ),
+                  ],
+                ),
+              );
+            } else {
+              final FrontArtclesModel frontListData =
+                  snapshot.data as FrontArtclesModel;
 
-            return RefreshIndicator(
-              onRefresh: () {
-                return Future(() => setState(() {}));
-              },
-              child: LoadModeSliverList(
-                frontListData: frontListData,
-              ),
-            );
-          }
-        },
+              return RefreshIndicator(
+                onRefresh: () {
+                  return Future(() => setState(() {}));
+                },
+                child: LoadModeSliverList(
+                  frontListData: frontListData,
+                ),
+              );
+            }
+          },
+        ),
       ),
     );
   }

@@ -33,46 +33,44 @@ class _CreateCarouselState extends State<CreateCarousel> {
   Widget build(BuildContext context) {
     return Stack(
       children: [
-        Card(
-          margin: EdgeInsets.symmetric(horizontal: 8, vertical: 6),
-          child: CarouselSlider(
-            items: _imageWidgets.map((widget) {
-              return GestureDetector(
-                onTap: () {
-                  // Handle tap event here
-                  int index = _imageWidgets.indexOf(widget);
-                  // final url = widget.frontBannerModel.data![index].url;
-                  // _launchURL(url!);
-                  final title = this.widget.frontBannerModel.data![index].title;
-                  final url = this.widget.frontBannerModel.data![index].url;
-                  final id = this.widget.frontBannerModel.data![index].id;
+        CarouselSlider(
+          items: _imageWidgets.map((widget) {
+            return GestureDetector(
+              onTap: () {
+                // Handle tap event here
+                int index = _imageWidgets.indexOf(widget);
+                // final url = widget.frontBannerModel.data![index].url;
+                // _launchURL(url!);
+                final title = this.widget.frontBannerModel.data![index].title;
+                final url = this.widget.frontBannerModel.data![index].url;
+                final id = this.widget.frontBannerModel.data![index].id;
 
-                  Navigator.of(context).pushNamed(
-                    WebPageScreen.routeName,
-                    arguments: {"title": title, "url": url, "id" : id},
-                  );
+                Navigator.of(context).pushNamed(
+                  WebPageScreen.routeName,
+                  arguments: {"title": title, "url": url, "id" : id},
+                );
 
-                  print('Item tapped at index $index');
-                },
-                child: widget,
-              );
-            }).toList(),
-            options: CarouselOptions(
-              height: 200.0,
-              enableInfiniteScroll: true,
-              autoPlay: true,
-              autoPlayInterval: Duration(seconds: 3),
-              autoPlayAnimationDuration: Duration(milliseconds: 800),
-              enlargeCenterPage: true,
-              enlargeFactor: 0.3,
-              onPageChanged: (index, reason) {
-                dotIndicatorRowKey.currentState?.setCurrent(index);
+                print('Item tapped at index $index');
               },
-            ),
+              child: widget,
+            );
+          }).toList(),
+          options: CarouselOptions(
+            height: 200.0,
+            enableInfiniteScroll: true,
+            autoPlay: true,
+            autoPlayInterval: Duration(seconds: 3),
+            autoPlayAnimationDuration: Duration(milliseconds: 800),
+            enlargeCenterPage: true,
+            enlargeFactor: 0.3,
+            onPageChanged: (index, reason) {
+              dotIndicatorRowKey.currentState?.setCurrent(index);
+            },
           ),
         ),
+
         Positioned(
-          bottom: 4,
+          bottom: -4,
           right: 0,
           left: 0,
           child: DotIndicatorRow(

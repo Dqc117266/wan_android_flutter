@@ -21,54 +21,57 @@ class FrontScreen extends StatefulWidget {
 class _FrontScreenState extends State<FrontScreen> {
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder(
-      future: Future.wait([
-        HttpCreator.getBanner(),
-        HttpCreator.getFrontTopList(),
-        HttpCreator.getFrontList(0),
-      ]),
-      builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.waiting) {
-          return Center(
-            child: CircularProgressIndicator(),
-          );
-        } else if (snapshot.hasError || snapshot.data == null) {
-          // 检查是否有错误或数据为空
-          return Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text(LocaleKeys.front_dataLoadingFailed.tr()),
-                SizedBox(
-                  height: 4,
-                ),
-                ElevatedButton(
-                  onPressed: () {
-                    setState(() {}); // 这里强制刷新，可以根据需要进行实际的重新加载操作
-                  },
-                  child: Icon(Icons.refresh),
-                ),
-              ],
-            ),
-          );
-        } else {
-          final List<Object> data = snapshot.data as List<Object>;
-          final FrontBannerModel? bannerData = data[0] as FrontBannerModel?;
-          final FrontTopArtclesModel? frontTopListData =
-              data[1] as FrontTopArtclesModel?;
-          final FrontArtclesModel? frontListData =
-              data[2] as FrontArtclesModel?;
+    return Scaffold(
+      backgroundColor: Theme.of(context).colorScheme.surfaceVariant.withOpacity(0.3),
+      body: FutureBuilder(
+        future: Future.wait([
+          HttpCreator.getBanner(),
+          HttpCreator.getFrontTopList(),
+          HttpCreator.getFrontList(0),
+        ]),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return Center(
+              child: CircularProgressIndicator(),
+            );
+          } else if (snapshot.hasError || snapshot.data == null) {
+            // 检查是否有错误或数据为空
+            return Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(LocaleKeys.front_dataLoadingFailed.tr()),
+                  SizedBox(
+                    height: 4,
+                  ),
+                  ElevatedButton(
+                    onPressed: () {
+                      setState(() {}); // 这里强制刷新，可以根据需要进行实际的重新加载操作
+                    },
+                    child: Icon(Icons.refresh),
+                  ),
+                ],
+              ),
+            );
+          } else {
+            final List<Object> data = snapshot.data as List<Object>;
+            final FrontBannerModel? bannerData = data[0] as FrontBannerModel?;
+            final FrontTopArtclesModel? frontTopListData =
+            data[1] as FrontTopArtclesModel?;
+            final FrontArtclesModel? frontListData =
+            data[2] as FrontArtclesModel?;
 
-          return RefreshIndicator(
-              onRefresh: () {
-                return Future(() => setState(() {}));
-              },
-              child: LoadModeSliverList(
-                  bannerData: bannerData!,
-                  frontTopListData: frontTopListData,
-                  frontListData: frontListData!));
-        }
-      },
+            return RefreshIndicator(
+                onRefresh: () {
+                  return Future(() => setState(() {}));
+                },
+                child: LoadModeSliverList(
+                    bannerData: bannerData!,
+                    frontTopListData: frontTopListData,
+                    frontListData: frontListData!));
+          }
+        },
+      ),
     );
   }
 }

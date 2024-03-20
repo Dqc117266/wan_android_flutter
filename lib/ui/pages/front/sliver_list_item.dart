@@ -13,40 +13,51 @@ class SliverListItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      elevation: 3,
-      margin: EdgeInsets.symmetric(horizontal: 8, vertical: 6),
-      child: InkWell(
-        onTap: () {
-          Navigator.of(context).pushNamed(WebPageScreen.routeName, arguments: {
-            "title": datas.title,
-            "url": datas.link,
-            "id": datas.id
-          });
-        },
-        child: Padding(
-          padding: EdgeInsets.fromLTRB(8, 12, 8, 12),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              _buildAuthorDateRow(
-                context,
-                datas.author! != "" ? datas.author! : datas.shareUser!,
-                datas.niceDate!,
-              ),
-              SizedBox(height: 8),
+    return Container(
+      margin: EdgeInsets.symmetric(horizontal: 16),
+      decoration: BoxDecoration(
+        border: Border(
+          bottom: BorderSide(
+            color: Theme.of(context).hintColor.withOpacity(0.2),
+            width: 0.5,
+          ),
+        )
+      ),
+      child: Material(
+        // borderRadius: BorderRadius.circular(12),
+        child: InkWell(
+          // borderRadius: BorderRadius.circular(12),
+          onTap: () {
+            Navigator.of(context).pushNamed(WebPageScreen.routeName, arguments: {
+              "title": datas.title,
+              "url": datas.link,
+              "id": datas.id
+            });
+          },
+          child: Padding(
+            padding: EdgeInsets.fromLTRB(8, 12, 8, 12),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                _buildAuthorDateRow(
+                  context,
+                  datas.author! != "" ? datas.author! : datas.shareUser!,
+                  datas.niceDate!,
+                ),
+                SizedBox(height: 8),
 
-              HtmlWidget(
-                datas.title!,
-                textStyle: Theme.of(context).textTheme.bodyLarge!.copyWith(
-                      fontWeight: FontWeight.bold,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-              ),
+                HtmlWidget(
+                  datas.title!,
+                  textStyle: Theme.of(context).textTheme.bodyLarge!.copyWith(
+                        fontWeight: FontWeight.bold,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                ),
 
-              SizedBox(height: 8),
-              _buildChapterAndFavoriteRow(context, datas.superChapterName!),
-            ],
+                SizedBox(height: 8),
+                _buildChapterAndFavoriteRow(context, datas.superChapterName!),
+              ],
+            ),
           ),
         ),
       ),

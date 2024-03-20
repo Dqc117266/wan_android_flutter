@@ -13,6 +13,8 @@ class HttpUtils {
     try {
       ResultModel resultModel = await HttpCreator.collectChapter(id);
       print("HttpUtils errorCode ${resultModel.errorCode}");
+
+      //未登录的错误码为-1001，其他错误码为-1，成功为0
       if (resultModel.errorCode != 0) {
         ToastUtils.showShortToast(LocaleKeys.user_notLogin.tr());
         Navigator.of(context).pushNamed(LoginScreen.routeName, arguments: {"id": id});
