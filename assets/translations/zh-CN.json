@@ -47,6 +47,13 @@
     "removeHistoryDialogContent": "是否删除该条记录",
     "historyDialogDismiss": "取消",
     "historyDialogAction": "确定"
+  },
+  "mine": {
+    "notLogin": "登陆/注册",
+    "myScores": "我的积分",
+    "myCollect": "我的收藏",
+    "todo": "TODO",
+    "settings": "设置"
   }
 
 }

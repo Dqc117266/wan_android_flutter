@@ -34,7 +34,7 @@ class _FrontScreenState extends State<FrontScreen> {
           )
         ],
       ),
-      backgroundColor: Theme.of(context).colorScheme.surfaceVariant.withOpacity(0.4),
+      backgroundColor: Theme.of(context).colorScheme.surfaceVariant.withOpacity(0.45),
       body: FutureBuilder(
         future: Future.wait([
           HttpCreator.getBanner(),

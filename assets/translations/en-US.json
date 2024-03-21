@@ -47,6 +47,13 @@
     "removeHistoryDialogContent": "Do you want to remove this record?",
     "historyDialogDismiss": "Cancel",
     "historyDialogAction": "OK"
+  },
+  "mine": {
+    "notLogin": "Login/Register",
+    "myScores": "My Scores",
+    "myCollect": "My Collection",
+    "todo": "TODO",
+    "settings": "Settings"
   }
 
 }

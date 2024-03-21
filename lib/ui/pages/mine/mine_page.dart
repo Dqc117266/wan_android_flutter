@@ -43,10 +43,10 @@ class _MineScreenState extends State<MineScreen> {
       body: ListView(
         children: [
           _buildHeadItem(context, _userInfo != null, ),
-          _buildBodyItem(context, "我的积分", Icons.workspace_premium_outlined, BorderRadius.only(topLeft: Radius.circular(16), topRight: Radius.circular(16))),
-          _buildBodyItem(context, "我的收藏", Icons.star_border_outlined, BorderRadius.zero),
-          _buildBodyItem(context, "TODO", Icons.done_outline_outlined, BorderRadius.zero),
-          _buildBodyItem(context, "设置", Icons.settings_outlined, BorderRadius.zero),
+          _buildBodyItem(context, LocaleKeys.mine_myScores.tr(), Icons.workspace_premium_outlined, BorderRadius.only(topLeft: Radius.circular(16), topRight: Radius.circular(16))),
+          _buildBodyItem(context, LocaleKeys.mine_myCollect.tr(), Icons.star_border_outlined, BorderRadius.zero),
+          _buildBodyItem(context, LocaleKeys.mine_todo.tr(), Icons.done_outline_outlined, BorderRadius.zero),
+          _buildBodyItem(context, LocaleKeys.mine_settings.tr(), Icons.settings_outlined, BorderRadius.zero),
         ],
       ),
     );
@@ -79,7 +79,7 @@ class _MineScreenState extends State<MineScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text("登陆/注册", style: Theme.of(context).textTheme.titleMedium!.copyWith(fontWeight: FontWeight.bold),),
+                    Text(LocaleKeys.mine_notLogin.tr(), style: Theme.of(context).textTheme.titleLarge!.copyWith(fontWeight: FontWeight.bold),),
                   ],
                 ),
               ),
@@ -100,7 +100,7 @@ class _MineScreenState extends State<MineScreen> {
     return ListTile(
       onTap: () {},
       leading: Icon(iconData),
-      title: Text(title),
+      title: Text(title, style: Theme.of(context).textTheme.titleMedium,),
       trailing: Icon(Icons.chevron_right, color: Theme.of(context).colorScheme.onSurfaceVariant, size: 24,),
     );
   }

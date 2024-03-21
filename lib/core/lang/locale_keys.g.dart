@@ -43,5 +43,11 @@ abstract class  LocaleKeys {
   static const search_historyDialogDismiss = 'search.historyDialogDismiss';
   static const search_historyDialogAction = 'search.historyDialogAction';
   static const search = 'search';
+  static const mine_notLogin = 'mine.notLogin';
+  static const mine_myScores = 'mine.myScores';
+  static const mine_myCollect = 'mine.myCollect';
+  static const mine_todo = 'mine.todo';
+  static const mine_settings = 'mine.settings';
+  static const mine = 'mine';
 
 }
