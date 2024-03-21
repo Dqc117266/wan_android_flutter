@@ -1,4 +1,5 @@
 import 'package:easy_localization/easy_localization.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:wan_android_flutter/core/lang/locale_keys.g.dart';
 import 'package:wan_android_flutter/core/model/front_articles_model.dart';
@@ -125,12 +126,26 @@ class _LoadModeSliverListState extends State<LoadModeSliverList> {
               ),
             ),
 
-          SliverList(
-            delegate: SliverChildBuilderDelegate(
-              (context, index) {
-                return SliverListItem(datas: _datas![index]);
-              },
-              childCount: _datas!.length,
+          SliverPadding(
+            padding: EdgeInsets.only(top: 16.0),
+            sliver: SliverList(
+              delegate: SliverChildBuilderDelegate(
+                (context, index) {
+                  final BorderRadius borderRadius;
+                  bool isBottomLine = true;
+                  if (index == 0) {
+                    borderRadius = BorderRadius.only(topLeft: Radius.circular(12), topRight: Radius.circular(12));
+                  } else if (index == _datas!.length - 1) {
+                    borderRadius = BorderRadius.only(bottomLeft: Radius.circular(12), bottomRight: Radius.circular(12));
+                    isBottomLine = false;
+                  } else {
+                    borderRadius = BorderRadius.zero;
+                  }
+
+                  return SliverListItem(datas: _datas![index], borderRadius: borderRadius, isBottomLine: isBottomLine,);
+                },
+                childCount: _datas!.length,
+              ),
             ),
           ),
 

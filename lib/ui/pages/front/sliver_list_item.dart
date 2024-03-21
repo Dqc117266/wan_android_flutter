@@ -8,34 +8,42 @@ import 'package:wan_android_flutter/ui/pages/web/web_page.dart';
 
 class SliverListItem extends StatelessWidget {
   final Datas datas;
+  final BorderRadius borderRadius;
+  final bool isBottomLine;
 
-  SliverListItem({super.key, required this.datas});
+  SliverListItem(
+      {super.key,
+      required this.datas,
+      required this.borderRadius,
+      required this.isBottomLine});
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: EdgeInsets.symmetric(horizontal: 16),
-      decoration: BoxDecoration(
-        border: Border(
-          bottom: BorderSide(
-            color: Theme.of(context).hintColor.withOpacity(0.2),
-            width: 0.5,
-          ),
-        )
-      ),
+      margin: EdgeInsets.symmetric(horizontal: 12),
+      decoration: isBottomLine
+          ? BoxDecoration(
+              border: Border(
+              bottom: BorderSide(
+                color: Theme.of(context).hintColor.withOpacity(0.2),
+                width: 0.5,
+              ),
+            ))
+          : null,
       child: Material(
-        // borderRadius: BorderRadius.circular(12),
+        borderRadius: borderRadius,
         child: InkWell(
-          // borderRadius: BorderRadius.circular(12),
+          borderRadius: borderRadius,
           onTap: () {
-            Navigator.of(context).pushNamed(WebPageScreen.routeName, arguments: {
-              "title": datas.title,
-              "url": datas.link,
-              "id": datas.id
-            });
+            Navigator.of(context).pushNamed(WebPageScreen.routeName,
+                arguments: {
+                  "title": datas.title,
+                  "url": datas.link,
+                  "id": datas.id
+                });
           },
           child: Padding(
-            padding: EdgeInsets.fromLTRB(8, 12, 8, 12),
+            padding: EdgeInsets.fromLTRB(10, 16, 10, 16),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -45,7 +53,6 @@ class SliverListItem extends StatelessWidget {
                   datas.niceDate!,
                 ),
                 SizedBox(height: 8),
-
                 HtmlWidget(
                   datas.title!,
                   textStyle: Theme.of(context).textTheme.bodyLarge!.copyWith(
@@ -53,7 +60,6 @@ class SliverListItem extends StatelessWidget {
                         overflow: TextOverflow.ellipsis,
                       ),
                 ),
-
                 SizedBox(height: 8),
                 _buildChapterAndFavoriteRow(context, datas.superChapterName!),
               ],

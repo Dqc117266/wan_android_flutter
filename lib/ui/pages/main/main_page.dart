@@ -43,18 +43,6 @@ class _MainScreenState extends State<MainScreen>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text(appBarNames[screenIndex]),
-        actions: [
-          if (screenIndex == 0)
-            IconButton(
-              onPressed: () {
-                showSearch(context: context, delegate: CustomSearchDelegate());
-              },
-              icon: Icon(Icons.search),
-            ),
-        ],
-      ),
       key: scaffoldKey,
       body: IndexedStack(
         index: screenIndex,

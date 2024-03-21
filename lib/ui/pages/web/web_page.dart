@@ -1,5 +1,4 @@
 import 'package:easy_localization/easy_localization.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:share_plus/share_plus.dart';
@@ -9,10 +8,8 @@ import 'package:wan_android_flutter/core/utils/http_utils.dart';
 import 'package:wan_android_flutter/core/utils/toast_utils.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
-import '../../../core/model/front_articles_model.dart';
-
 class WebPageScreen extends StatefulWidget {
-  static final routeName = "/webview";
+  static const routeName = "/webview";
 
   @override
   State<WebPageScreen> createState() => _WebPageScreenState();
@@ -24,9 +21,9 @@ class _WebPageScreenState extends State<WebPageScreen> {
   double _progress = 0.0;
   bool _isLoading = true;
 
-  late String title;
-  late String url;
-  late int id;
+  String? title;
+  String? url;
+  int? id;
 
   @override
   void initState() {
@@ -38,7 +35,7 @@ class _WebPageScreenState extends State<WebPageScreen> {
   }
 
   void _initialize() async {
-    WidgetsBinding.instance!.addPostFrameCallback((_) {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
       _initModalRoute();
       _initWebViewController();
       setState(() {});
@@ -56,19 +53,19 @@ class _WebPageScreenState extends State<WebPageScreen> {
       IconButton(
           onPressed: () {
             Navigator.of(context).pop();
-            _launchUrl(url);
+            _launchUrl(url!);
           },
           icon: const Icon(Icons.open_in_browser)),
       IconButton(
           onPressed: () {
             Navigator.of(context).pop();
-            _shareContent(url);
+            _shareContent(url!);
           },
           icon: const Icon(Icons.share)),
       IconButton(
           onPressed: () {
             Navigator.of(context).pop();
-            _copyToClipboard(url);
+            _copyToClipboard(url!);
           },
           icon: const Icon(Icons.copy)),
     ];
@@ -125,14 +122,14 @@ class _WebPageScreenState extends State<WebPageScreen> {
           onWebResourceError: (WebResourceError error) {},
         ),
       )
-      ..loadRequest(Uri.parse(url));
+      ..loadRequest(Uri.parse(url!));
   }
 
   @override
   Widget build(BuildContext context) {
     if (url == null || title == null) {
       // 还未初始化完成，显示 loading 状态
-      return Scaffold(
+      return const Scaffold(
         body: Center(
           child: CircularProgressIndicator(),
         ),
@@ -141,16 +138,16 @@ class _WebPageScreenState extends State<WebPageScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(title),
+        title: Text(title!),
         actions: [
           IconButton(
             onPressed: () {
-              HttpUtils.collectChapter(context, id);
+              HttpUtils.collectChapter(context, id!);
             },
-            icon: Icon(Icons.favorite_border),
+            icon: const Icon(Icons.favorite_border),
           ),
           IconButton(
-            icon: Icon(Icons.more_vert),
+            icon: const Icon(Icons.more_vert),
             onPressed: () {
               showModalBottomSheet<void>(
                 showDragHandle: true,

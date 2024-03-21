@@ -6,6 +6,7 @@ import 'package:wan_android_flutter/core/model/front_articles_model.dart';
 import 'package:wan_android_flutter/core/model/front_banner_model.dart';
 import 'package:wan_android_flutter/core/model/front_top_artcles_model.dart';
 import 'package:wan_android_flutter/ui/pages/front/load_more_sliverlist.dart';
+import 'package:wan_android_flutter/ui/pages/search/custom_search_delegate.dart';
 
 import '../../../network/http_creator.dart';
 
@@ -22,7 +23,18 @@ class _FrontScreenState extends State<FrontScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Theme.of(context).colorScheme.surfaceVariant.withOpacity(0.3),
+      appBar: AppBar(
+        title: Text(LocaleKeys.tableNames_frontPage.tr()),
+        actions: [
+          IconButton(
+            onPressed: () {
+              showSearch(context: context, delegate: CustomSearchDelegate());
+            },
+            icon: Icon(Icons.search),
+          )
+        ],
+      ),
+      backgroundColor: Theme.of(context).colorScheme.surfaceVariant.withOpacity(0.4),
       body: FutureBuilder(
         future: Future.wait([
           HttpCreator.getBanner(),

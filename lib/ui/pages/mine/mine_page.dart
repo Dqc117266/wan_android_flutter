@@ -3,36 +3,66 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:wan_android_flutter/core/lang/locale_keys.g.dart';
+import 'package:wan_android_flutter/core/model/user_info_model.dart';
+import 'package:wan_android_flutter/core/utils/userinfo_storage.dart';
+import 'package:wan_android_flutter/ui/pages/user/login_page.dart';
 
-class MineScreen extends StatelessWidget {
+class MineScreen extends StatefulWidget {
   const MineScreen({super.key});
+
+  @override
+  State<MineScreen> createState() => _MineScreenState();
+}
+
+class _MineScreenState extends State<MineScreen> {
+  UserInfo? _userInfo;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+
+    _loadUserInfo();
+  }
+
+  Future<void> _loadUserInfo() async {
+    final userInfo = await UserUtils.getUserInfo();
+
+    if (userInfo != null) {
+      setState(() {
+        _userInfo = userInfo;
+      });
+    }
+
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor:
-          Theme.of(context).colorScheme.surfaceVariant.withOpacity(0.3),
+      appBar: AppBar(title: Text(LocaleKeys.tableNames_mine.tr()),),
       body: ListView(
         children: [
-          _buildHeadItem(context),
-
-          _buildBodyItem(context, "设置", Icons.settings_outlined, BorderRadius.only(topLeft: Radius.circular(16), topRight: Radius.circular(16))),
-          _buildBodyItem(context, "aa", Icons.hourglass_empty, BorderRadius.zero),
-          _buildBodyItem(context, "bvb", Icons.verified_user_outlined, BorderRadius.zero),
-          _buildBodyItem(context, "bvb", Icons.done, BorderRadius.zero),
-          _buildBodyItem(context, "cc", Icons.g_mobiledata_sharp, BorderRadius.only(bottomLeft: Radius.circular(16), bottomRight: Radius.circular(16))),
+          _buildHeadItem(context, _userInfo != null, ),
+          _buildBodyItem(context, "我的积分", Icons.workspace_premium_outlined, BorderRadius.only(topLeft: Radius.circular(16), topRight: Radius.circular(16))),
+          _buildBodyItem(context, "我的收藏", Icons.star_border_outlined, BorderRadius.zero),
+          _buildBodyItem(context, "TODO", Icons.done_outline_outlined, BorderRadius.zero),
+          _buildBodyItem(context, "设置", Icons.settings_outlined, BorderRadius.zero),
         ],
       ),
     );
   }
 
-  Widget _buildHeadItem(BuildContext context) {
+  Widget _buildHeadItem(BuildContext context, bool isLogin) {
     return Container(
       margin: EdgeInsets.symmetric(vertical: 16),
 
       child: Material(
         child: InkWell(
-          onTap: () {},
+          onTap: () {
+            if (!isLogin) {
+              Navigator.of(context).pushNamed(LoginScreen.routeName);
+            }
+          },
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -55,7 +85,7 @@ class MineScreen extends StatelessWidget {
               ),
 
               Padding(
-                padding: const EdgeInsets.all(16),
+                padding: const EdgeInsets.only(right: 24),
                 child: Icon(Icons.chevron_right, color: Theme.of(context).colorScheme.onSurfaceVariant, size: 24,),
               ),
             ],
@@ -63,40 +93,15 @@ class MineScreen extends StatelessWidget {
         ),
       ),
     );
+
   }
 
   Widget _buildBodyItem(BuildContext context, String title, IconData iconData, BorderRadius borderRadius) {
-    return Container(
-      // margin: EdgeInsets.symmetric(horizontal: 8),
-      // decoration: BoxDecoration(
-      //     border: Border(
-      //       bottom: BorderSide(
-      //         color: Theme.of(context).hintColor.withOpacity(0.2),
-      //         width: 0.5,
-      //       ),
-      //     )
-      // ),
-      child: Material(
-        child: InkWell(
-          onTap: () {},
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Padding(
-                padding: const EdgeInsets.all(16),
-                child: Icon(iconData),
-              ),
-
-              Expanded(child: Text(title)),
-
-              Padding(
-                padding: const EdgeInsets.all(16),
-                child: Icon(Icons.chevron_right, color: Theme.of(context).colorScheme.onSurfaceVariant, size: 24,),
-              ),            ],
-          ),
-        ),
-      ),
+    return ListTile(
+      onTap: () {},
+      leading: Icon(iconData),
+      title: Text(title),
+      trailing: Icon(Icons.chevron_right, color: Theme.of(context).colorScheme.onSurfaceVariant, size: 24,),
     );
   }
-
 }

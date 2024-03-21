@@ -8,6 +8,7 @@ class ProjectsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(title: Text(LocaleKeys.tableNames_projects.tr()),),
       body: Center(
         child: Text("项目"),
       ),
