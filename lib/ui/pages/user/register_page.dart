@@ -2,7 +2,10 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:wan_android_flutter/core/lang/locale_keys.g.dart';
+import 'package:wan_android_flutter/core/utils/toast_utils.dart';
+import 'package:wan_android_flutter/network/http_creator.dart';
 import 'package:wan_android_flutter/ui/pages/user/login_page.dart';
+import 'package:wan_android_flutter/ui/shared/dialog_helper.dart';
 import 'package:wan_android_flutter/ui/widgets/custom_text_field.dart';
 
 class RegisterScreen extends StatefulWidget {
@@ -19,9 +22,26 @@ class _RegisterScreenState extends State<RegisterScreen> {
   final TextEditingController _controllerPassword = TextEditingController();
   final TextEditingController _controllerRePassword = TextEditingController();
 
+  final FocusNode _usernameFocusNode = FocusNode();
+  final FocusNode _passwordFocusNode = FocusNode();
+  final FocusNode _rePasswordFocusNode = FocusNode();
+
   ValueNotifier<bool> userObscureTextNotifier = ValueNotifier<bool>(true);
   ValueNotifier<bool> obscureTextNotifier = ValueNotifier<bool>(true);
   ValueNotifier<bool> reObscureTextNotifier = ValueNotifier<bool>(true);
+
+  String? _usernameError = "账号必须至少有6个字符";
+  String? _passwordError = "密码必须至少有6个字符";
+  String? _rePasswordError = "密码不相同";
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    _controllerUsername.addListener(isButtonEnabled);
+    _controllerPassword.addListener(isButtonEnabled);
+    _controllerRePassword.addListener(isButtonEnabled);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -37,26 +57,32 @@ class _RegisterScreenState extends State<RegisterScreen> {
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
                 CustomTextField(
+                  focusNode: _usernameFocusNode,
                   controller: _controllerUsername,
                   labelText: LocaleKeys.user_userLabel.tr(),
                   hintText: LocaleKeys.user_userHint.tr(),
                   obscureTextNotifier: userObscureTextNotifier,
+                  errorText: _usernameError,
                 ),
                 SizedBox(height: 16),
                 CustomTextField(
+                  focusNode: _passwordFocusNode,
                   obscureTextNotifier: obscureTextNotifier,
                   controller: _controllerPassword,
                   labelText: LocaleKeys.user_passwordLable.tr(),
                   hintText: LocaleKeys.user_passwordHint.tr(),
                   isPassword: true,
+                  errorText: _passwordError,
                 ),
                 SizedBox(height: 16),
                 CustomTextField(
+                  focusNode: _rePasswordFocusNode,
                   obscureTextNotifier: reObscureTextNotifier,
                   controller: _controllerRePassword,
                   labelText: LocaleKeys.user_rePasswordLable.tr(),
                   hintText: LocaleKeys.user_rePasswordHint.tr(),
                   isPassword: true,
+                  errorText: _rePasswordError,
                 ),
                 SizedBox(
                   height: 24,
@@ -76,7 +102,11 @@ class _RegisterScreenState extends State<RegisterScreen> {
     return Container(
       width: double.infinity,
       child: FilledButton(
-        onPressed: () {},
+        onPressed: isButtonEnabled()
+            ? () {
+                _register();
+              }
+            : null,
         child: Text(LocaleKeys.user_registerName.tr()),
       ),
     );
@@ -91,5 +121,37 @@ class _RegisterScreenState extends State<RegisterScreen> {
       child: Text(LocaleKeys.user_toLogin.tr(),
           style: TextStyle(color: Theme.of(context).colorScheme.primary)),
     );
+  }
+
+  void _register() {
+    DialogHelper.showLoadingDialog(context, "正在注册...");
+
+    HttpCreator.register(_controllerUsername.text, _controllerPassword.text,
+            _controllerRePassword.text)
+        .then((value) {
+
+      if (value.errorCode == 0) {
+        ToastUtils.showShortToast("注册成功");
+        Navigator.of(context).pop();
+      } else {
+        ToastUtils.showShortToast(value.errorMsg!);
+      }
+
+      Navigator.of(context).pop();
+
+    })
+      ..onError((error, stackTrace) {
+        ToastUtils.showShortToast(LocaleKeys.user_networkError.tr());
+
+        Navigator.of(context).pop();
+      });
+  }
+
+  bool isButtonEnabled() {
+    setState(() {});
+    return _controllerUsername.text.length >= 6 &&
+        _controllerPassword.text.length >= 6 &&
+        _controllerRePassword.text.length >= 6 &&
+        _controllerRePassword.text == _controllerPassword.text;
   }
 }

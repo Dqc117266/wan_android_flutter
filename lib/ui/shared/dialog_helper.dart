@@ -40,4 +40,23 @@ class DialogHelper {
       ),
     );
   }
+
+  static void showLoadingDialog(BuildContext context, String content) {
+    showDialog(
+      context: context,
+      barrierDismissible: false, // 设置点击外部无法关闭对话框
+      builder: (BuildContext context) {
+        return AlertDialog(
+          content: Row(
+            children: [
+              CircularProgressIndicator(), // 加载转圈动画
+              SizedBox(width: 20),
+              Text(content), // 提示文本
+            ],
+          ),
+        );
+      },
+    );
+  }
+
 }

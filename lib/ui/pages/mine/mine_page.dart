@@ -2,9 +2,16 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:provider/provider.dart';
 import 'package:wan_android_flutter/core/lang/locale_keys.g.dart';
 import 'package:wan_android_flutter/core/model/user_info_model.dart';
-import 'package:wan_android_flutter/core/utils/userinfo_storage.dart';
+import 'package:wan_android_flutter/core/router/router.dart';
+import 'package:wan_android_flutter/core/viewmodel/user_viewmodel.dart';
+import 'package:wan_android_flutter/ui/pages/mine/collect/collect_screen.dart';
+import 'package:wan_android_flutter/ui/pages/mine/integral/integral.dart';
+import 'package:wan_android_flutter/ui/pages/mine/settings/settings_page.dart';
+import 'package:wan_android_flutter/ui/pages/mine/todo/todo_page.dart';
+import 'package:wan_android_flutter/ui/pages/mine/userinfo/userinfo_page.dart';
 import 'package:wan_android_flutter/ui/pages/user/login_page.dart';
 
 class MineScreen extends StatefulWidget {
@@ -15,54 +22,75 @@ class MineScreen extends StatefulWidget {
 }
 
 class _MineScreenState extends State<MineScreen> {
-  UserInfo? _userInfo;
-
-  @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-
-    _loadUserInfo();
-  }
-
-  Future<void> _loadUserInfo() async {
-    final userInfo = await UserUtils.getUserInfo();
-
-    if (userInfo != null) {
-      setState(() {
-        _userInfo = userInfo;
-      });
-    }
-
-  }
+  UserInfoModel? userInfo;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text(LocaleKeys.tableNames_mine.tr()),),
-      body: ListView(
-        children: [
-          _buildHeadItem(context, _userInfo != null, ),
-          _buildBodyItem(context, LocaleKeys.mine_myScores.tr(), Icons.workspace_premium_outlined, BorderRadius.only(topLeft: Radius.circular(16), topRight: Radius.circular(16))),
-          _buildBodyItem(context, LocaleKeys.mine_myCollect.tr(), Icons.star_border_outlined, BorderRadius.zero),
-          _buildBodyItem(context, LocaleKeys.mine_todo.tr(), Icons.done_outline_outlined, BorderRadius.zero),
-          _buildBodyItem(context, LocaleKeys.mine_settings.tr(), Icons.settings_outlined, BorderRadius.zero),
-        ],
+      appBar: AppBar(
+        title: Text(LocaleKeys.tableNames_mine.tr()),
+      ),
+      body: Consumer<UserViewModel>(
+        builder: (context, userViewModel, child) {
+          userInfo = userViewModel.userInfo;
+          final isUserInfoEmpty = userInfo == null;
+          print('user_info ${userInfo != null}');
+
+          return ListView(
+            children: [
+              _buildHeadItem(
+                context,
+                isUserInfoEmpty,
+                isUserInfoEmpty
+                      ? () => _navigateToLogin(context)
+                      : () => _navigateToUserInfo(context),
+              ),
+              _buildBodyItem(
+                context,
+                LocaleKeys.mine_myScores.tr(),
+                Icons.workspace_premium_outlined,
+                isUserInfoEmpty
+                    ? () => _navigateToLogin(context)
+                    : () => _navigateToIntegral(context),
+
+              ),
+              _buildBodyItem(
+                context,
+                LocaleKeys.mine_myCollect.tr(),
+                Icons.favorite_border,
+                isUserInfoEmpty
+                    ? () => _navigateToLogin(context)
+                    : () => _navigateToCollect(context),
+
+              ),
+              _buildBodyItem(
+                context,
+                LocaleKeys.mine_todo.tr(),
+                Icons.done_outline_outlined,
+                isUserInfoEmpty
+                    ? () => _navigateToLogin(context)
+                    : () => _navigateToTodo(context),
+
+              ),
+              _buildBodyItem(
+                context,
+                LocaleKeys.mine_settings.tr(),
+                Icons.settings_outlined,
+                () => _navigateToSettings(context),
+              ),
+            ],
+          );
+        },
       ),
     );
   }
 
-  Widget _buildHeadItem(BuildContext context, bool isLogin) {
+  Widget _buildHeadItem(BuildContext context, bool isUserInfoEmpty, Function clickHandle) {
     return Container(
       margin: EdgeInsets.symmetric(vertical: 16),
-
       child: Material(
         child: InkWell(
-          onTap: () {
-            if (!isLogin) {
-              Navigator.of(context).pushNamed(LoginScreen.routeName);
-            }
-          },
+          onTap: () => clickHandle(),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -79,29 +107,74 @@ class _MineScreenState extends State<MineScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(LocaleKeys.mine_notLogin.tr(), style: Theme.of(context).textTheme.titleLarge!.copyWith(fontWeight: FontWeight.bold),),
+                    Text(
+                      isUserInfoEmpty ? LocaleKeys.mine_notLogin.tr() : userInfo!.data!.username!,
+                      style: Theme.of(context)
+                          .textTheme
+                          .titleLarge!
+                          .copyWith(fontWeight: FontWeight.bold),
+                    ),
+                    if (!isUserInfoEmpty)
+                      Padding(
+                        padding: const EdgeInsets.only(top: 8),
+                        child: Text("id：${userInfo!.data!.id}"),
+                      ),
                   ],
                 ),
               ),
-
               Padding(
                 padding: const EdgeInsets.only(right: 24),
-                child: Icon(Icons.chevron_right, color: Theme.of(context).colorScheme.onSurfaceVariant, size: 24,),
+                child: Icon(
+                  Icons.chevron_right,
+                  color: Theme.of(context).colorScheme.onSurfaceVariant,
+                  size: 24,
+                ),
               ),
             ],
           ),
         ),
       ),
     );
-
   }
 
-  Widget _buildBodyItem(BuildContext context, String title, IconData iconData, BorderRadius borderRadius) {
+  Widget _buildBodyItem(BuildContext context, String title, IconData iconData,
+      Function clickHandle) {
     return ListTile(
-      onTap: () {},
+      onTap: () => clickHandle(),
       leading: Icon(iconData),
-      title: Text(title, style: Theme.of(context).textTheme.titleMedium,),
-      trailing: Icon(Icons.chevron_right, color: Theme.of(context).colorScheme.onSurfaceVariant, size: 24,),
+      title: Text(
+        title,
+        style: Theme.of(context).textTheme.titleMedium,
+      ),
+      trailing: Icon(
+        Icons.chevron_right,
+        color: Theme.of(context).colorScheme.onSurfaceVariant,
+        size: 24,
+      ),
     );
+  }
+
+  void _navigateToLogin(BuildContext context) {
+    MyRouter.pushFromRight(context, LoginScreen());
+  }
+
+  void _navigateToUserInfo(BuildContext context) {
+    MyRouter.pushFromRight(context, UserInfoScreen());
+  }
+
+  void _navigateToIntegral(BuildContext context) {
+    MyRouter.pushFromRight(context, IntegralScreen());
+  }
+
+  void _navigateToCollect(BuildContext context) {
+    MyRouter.pushFromRight(context, CollectScreen());
+  }
+
+  void _navigateToTodo(BuildContext context) {
+    MyRouter.pushFromRight(context, TodoScreen());
+  }
+
+  void _navigateToSettings(BuildContext context) {
+    MyRouter.pushFromRight(context, SettingsScreen());
   }
 }

@@ -213,4 +213,12 @@ class _LoadModeSliverListState extends State<LoadModeSliverList> {
       child: Text(LocaleKeys.front_dataEmpty.tr()),
     );
   }
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+    _scrollController.dispose();
+  }
+
 }
