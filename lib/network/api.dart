@@ -20,6 +20,10 @@ class Api {
   static const String query = "/article/query/";
   static const String hotkey = "/hotkey/json";
 
+  static const String coinTop = "/coin/rank/";
+  static const String coinUser = "/lg/coin/userinfo/json";
+  static const String coinUserList = "/lg/coin/list/";
+
   static const String todoAdd = "/lg/todo/add/json";
   static const String todoUpdate = "/lg/todo/update/";
   static const String todoDelete = "/lg/todo/delete/";

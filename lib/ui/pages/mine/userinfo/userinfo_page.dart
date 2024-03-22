@@ -7,6 +7,7 @@ import 'package:wan_android_flutter/core/utils/toast_utils.dart';
 import 'package:wan_android_flutter/core/utils/userinfo_storage.dart';
 import 'package:wan_android_flutter/core/viewmodel/user_viewmodel.dart';
 import 'package:wan_android_flutter/network/http_creator.dart';
+import 'package:wan_android_flutter/ui/shared/dialog_helper.dart';
 
 class UserInfoScreen extends StatelessWidget {
   static const routeName = "/userInfo";
@@ -22,7 +23,7 @@ class UserInfoScreen extends StatelessWidget {
       body: FutureBuilder(
         future: UserUtils.getUserInfo(),
         builder: (context, snapshot) {
-          if (snapshot.hasError) {
+          if (snapshot.hasError || snapshot.data == null) {
             return Center(
               child: Text("error"),
             );
@@ -36,13 +37,19 @@ class UserInfoScreen extends StatelessWidget {
                 _buildListTileItem(context, "id", userInfoModel.data!.id!),
                 _buildListTileItem(
                     context, "昵称", userInfoModel.data!.nickname!),
+                _buildListTileItem(
+                    context, "积分数", userInfoModel.data!.coinCount!),
                 Container(
+                  margin: EdgeInsets.only(top: 60),
                   padding: EdgeInsets.all(16),
                   child: ElevatedButton(
+                    style: ButtonStyle(
+                      side: MaterialStateProperty.all(BorderSide.none),
+                    ),
                     onPressed: () {
-                      logoutAndClearUser(context);
+                      _showLogoutDialog(context);
                     },
-                    child: Text("退出登陆"),
+                    child: Text("退出登陆", style: Theme.of(context).textTheme.bodyLarge!.copyWith(color: Theme.of(context).colorScheme.error),),
                   ),
                 ),
               ],
@@ -53,15 +60,26 @@ class UserInfoScreen extends StatelessWidget {
     );
   }
 
+  void _showLogoutDialog(BuildContext context) {
+    DialogHelper.showAlertDialog(
+      context: context,
+      title: "退出登陆",
+      content: "是否退出当前登陆？",
+      dismissText: "取消",
+      actionText: "确定",
+      onAction: () => logoutAndClearUser(context),
+    );
+  }
+
   Widget _buildListTileItem(
       BuildContext context, String title, dynamic username) {
     return ListTile(
       onTap: () {},
       title: Text(
         title,
-        style: Theme.of(context).textTheme.titleMedium,
+        style: Theme.of(context).textTheme.titleMedium!.copyWith(fontWeight: FontWeight.w600),
       ),
-      trailing: Text('$username'),
+      trailing: Text('$username', style: Theme.of(context).textTheme.titleSmall!.copyWith(color: Theme.of(context).colorScheme.tertiary),),
     );
   }
 
@@ -70,8 +88,8 @@ class UserInfoScreen extends StatelessWidget {
       if (value.errorCode == 0) {
         UserUtils.clearUserInfo();
 
-        ToastUtils.showShortToast("退出登陆成功");
-        Provider.of<UserViewModel>(context).updateUser();
+        ToastUtils.showShortToast("已退出登陆");
+        Provider.of<UserViewModel>(context, listen: false).updateUser();
 
         Navigator.of(context).pop();
       } else {

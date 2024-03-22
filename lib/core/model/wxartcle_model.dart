@@ -1,4 +1,4 @@
-class WxartcleModel {
+class Data {
   List<String>? articleList;
   String? author;
   List<String>? children;
@@ -15,7 +15,7 @@ class WxartcleModel {
   bool? userControlSetTop;
   int? visible;
 
-  WxartcleModel({
+  Data({
     this.articleList,
     this.author,
     this.children,
@@ -33,8 +33,8 @@ class WxartcleModel {
     this.visible,
   });
 
-  factory WxartcleModel.fromJson(Map<String, dynamic> json) {
-    return WxartcleModel(
+  factory Data.fromJson(Map<String, dynamic> json) {
+    return Data(
       articleList: (json['articleList'] as List<dynamic>?)
           ?.map((e) => e as String)
           .toList(),
@@ -58,21 +58,21 @@ class WxartcleModel {
   }
 }
 
-class Root {
-  List<WxartcleModel>? data;
+class WxartcleModel {
+  List<Data>? data;
   int? errorCode;
   String? errorMsg;
 
-  Root({
+  WxartcleModel({
     this.data,
     this.errorCode,
     this.errorMsg,
   });
 
-  factory Root.fromJson(Map<String, dynamic> json) {
-    return Root(
+  factory WxartcleModel.fromJson(Map<String, dynamic> json) {
+    return WxartcleModel(
       data: (json['data'] as List<dynamic>?)
-          ?.map((e) => WxartcleModel.fromJson(e as Map<String, dynamic>))
+          ?.map((e) => Data.fromJson(e as Map<String, dynamic>))
           .toList(),
       errorCode: json['errorCode'] as int?,
       errorMsg: json['errorMsg'] as String?,

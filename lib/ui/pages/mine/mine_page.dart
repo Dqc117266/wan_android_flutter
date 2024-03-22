@@ -49,6 +49,7 @@ class _MineScreenState extends State<MineScreen> {
                 context,
                 LocaleKeys.mine_myScores.tr(),
                 Icons.workspace_premium_outlined,
+                trailContent: !isUserInfoEmpty ? '${userInfo!.data!.coinCount!}' : null,
                 isUserInfoEmpty
                     ? () => _navigateToLogin(context)
                     : () => _navigateToIntegral(context),
@@ -138,7 +139,7 @@ class _MineScreenState extends State<MineScreen> {
   }
 
   Widget _buildBodyItem(BuildContext context, String title, IconData iconData,
-      Function clickHandle) {
+      Function clickHandle, {String? trailContent}) {
     return ListTile(
       onTap: () => clickHandle(),
       leading: Icon(iconData),
@@ -146,10 +147,18 @@ class _MineScreenState extends State<MineScreen> {
         title,
         style: Theme.of(context).textTheme.titleMedium,
       ),
-      trailing: Icon(
-        Icons.chevron_right,
-        color: Theme.of(context).colorScheme.onSurfaceVariant,
-        size: 24,
+      trailing: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          if (trailContent != null)
+            Text(trailContent, style: Theme.of(context).textTheme.titleSmall!.copyWith(
+                color: Theme.of(context).colorScheme.tertiary),),
+          Icon(
+            Icons.chevron_right,
+            color: Theme.of(context).colorScheme.onSurfaceVariant,
+            size: 24,
+          ),
+        ],
       ),
     );
   }

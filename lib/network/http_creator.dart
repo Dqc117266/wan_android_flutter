@@ -3,8 +3,12 @@ import 'package:wan_android_flutter/core/extensions/string_extension.dart';
 import 'package:wan_android_flutter/core/model/front_articles_model.dart';
 import 'package:wan_android_flutter/core/model/front_banner_model.dart';
 import 'package:wan_android_flutter/core/model/hotkey_model.dart';
+import 'package:wan_android_flutter/core/model/rinks_model.dart';
 import 'package:wan_android_flutter/core/model/todo_model.dart';
 import 'package:wan_android_flutter/core/model/tree_model.dart';
+import 'package:wan_android_flutter/core/model/user_rink_list_model.dart';
+import 'package:wan_android_flutter/core/model/user_rink_model.dart';
+import 'package:wan_android_flutter/core/utils/userinfo_storage.dart';
 import 'package:wan_android_flutter/network/api.dart';
 import '../core/model/collects_model.dart';
 import '../core/model/front_top_artcles_model.dart';
@@ -29,6 +33,9 @@ class HttpCreator {
 
       print("HttpCreator: $response");
 
+      if (response.data["errorCode"] == -1001) { //未登陆
+        UserUtils.clearUserInfo();
+      }
       return fromJson(response.data);
     } catch (e) {
       print("Error: $e");
@@ -227,5 +234,23 @@ class HttpCreator {
 
     return fetchData("${Api.wxarticleList}$id/$page/json", (json) => FrontArtclesModel.fromJson(json));
   }
+
+  //积分排行榜接口
+  static Future<RinksModel> getRinksTop(int page) {
+    return fetchData(Api.coinTop.addCeilUrl(page), (json) => RinksModel.fromJson(json));
+  }
+
+  //获取个人积分排行
+  static Future<UserRinkModel> getUserRink() {
+
+    return fetchData(Api.coinUser, (json) => UserRinkModel.fromJson(json));
+  }
+
+  //获取个人积分获取列表
+  static Future<UserRinkListModel> getCoinUserList(int page) {
+
+    return fetchData(Api.coinUserList.addCeilUrl(page), (json) => UserRinkListModel.fromJson(json));
+  }
+
 
 }

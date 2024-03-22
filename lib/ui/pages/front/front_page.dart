@@ -7,6 +7,7 @@ import 'package:wan_android_flutter/core/model/front_banner_model.dart';
 import 'package:wan_android_flutter/core/model/front_top_artcles_model.dart';
 import 'package:wan_android_flutter/ui/pages/front/load_more_sliverlist.dart';
 import 'package:wan_android_flutter/ui/pages/search/custom_search_delegate.dart';
+import 'package:wan_android_flutter/ui/widgets/network_error_widget.dart';
 
 import '../../../network/http_creator.dart';
 
@@ -34,7 +35,8 @@ class _FrontScreenState extends State<FrontScreen> {
           )
         ],
       ),
-      backgroundColor: Theme.of(context).colorScheme.surfaceVariant.withOpacity(0.45),
+      backgroundColor:
+          Theme.of(context).colorScheme.surfaceVariant.withOpacity(0.45),
       body: FutureBuilder(
         future: Future.wait([
           HttpCreator.getBanner(),
@@ -48,30 +50,16 @@ class _FrontScreenState extends State<FrontScreen> {
             );
           } else if (snapshot.hasError || snapshot.data == null) {
             // 检查是否有错误或数据为空
-            return Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(LocaleKeys.front_dataLoadingFailed.tr()),
-                  SizedBox(
-                    height: 4,
-                  ),
-                  ElevatedButton(
-                    onPressed: () {
-                      setState(() {}); // 这里强制刷新，可以根据需要进行实际的重新加载操作
-                    },
-                    child: Icon(Icons.refresh),
-                  ),
-                ],
-              ),
+            return NetWorkErrorWidget(
+              onRefresh: () => setState(() {}),
             );
           } else {
             final List<Object> data = snapshot.data as List<Object>;
             final FrontBannerModel? bannerData = data[0] as FrontBannerModel?;
             final FrontTopArtclesModel? frontTopListData =
-            data[1] as FrontTopArtclesModel?;
+                data[1] as FrontTopArtclesModel?;
             final FrontArtclesModel? frontListData =
-            data[2] as FrontArtclesModel?;
+                data[2] as FrontArtclesModel?;
 
             return RefreshIndicator(
                 onRefresh: () {

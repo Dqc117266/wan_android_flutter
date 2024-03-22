@@ -6,7 +6,7 @@ import 'package:wan_android_flutter/core/model/front_articles_model.dart';
 import 'package:wan_android_flutter/core/utils/http_utils.dart';
 import 'package:wan_android_flutter/ui/pages/web/web_page.dart';
 
-class SliverListItem extends StatelessWidget {
+class SliverListItem extends StatefulWidget {
   final Datas datas;
   final BorderRadius borderRadius;
   final bool isBottomLine;
@@ -18,10 +18,15 @@ class SliverListItem extends StatelessWidget {
       required this.isBottomLine});
 
   @override
+  State<SliverListItem> createState() => _SliverListItemState();
+}
+
+class _SliverListItemState extends State<SliverListItem> {
+  @override
   Widget build(BuildContext context) {
     return Container(
       margin: EdgeInsets.symmetric(horizontal: 12),
-      decoration: isBottomLine
+      decoration: widget.isBottomLine
           ? BoxDecoration(
               border: Border(
               bottom: BorderSide(
@@ -31,16 +36,12 @@ class SliverListItem extends StatelessWidget {
             ))
           : null,
       child: Material(
-        borderRadius: borderRadius,
+        borderRadius: widget.borderRadius,
         child: InkWell(
-          borderRadius: borderRadius,
+          borderRadius: widget.borderRadius,
           onTap: () {
             Navigator.of(context).pushNamed(WebPageScreen.routeName,
-                arguments: {
-                  "title": datas.title,
-                  "url": datas.link,
-                  "id": datas.id
-                });
+                arguments: widget.datas);
           },
           child: Padding(
             padding: EdgeInsets.fromLTRB(10, 16, 10, 16),
@@ -49,19 +50,19 @@ class SliverListItem extends StatelessWidget {
               children: [
                 _buildAuthorDateRow(
                   context,
-                  datas.author! != "" ? datas.author! : datas.shareUser!,
-                  datas.niceDate!,
+                  widget.datas.author! != "" ? widget.datas.author! : widget.datas.shareUser!,
+                  widget.datas.niceDate!,
                 ),
                 SizedBox(height: 8),
                 HtmlWidget(
-                  datas.title!,
+                  widget.datas.title!,
                   textStyle: Theme.of(context).textTheme.bodyLarge!.copyWith(
                         fontWeight: FontWeight.bold,
                         overflow: TextOverflow.ellipsis,
                       ),
                 ),
                 SizedBox(height: 8),
-                _buildChapterAndFavoriteRow(context, datas.superChapterName!),
+                _buildChapterAndFavoriteRow(context, widget.datas.superChapterName!),
               ],
             ),
           ),
@@ -113,12 +114,34 @@ class SliverListItem extends StatelessWidget {
           borderRadius: BorderRadius.all(Radius.circular(100)),
           onTap: () {
             // Your favorite onTap logic
-            HttpUtils.collectChapter(context, datas.id!);
+            _collecAndUnCollec();
           },
-          child: Icon(Icons.favorite_border,
+          child: widget.datas.collect! ? Icon(Icons.favorite,
+              color: Theme.of(context).colorScheme.primary) : Icon(Icons.favorite_border,
               color: Theme.of(context).colorScheme.primary),
         ),
       ],
     );
   }
+
+  void _collecAndUnCollec() {
+    if (!widget.datas.collect!) {
+      HttpUtils.collectChapter(context, widget.datas.id!).then((value) {
+        if (value != null && value!.errorCode == 0) {
+          setState(() {
+            widget.datas.collect = !widget.datas.collect!;
+          });
+        }
+      });
+    } else {
+      HttpUtils.unCollectChapter(context, widget.datas.id!).then((value) {
+        setState(() {
+          if (value != null && value!.errorCode == 0) {
+            widget.datas.collect = !widget.datas.collect!;
+          }
+        });
+      });
+    }
+  }
+
 }

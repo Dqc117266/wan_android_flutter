@@ -79,8 +79,10 @@ class CustomSearchDelegate extends SearchDelegate<String> {
                 // final List<String?>? hotKeys = snapshot.data as List<String>;
                 final List<String>? filteredSuggestions = _historyKeys;
 
-                return _buildSuggestionsLayout(
-                    context, filteredSuggestions!, _hotKeys);
+                return SingleChildScrollView(
+                  child: _buildSuggestionsLayout(
+                      context, filteredSuggestions!, _hotKeys),
+                );
               }
             },
           )
@@ -251,7 +253,7 @@ class CustomSearchDelegate extends SearchDelegate<String> {
 
   Future<void> _clearAllHistoryKeys() async {
     _historyKeys!.clear();
-    await SharedPreferencesHelper.clear();
+    await SharedPreferencesHelper.remove(historyKeysName);
   }
 
   void _removeAtIndexHistoryKey(String content) {
@@ -281,5 +283,14 @@ class CustomSearchDelegate extends SearchDelegate<String> {
   void _toSearchAndClearQuery(BuildContext context, query) {
     _toSearchPage(context, query);
     _clearQuery();
+  }
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+
+    _hotKeys.clear();
+    _historyKeys!.clear();
   }
 }

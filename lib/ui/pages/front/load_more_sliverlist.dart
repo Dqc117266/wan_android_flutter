@@ -118,7 +118,6 @@ class _LoadModeSliverListState extends State<LoadModeSliverList> {
         controller: _scrollController,
         slivers: [
           //加载轮播图
-
           if (widget.bannerData != null)
             SliverToBoxAdapter(
               child: CreateCarousel(

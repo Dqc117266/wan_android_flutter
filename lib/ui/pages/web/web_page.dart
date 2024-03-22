@@ -6,7 +6,10 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:wan_android_flutter/core/lang/locale_keys.g.dart';
 import 'package:wan_android_flutter/core/utils/http_utils.dart';
 import 'package:wan_android_flutter/core/utils/toast_utils.dart';
+import 'package:wan_android_flutter/ui/shared/constants.dart';
 import 'package:webview_flutter/webview_flutter.dart';
+
+import '../../../core/model/front_articles_model.dart';
 
 class WebPageScreen extends StatefulWidget {
   static const routeName = "/webview";
@@ -16,14 +19,18 @@ class WebPageScreen extends StatefulWidget {
 }
 
 class _WebPageScreenState extends State<WebPageScreen> {
-  late WebViewController _controller;
+  late WebViewController? _controller;
   late List<Widget> _buttonList;
   double _progress = 0.0;
   bool _isLoading = true;
 
+  late ToWebSource _toWebSource;
+
+  Datas? datas;
   String? title;
   String? url;
   int? id;
+  bool collect = false;
 
   @override
   void initState() {
@@ -92,10 +99,24 @@ class _WebPageScreenState extends State<WebPageScreen> {
   }
 
   Future<void> _initModalRoute() async {
-    final arguments = ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;
-    title = arguments['title'];
-    url = arguments['url'];
-    id = arguments['id'];
+    final arguments = ModalRoute.of(context)!.settings.arguments;
+
+    if (arguments is Map<String, dynamic>) {
+      _toWebSource = ToWebSource.bannerPage;
+
+      title = arguments['title'];
+      url = arguments['url'];
+      id = arguments['id'];
+    } else if (arguments is Datas) {
+      _toWebSource = ToWebSource.articlePage;
+
+      datas = arguments;
+      title = datas!.title;
+      url = datas!.link;
+      id = datas!.id;
+      collect = datas!.collect!;
+    }
+
   }
 
   Future<void> _initWebViewController() async {
@@ -140,12 +161,16 @@ class _WebPageScreenState extends State<WebPageScreen> {
       appBar: AppBar(
         title: Text(title!),
         actions: [
-          IconButton(
-            onPressed: () {
-              HttpUtils.collectChapter(context, id!);
-            },
-            icon: const Icon(Icons.favorite_border),
-          ),
+          if (_toWebSource == ToWebSource.articlePage)
+            IconButton(
+              onPressed: () {
+                _collecAndUnCollec();
+              },
+              icon: collect ? Icon(Icons.favorite,
+                  color: Theme.of(context).colorScheme.primary) : Icon(Icons.favorite_border,
+                  color: Theme.of(context).colorScheme.primary),
+            ),
+
           IconButton(
             icon: const Icon(Icons.more_vert),
             onPressed: () {
@@ -175,7 +200,7 @@ class _WebPageScreenState extends State<WebPageScreen> {
       ),
       body: Stack(
         children: [
-          WebViewWidget(controller: _controller),
+          WebViewWidget(controller: _controller!),
           if (_isLoading)
             LinearProgressIndicator(
               value: _progress,
@@ -211,4 +236,49 @@ class _WebPageScreenState extends State<WebPageScreen> {
   void _shareContent(String content) {
     Share.share(content);
   }
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    _controller = null;
+
+    super.dispose();
+  }
+
+  // void _collecAndUnCollec() {
+  //   if (datas!.collect!) {
+  //     HttpUtils.collectChapter(context, datas!.id!).then((value) {
+  //       setState(() {
+  //         collect = !datas!.collect!;
+  //       });
+  //     });
+  //   } else {
+  //     HttpUtils.unCollectChapter(context, datas!.id!).then((value) {
+  //       setState(() {
+  //         collect = !datas!.collect!;
+  //       });
+  //     });
+  //   }
+  // }
+
+  void _collecAndUnCollec() {
+    if (datas!.collect!) {
+      HttpUtils.collectChapter(context, datas!.id!).then((value) {
+        if (value != null && value!.errorCode == 0) {
+          setState(() {
+            collect = !datas!.collect!;
+          });
+        }
+      });
+    } else {
+      HttpUtils.unCollectChapter(context, id!).then((value) {
+        setState(() {
+          if (value != null && value!.errorCode == 0) {
+            collect = !datas!.collect!;
+          }
+        });
+      });
+    }
+  }
+
 }

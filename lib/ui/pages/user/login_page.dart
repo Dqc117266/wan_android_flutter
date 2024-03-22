@@ -134,7 +134,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
       if (userInfoModel != null && userInfoModel.errorCode == 0) {
         UserUtils.saveUserInfo(userInfoModel)
-            .then((value) => Provider.of<UserViewModel>(context).updateUser());
+            .then((value) => Provider.of<UserViewModel>(context, listen: false).updateUser());
 
         Navigator.of(context).pop();//关闭当前页面
 

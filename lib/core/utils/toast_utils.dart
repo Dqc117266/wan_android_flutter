@@ -1,6 +1,8 @@
 
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:wan_android_flutter/core/lang/locale_keys.g.dart';
 
 class ToastUtils {
   static void showShortToast(String msg) {
@@ -12,4 +14,9 @@ class ToastUtils {
       textColor: Colors.white,
     );
   }
+
+  static void showNetWorkErrorToast() {
+    showShortToast(LocaleKeys.user_networkError.tr());
+  }
+
 }

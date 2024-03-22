@@ -94,3 +94,8 @@ enum LoadState {
   end,
   empty;
 }
+
+enum ToWebSource {
+  bannerPage,
+  articlePage;
+}
