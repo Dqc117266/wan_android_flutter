@@ -1,14 +1,10 @@
-import 'package:dio/dio.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
-import 'package:wan_android_flutter/core/extensions/string_extension.dart';
 import 'package:wan_android_flutter/core/lang/locale_keys.g.dart';
 import 'package:wan_android_flutter/core/model/rinks_model.dart';
 import 'package:wan_android_flutter/core/utils/toast_utils.dart';
-import 'package:wan_android_flutter/network/api.dart';
-import 'package:wan_android_flutter/network/api_service.dart';
 import 'package:wan_android_flutter/network/http_creator.dart';
-import 'package:wan_android_flutter/ui/pages/mine/integral/refreshable_listView.dart';
+import 'package:wan_android_flutter/ui/shared/refreshable_listView.dart';
 import 'package:wan_android_flutter/ui/widgets/network_error_widget.dart';
 
 class IntegralScreen extends StatefulWidget {
@@ -54,13 +50,13 @@ class _IntegralScreenState extends State<IntegralScreen> {
                   return null;
                 }
               },
-              itemBuilder: (context, rink) {
+              itemBuilder: (context, data, index, length) {
                 return ListTile(
                   onTap: () {},
-                  leading: Text(rink.rank, style: Theme.of(context).textTheme.titleMedium,),
-                  title: Text("用户名：${rink.username}"),
-                  subtitle: Text("积分数：${rink.coinCount}"),
-                  trailing: Text("等级：${rink.level}", style: Theme.of(context).textTheme.bodySmall!.copyWith(color: Theme.of(context).colorScheme.tertiary)),
+                  leading: Text(data.rank, style: Theme.of(context).textTheme.titleMedium,),
+                  title: Text("用户名：${data.username}"),
+                  subtitle: Text("积分数：${data.coinCount}"),
+                  trailing: Text("等级：${data.level}", style: Theme.of(context).textTheme.bodySmall!.copyWith(color: Theme.of(context).colorScheme.tertiary)),
                 );
               },
             );

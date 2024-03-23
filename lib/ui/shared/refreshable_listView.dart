@@ -8,16 +8,20 @@ import 'package:wan_android_flutter/ui/shared/constants.dart';
 class RefreshableListView<T> extends StatefulWidget {
   final List<T> initialItems;
   final Future<List<T>?> Function(int page) loadMoreCallback;
-  final Widget Function(BuildContext context, T item) itemBuilder;
+  final Future<Widget> Function()? refreshHeadCallback;
+  final Widget Function(BuildContext context, T item, int index, int length) itemBuilder;
   final int maxPage; // 添加最大页数参数
   final int startPage;
+  Widget? headWidget;
 
-  const RefreshableListView({
+  RefreshableListView({
     required this.initialItems,
     required this.loadMoreCallback,
     required this.itemBuilder,
     required this.maxPage, // 初始化最大页数
     required this.startPage,
+    this.refreshHeadCallback,
+    this.headWidget
   });
 
   @override
@@ -30,6 +34,7 @@ class _RefreshableListViewState<T> extends State<RefreshableListView<T>> {
   late ScrollController _scrollController;
   int currentPage = 0; // 添加当前页数
   late LoadState _loadState;
+  int headlength = 0;
 
   @override
   void initState() {
@@ -41,6 +46,18 @@ class _RefreshableListViewState<T> extends State<RefreshableListView<T>> {
 
     _loadState = LoadState.success; // 初始化为加载成功状态
     currentPage = widget.startPage + 1;
+    headlength = widget.headWidget != null? 1 : 0;
+
+    _updataPageState();
+  }
+
+  void _updataPageState() {
+    //只有一页或者只有0页数据为0的时候 为加载到底状态
+    if (widget.maxPage == currentPage || (widget.maxPage == 0 && items.length != 0)) {
+      _loadState = LoadState.end;
+    } else if (widget.maxPage == 0 && items.length == 0) {
+      _loadState = LoadState.empty;
+    }
   }
 
   @override
@@ -49,14 +66,25 @@ class _RefreshableListViewState<T> extends State<RefreshableListView<T>> {
       child: RefreshIndicator(
         onRefresh: _refresh,
         child: ListView.builder(
+          padding: EdgeInsets.only(top: 16),
           physics: AlwaysScrollableScrollPhysics(),
           controller: _scrollController,
-          itemCount: items.length + 1,
+          itemCount: items.length + 1 + headlength,
           itemBuilder: (context, index) {
             print("builder list item");
-            if (index < items.length) {
-              return widget.itemBuilder(context, items[index]);
+            if (index == 0 && headlength == 1) {
+              // 第一个位置是头部视图
+              return widget.headWidget!;
+            } else if (index < items.length + headlength) {
+              // 如果index小于items列表长度，则构建列表项
+              return widget.itemBuilder(
+                context,
+                items[index - headlength], // 考虑头部视图的偏移
+                index - headlength, // 考虑头部视图的偏移
+                items.length,
+              );
             } else {
+              // 否则构建加载状态指示器
               return _buildLoadStateIndicator();
             }
           },
@@ -66,15 +94,19 @@ class _RefreshableListViewState<T> extends State<RefreshableListView<T>> {
   }
 
   Future<void> _refresh() async {
-    final List<T>? refreshedItems = await widget.loadMoreCallback(1); // 刷新时重置当前页数
+    final List<T>? refreshedItems = await widget.loadMoreCallback(widget.startPage); // 刷新时重置当前页数
+    //刷新headview
+    if (widget.refreshHeadCallback != null) {
+      widget.headWidget = await widget.refreshHeadCallback!();
+    }
     setState(() {
       if (refreshedItems != null) {
         items = refreshedItems;
         currentPage = widget.startPage + 1; // 重置当前页数
         _loadState = LoadState.success;
-      } else {
-        _loadState = LoadState.empty;
       }
+
+      _updataPageState();
     });
   }
 

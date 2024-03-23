@@ -2,8 +2,11 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:wan_android_flutter/core/lang/locale_keys.g.dart';
 import 'package:wan_android_flutter/core/model/front_articles_model.dart';
+import 'package:wan_android_flutter/core/utils/toast_utils.dart';
 import 'package:wan_android_flutter/network/http_creator.dart';
-import 'package:wan_android_flutter/ui/pages/front/load_more_sliverlist.dart';
+import 'package:wan_android_flutter/ui/pages/front/sliver_list_item.dart';
+import 'package:wan_android_flutter/ui/shared/refreshable_listView.dart';
+import 'package:wan_android_flutter/ui/widgets/network_error_widget.dart';
 
 class SearchScreen extends StatefulWidget {
   static const routeName = "/search";
@@ -18,7 +21,6 @@ class SearchScreen extends StatefulWidget {
 }
 
 class _SearchScreenState extends State<SearchScreen> {
-
   int page = 0;
 
   @override
@@ -30,9 +32,10 @@ class _SearchScreenState extends State<SearchScreen> {
 
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
-      appBar: AppBar(title: Text(widget.query!),),
+      appBar: AppBar(
+        title: Text(widget.query!),
+      ),
       body: Container(
         color: Theme.of(context).colorScheme.surfaceVariant.withOpacity(0.3),
         child: FutureBuilder(
@@ -44,34 +47,46 @@ class _SearchScreenState extends State<SearchScreen> {
               );
             } else if (snapshot.hasError || snapshot.data == null) {
               // 检查是否有错误或数据为空
-              return Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(LocaleKeys.front_dataLoadingFailed.tr()),
-                    SizedBox(
-                      height: 4,
-                    ),
-                    ElevatedButton(
-                      onPressed: () {
-                        setState(() {}); // 这里强制刷新，可以根据需要进行实际的重新加载操作
-                      },
-                      child: Icon(Icons.refresh),
-                    ),
-                  ],
-                ),
-              );
+              return NetWorkErrorWidget(onRefresh: () => setState(() {}));
             } else {
               final FrontArtclesModel frontListData =
                   snapshot.data as FrontArtclesModel;
 
-              return RefreshIndicator(
-                onRefresh: () {
-                  return Future(() => setState(() {}));
+              return RefreshableListView<Datas>(
+                initialItems: frontListData.data!.datas!,
+                loadMoreCallback: (page) async {
+                  try {
+                    final list = await HttpCreator.query(page, widget.query!);
+                    return list.data!.datas;
+                  } catch (e) {
+                    ToastUtils.showNetWorkErrorToast();
+                    return null;
+                  }
                 },
-                child: LoadModeSliverList(
-                  frontListData: frontListData,
-                ),
+
+                itemBuilder: (context, data, index, length) {
+                  final BorderRadius borderRadius;
+                  bool isBottomLine = true;
+                  if (index == 0) {
+                    borderRadius = BorderRadius.only(
+                        topLeft: Radius.circular(12), topRight: Radius.circular(12));
+                  } else if (index == length - 1) {
+                    borderRadius = BorderRadius.only(
+                        bottomLeft: Radius.circular(12),
+                        bottomRight: Radius.circular(12));
+                    isBottomLine = false;
+                  } else {
+                    borderRadius = BorderRadius.zero;
+                  }
+
+                  return SliverListItem(
+                    datas: data,
+                    borderRadius: borderRadius,
+                    isBottomLine: isBottomLine,
+                  );
+                },
+                maxPage: frontListData.data!.pageCount!,
+                startPage: 0,
               );
             }
           },

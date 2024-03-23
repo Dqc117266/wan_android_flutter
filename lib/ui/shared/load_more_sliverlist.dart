@@ -8,8 +8,8 @@ import 'package:wan_android_flutter/network/http_creator.dart';
 import 'package:wan_android_flutter/ui/pages/front/sliver_list_item.dart';
 import 'package:wan_android_flutter/ui/shared/constants.dart';
 
-import '../../../core/model/front_top_artcles_model.dart';
-import 'banner/create_carousel.dart';
+import '../../core/model/front_top_artcles_model.dart';
+import '../pages/front/banner/create_carousel.dart';
 
 class LoadModeSliverList extends StatefulWidget {
   final FrontBannerModel? bannerData;
