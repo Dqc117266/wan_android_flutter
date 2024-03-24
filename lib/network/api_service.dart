@@ -2,6 +2,7 @@ import 'package:dio/dio.dart';
 import 'package:dio_cookie_manager/dio_cookie_manager.dart';
 import 'package:wan_android_flutter/network/api.dart';
 import 'package:wan_android_flutter/network/cookie/persist_sp.dart';
+import 'package:flutter/foundation.dart' show kIsWeb;
 
 class ApiService {
   final connectTimeout = Duration(seconds: 5);
@@ -18,6 +19,7 @@ class ApiService {
 
     _dio = Dio(options);
     _dio.interceptors.add(CookieManager(PersistCookieJarSp()));
+
   }
 
   Future<Response> get(String path) async {

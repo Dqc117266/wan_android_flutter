@@ -1,5 +1,7 @@
 {
   "appName": "玩安卓",
+  "dialogDismiss": "取消",
+  "dialogAction": "确定",
   "tableNames": {
     "frontPage": "首页",
     "projects": "项目",
@@ -44,9 +46,7 @@
     "clearHistoryDialogTitle": "删除所有历史记录",
     "clearHistoryDialogContent": "是否删除所有历史记录?",
     "removeHistoryDialogTitle": "删除历史记录",
-    "removeHistoryDialogContent": "是否删除该条记录",
-    "historyDialogDismiss": "取消",
-    "historyDialogAction": "确定"
+    "removeHistoryDialogContent": "是否删除该条记录"
   },
   "mine": {
     "notLogin": "登陆/注册",
@@ -54,6 +54,22 @@
     "myCollect": "我的收藏",
     "todo": "TODO",
     "settings": "设置"
+  },
+  "integral": {
+    "history": "积分记录",
+    "userName": "用户名：",
+    "me": "我：",
+    "coin": "积分：",
+    "leve": "等级："
+  },
+  "userInfo": {
+    "name": "用户信息",
+    "userName": "用户名",
+    "userId": "id",
+    "nickName": "昵称",
+    "coin": "积分",
+    "outLogin": "退出登陆",
+    "outLoginContent": "是否退出当前登陆？"
   }
 
 }

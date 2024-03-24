@@ -226,8 +226,8 @@ class CustomSearchDelegate extends SearchDelegate<String> {
       context: context,
       title: LocaleKeys.search_clearHistoryDialogTitle.tr(),
       content: LocaleKeys.search_clearHistoryDialogContent.tr(),
-      dismissText: LocaleKeys.search_historyDialogDismiss.tr(),
-      actionText: LocaleKeys.search_historyDialogAction.tr(),
+      dismissText: LocaleKeys.dialogDismiss.tr(),
+      actionText: LocaleKeys.dialogAction.tr(),
       onAction: () {
         _clearAllHistoryKeys();
         _clearQuery();
@@ -241,8 +241,8 @@ class CustomSearchDelegate extends SearchDelegate<String> {
       context: context,
       title: LocaleKeys.search_removeHistoryDialogTitle.tr(),
       content: LocaleKeys.search_removeHistoryDialogContent.tr(),
-      dismissText: LocaleKeys.search_historyDialogDismiss.tr(),
-      actionText: LocaleKeys.search_historyDialogAction.tr(),
+      dismissText: LocaleKeys.dialogDismiss.tr(),
+      actionText: LocaleKeys.dialogAction.tr(),
       onAction: () {
         _removeAtIndexHistoryKey(content);
         _clearQuery();

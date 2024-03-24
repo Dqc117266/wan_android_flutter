@@ -11,7 +11,7 @@ class RefreshableListView<T> extends StatefulWidget {
   final Future<Widget> Function()? refreshHeadCallback;
   final Widget Function(BuildContext context, T item, int index, int length) itemBuilder;
   final int maxPage; // 添加最大页数参数
-  final int startPage;
+  final int firstPage;
   Widget? headWidget;
 
   RefreshableListView({
@@ -19,7 +19,7 @@ class RefreshableListView<T> extends StatefulWidget {
     required this.loadMoreCallback,
     required this.itemBuilder,
     required this.maxPage, // 初始化最大页数
-    required this.startPage,
+    required this.firstPage,
     this.refreshHeadCallback,
     this.headWidget
   });
@@ -45,7 +45,7 @@ class _RefreshableListViewState<T> extends State<RefreshableListView<T>> {
     _scrollController.addListener(_scrollListener);
 
     _loadState = LoadState.success; // 初始化为加载成功状态
-    currentPage = widget.startPage + 1;
+    currentPage = widget.firstPage + 1;
     headlength = widget.headWidget != null? 1 : 0;
 
     _updataPageState();
@@ -53,7 +53,7 @@ class _RefreshableListViewState<T> extends State<RefreshableListView<T>> {
 
   void _updataPageState() {
     //只有一页或者只有0页数据为0的时候 为加载到底状态
-    if (widget.maxPage == currentPage || (widget.maxPage == 0 && items.length != 0)) {
+    if (widget.maxPage <= currentPage || (widget.maxPage == 0 && items.length != 0)) {
       _loadState = LoadState.end;
     } else if (widget.maxPage == 0 && items.length == 0) {
       _loadState = LoadState.empty;
@@ -94,7 +94,7 @@ class _RefreshableListViewState<T> extends State<RefreshableListView<T>> {
   }
 
   Future<void> _refresh() async {
-    final List<T>? refreshedItems = await widget.loadMoreCallback(widget.startPage); // 刷新时重置当前页数
+    final List<T>? refreshedItems = await widget.loadMoreCallback(widget.firstPage); // 刷新时重置当前页数
     //刷新headview
     if (widget.refreshHeadCallback != null) {
       widget.headWidget = await widget.refreshHeadCallback!();
@@ -102,7 +102,7 @@ class _RefreshableListViewState<T> extends State<RefreshableListView<T>> {
     setState(() {
       if (refreshedItems != null) {
         items = refreshedItems;
-        currentPage = widget.startPage + 1; // 重置当前页数
+        currentPage = widget.firstPage + 1; // 重置当前页数
         _loadState = LoadState.success;
       }
 

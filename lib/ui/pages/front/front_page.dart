@@ -7,7 +7,7 @@ import 'package:wan_android_flutter/core/model/front_banner_model.dart';
 import 'package:wan_android_flutter/core/model/front_top_artcles_model.dart';
 import 'package:wan_android_flutter/core/utils/toast_utils.dart';
 import 'package:wan_android_flutter/ui/pages/front/banner/create_carousel.dart';
-import 'package:wan_android_flutter/ui/pages/front/sliver_list_item.dart';
+import 'package:wan_android_flutter/ui/shared/chapter_list_item.dart';
 import 'package:wan_android_flutter/ui/pages/search/custom_search_delegate.dart';
 import 'package:wan_android_flutter/ui/shared/refreshable_listView.dart';
 import 'package:wan_android_flutter/ui/widgets/network_error_widget.dart';
@@ -77,7 +77,7 @@ class _FrontScreenState extends State<FrontScreen> {
       FrontBannerModel? bannerData,
       FrontTopArtclesModel? frontTopListData,
       int maxPage,
-      int startPage,
+      int firstPage,
       ) {
     final List<Datas>? datas = frontTopListData!.data;
     datas!.addAll(frontListData!.data!.datas!);
@@ -86,10 +86,10 @@ class _FrontScreenState extends State<FrontScreen> {
       initialItems: datas,
       headWidget: _buildHeadView(bannerData!),
       refreshHeadCallback: () => _refreshHead(bannerData),
-      loadMoreCallback: (page) => _loadMoreData(page, startPage),
+      loadMoreCallback: (page) => _loadMoreData(page, firstPage),
       itemBuilder: (context, data, index, length) => _buildListItem(data, index, length),
       maxPage: maxPage,
-      startPage: startPage,
+      firstPage: firstPage,
     );
   }
 
@@ -130,7 +130,7 @@ class _FrontScreenState extends State<FrontScreen> {
     } else {
       borderRadius = BorderRadius.zero;
     }
-    return SliverListItem(
+    return ChapterListItem(
       datas: data,
       borderRadius: borderRadius,
       isBottomLine: isBottomLine,

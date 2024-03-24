@@ -19,12 +19,10 @@ class WebPageScreen extends StatefulWidget {
 }
 
 class _WebPageScreenState extends State<WebPageScreen> {
-  late WebViewController? _controller;
+  WebViewController? _controller;
   late List<Widget> _buttonList;
   double _progress = 0.0;
   bool _isLoading = true;
-
-  late ToWebSource _toWebSource;
 
   Datas? datas;
   String? title;
@@ -102,13 +100,12 @@ class _WebPageScreenState extends State<WebPageScreen> {
     final arguments = ModalRoute.of(context)!.settings.arguments;
 
     if (arguments is Map<String, dynamic>) {
-      _toWebSource = ToWebSource.bannerPage;
 
       title = arguments['title'];
       url = arguments['url'];
       id = arguments['id'];
+      collect = arguments['collect'];
     } else if (arguments is Datas) {
-      _toWebSource = ToWebSource.articlePage;
 
       datas = arguments;
       title = datas!.title;
@@ -148,7 +145,7 @@ class _WebPageScreenState extends State<WebPageScreen> {
 
   @override
   Widget build(BuildContext context) {
-    if (url == null || title == null) {
+    if (url == null || title == null || _controller == null) {
       // 还未初始化完成，显示 loading 状态
       return const Scaffold(
         body: Center(
@@ -161,15 +158,14 @@ class _WebPageScreenState extends State<WebPageScreen> {
       appBar: AppBar(
         title: Text(title!),
         actions: [
-          if (_toWebSource == ToWebSource.articlePage)
-            IconButton(
-              onPressed: () {
-                _collecAndUnCollec();
-              },
-              icon: collect ? Icon(Icons.favorite,
-                  color: Theme.of(context).colorScheme.primary) : Icon(Icons.favorite_border,
-                  color: Theme.of(context).colorScheme.primary),
-            ),
+          IconButton(
+            onPressed: () {
+              _collecAndUnCollec();
+            },
+            icon: collect ? Icon(Icons.favorite,
+                color: Theme.of(context).colorScheme.primary) : Icon(Icons.favorite_border,
+                color: Theme.of(context).colorScheme.primary),
+          ),
 
           IconButton(
             icon: const Icon(Icons.more_vert),

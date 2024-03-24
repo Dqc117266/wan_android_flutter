@@ -4,7 +4,7 @@ import 'package:wan_android_flutter/core/lang/locale_keys.g.dart';
 import 'package:wan_android_flutter/core/model/front_articles_model.dart';
 import 'package:wan_android_flutter/core/utils/toast_utils.dart';
 import 'package:wan_android_flutter/network/http_creator.dart';
-import 'package:wan_android_flutter/ui/pages/front/sliver_list_item.dart';
+import 'package:wan_android_flutter/ui/shared/chapter_list_item.dart';
 import 'package:wan_android_flutter/ui/shared/refreshable_listView.dart';
 import 'package:wan_android_flutter/ui/widgets/network_error_widget.dart';
 
@@ -79,14 +79,14 @@ class _SearchScreenState extends State<SearchScreen> {
                     borderRadius = BorderRadius.zero;
                   }
 
-                  return SliverListItem(
+                  return ChapterListItem(
                     datas: data,
                     borderRadius: borderRadius,
                     isBottomLine: isBottomLine,
                   );
                 },
                 maxPage: frontListData.data!.pageCount!,
-                startPage: 0,
+                firstPage: 0,
               );
             }
           },

@@ -6,22 +6,22 @@ import 'package:wan_android_flutter/core/model/front_articles_model.dart';
 import 'package:wan_android_flutter/core/utils/http_utils.dart';
 import 'package:wan_android_flutter/ui/pages/web/web_page.dart';
 
-class SliverListItem extends StatefulWidget {
+class ChapterListItem extends StatefulWidget {
   final Datas datas;
   final BorderRadius borderRadius;
   final bool isBottomLine;
 
-  SliverListItem(
+  ChapterListItem(
       {super.key,
       required this.datas,
       required this.borderRadius,
       required this.isBottomLine});
 
   @override
-  State<SliverListItem> createState() => _SliverListItemState();
+  State<ChapterListItem> createState() => _SliverListItemState();
 }
 
-class _SliverListItemState extends State<SliverListItem> {
+class _SliverListItemState extends State<ChapterListItem> {
   @override
   Widget build(BuildContext context) {
     return Container(

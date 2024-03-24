@@ -52,7 +52,7 @@ class _CreateCarouselState extends State<CreateCarousel> {
 
                   Navigator.of(context).pushNamed(
                     WebPageScreen.routeName,
-                    arguments: {"title": title, "url": url, "id" : id},
+                    arguments: {"title": title, "url": url, "id" : id, "collect": false},
                   );
 
                   print('Item tapped at index $index');

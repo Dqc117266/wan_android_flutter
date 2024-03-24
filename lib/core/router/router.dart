@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:wan_android_flutter/ui/pages/mine/collect/collect_screen.dart';
+import 'package:wan_android_flutter/ui/pages/mine/integral/history/history_page.dart';
 import 'package:wan_android_flutter/ui/pages/mine/integral/integral.dart';
 import 'package:wan_android_flutter/ui/pages/mine/settings/settings_page.dart';
 import 'package:wan_android_flutter/ui/pages/mine/todo/todo_page.dart';
@@ -24,6 +25,7 @@ class MyRouter {
     CollectScreen.routeName: (context) => CollectScreen(),
     SettingsScreen.routeName: (context) => SettingsScreen(),
     TodoScreen.routeName: (context) => TodoScreen(),
+    HistoryScreen.routeName: (context) => HistoryScreen(),
   };
 
   static void pushFromRight(BuildContext context, Widget page) {

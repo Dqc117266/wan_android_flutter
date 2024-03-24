@@ -2,6 +2,8 @@
 
 abstract class  LocaleKeys {
   static const appName = 'appName';
+  static const dialogDismiss = 'dialogDismiss';
+  static const dialogAction = 'dialogAction';
   static const tableNames_frontPage = 'tableNames.frontPage';
   static const tableNames_projects = 'tableNames.projects';
   static const tableNames_officialAccounts = 'tableNames.officialAccounts';
@@ -40,8 +42,6 @@ abstract class  LocaleKeys {
   static const search_clearHistoryDialogContent = 'search.clearHistoryDialogContent';
   static const search_removeHistoryDialogTitle = 'search.removeHistoryDialogTitle';
   static const search_removeHistoryDialogContent = 'search.removeHistoryDialogContent';
-  static const search_historyDialogDismiss = 'search.historyDialogDismiss';
-  static const search_historyDialogAction = 'search.historyDialogAction';
   static const search = 'search';
   static const mine_notLogin = 'mine.notLogin';
   static const mine_myScores = 'mine.myScores';
@@ -49,5 +49,19 @@ abstract class  LocaleKeys {
   static const mine_todo = 'mine.todo';
   static const mine_settings = 'mine.settings';
   static const mine = 'mine';
+  static const integral_history = 'integral.history';
+  static const integral_userName = 'integral.userName';
+  static const integral_me = 'integral.me';
+  static const integral_coin = 'integral.coin';
+  static const integral_leve = 'integral.leve';
+  static const integral = 'integral';
+  static const userInfo_name = 'userInfo.name';
+  static const userInfo_userName = 'userInfo.userName';
+  static const userInfo_userId = 'userInfo.userId';
+  static const userInfo_nickName = 'userInfo.nickName';
+  static const userInfo_coin = 'userInfo.coin';
+  static const userInfo_outLogin = 'userInfo.outLogin';
+  static const userInfo_outLoginContent = 'userInfo.outLoginContent';
+  static const userInfo = 'userInfo';
 
 }

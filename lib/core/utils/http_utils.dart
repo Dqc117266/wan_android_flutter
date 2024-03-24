@@ -46,7 +46,17 @@ class HttpUtils {
       ToastUtils.showShortToast(LocaleKeys.user_networkError.tr());
       return null;
     }
-
   }
+
+  static Future<T?> handleRequestData<T>(Future<T?> Function() fetchFunction) async { //目的是网络请求错误可以Toast
+    try {
+      final dataList = await fetchFunction();
+      return dataList;
+    } catch (e) {
+      ToastUtils.showNetWorkErrorToast();
+      return null;
+    }
+  }
+
 
 }

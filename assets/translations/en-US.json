@@ -1,5 +1,7 @@
 {
   "appName": "WanAndroid",
+  "dialogDismiss": "Cancel",
+  "dialogAction": "OK",
   "tableNames": {
     "frontPage": "front",
     "projects": "project",
@@ -44,9 +46,7 @@
     "clearHistoryDialogTitle": "Clear All History",
     "clearHistoryDialogContent": "Do you want to clear all history?",
     "removeHistoryDialogTitle": "Remove History",
-    "removeHistoryDialogContent": "Do you want to remove this record?",
-    "historyDialogDismiss": "Cancel",
-    "historyDialogAction": "OK"
+    "removeHistoryDialogContent": "Do you want to remove this record?"
   },
   "mine": {
     "notLogin": "Login/Register",
@@ -54,6 +54,22 @@
     "myCollect": "My Collection",
     "todo": "TODO",
     "settings": "Settings"
+  },
+  "integral": {
+    "history": "Point History",
+    "userName": "Username:",
+    "me": "Me:",
+    "coin": "Points:",
+    "leve": "Level:"
+  },
+  "userInfo": {
+    "name": "User Information",
+    "userName": "Username",
+    "userId": "id",
+    "nickName": "Nickname",
+    "coin": "Points",
+    "outLogin": "Log Out",
+    "outLoginContent": "Are you sure you want to log out?"
   }
 
 }

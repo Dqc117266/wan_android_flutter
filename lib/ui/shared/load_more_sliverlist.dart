@@ -5,7 +5,7 @@ import 'package:wan_android_flutter/core/lang/locale_keys.g.dart';
 import 'package:wan_android_flutter/core/model/front_articles_model.dart';
 import 'package:wan_android_flutter/core/model/front_banner_model.dart';
 import 'package:wan_android_flutter/network/http_creator.dart';
-import 'package:wan_android_flutter/ui/pages/front/sliver_list_item.dart';
+import 'package:wan_android_flutter/ui/shared/chapter_list_item.dart';
 import 'package:wan_android_flutter/ui/shared/constants.dart';
 
 import '../../core/model/front_top_artcles_model.dart';
@@ -141,7 +141,7 @@ class _LoadModeSliverListState extends State<LoadModeSliverList> {
                     borderRadius = BorderRadius.zero;
                   }
 
-                  return SliverListItem(datas: _datas![index], borderRadius: borderRadius, isBottomLine: isBottomLine,);
+                  return ChapterListItem(datas: _datas![index], borderRadius: borderRadius, isBottomLine: isBottomLine,);
                 },
                 childCount: _datas!.length,
               ),
