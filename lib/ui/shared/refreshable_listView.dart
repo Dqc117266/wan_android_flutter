@@ -15,6 +15,7 @@ class RefreshableListView<T> extends StatefulWidget {
   Widget? headWidget;
 
   RefreshableListView({
+    Key? key,
     required this.initialItems,
     required this.loadMoreCallback,
     required this.itemBuilder,
@@ -22,13 +23,13 @@ class RefreshableListView<T> extends StatefulWidget {
     required this.firstPage,
     this.refreshHeadCallback,
     this.headWidget
-  });
+  }): super(key: key);
 
   @override
-  _RefreshableListViewState<T> createState() => _RefreshableListViewState<T>();
+  RefreshableListViewState<T> createState() => RefreshableListViewState<T>();
 }
 
-class _RefreshableListViewState<T> extends State<RefreshableListView<T>> {
+class RefreshableListViewState<T> extends State<RefreshableListView<T>> {
   late List<T> items;
   late bool isLoading;
   late ScrollController _scrollController;
@@ -51,11 +52,30 @@ class _RefreshableListViewState<T> extends State<RefreshableListView<T>> {
     _updataPageState();
   }
 
+  void refreshItems(List<T> newItems) {
+    setState(() {
+      items = newItems;
+      updateIsEmptyPage();
+    });
+  }
+
+  void refreshListView() {
+    updateIsEmptyPage();
+  }
+
+  void updateIsEmptyPage() {
+    setState(() {
+      if (items.length == 0) {
+        _loadState = LoadState.empty;
+      }
+    });
+  }
+
   void _updataPageState() {
     //只有一页或者只有0页数据为0的时候 为加载到底状态
-    if (widget.maxPage <= currentPage || (widget.maxPage == 0 && items.length != 0)) {
+    if ((currentPage >= widget.maxPage && items.isNotEmpty) || (widget.maxPage == 0 && items.isNotEmpty)) {
       _loadState = LoadState.end;
-    } else if (widget.maxPage == 0 && items.length == 0) {
+    } else {
       _loadState = LoadState.empty;
     }
   }
@@ -71,7 +91,6 @@ class _RefreshableListViewState<T> extends State<RefreshableListView<T>> {
           controller: _scrollController,
           itemCount: items.length + 1 + headlength,
           itemBuilder: (context, index) {
-            print("builder list item");
             if (index == 0 && headlength == 1) {
               // 第一个位置是头部视图
               return widget.headWidget!;
@@ -100,7 +119,7 @@ class _RefreshableListViewState<T> extends State<RefreshableListView<T>> {
       widget.headWidget = await widget.refreshHeadCallback!();
     }
     setState(() {
-      if (refreshedItems != null) {
+      if (refreshedItems != null && !refreshedItems.isEmpty) {
         items = refreshedItems;
         currentPage = widget.firstPage + 1; // 重置当前页数
         _loadState = LoadState.success;
@@ -203,7 +222,7 @@ class _RefreshableListViewState<T> extends State<RefreshableListView<T>> {
 
   Widget _buildEmptyIndicator() {
     return Center(
-      child: Text(LocaleKeys.front_dataEmpty.tr()),
+      child: Text("无任何内容～"),
     );
   }
 

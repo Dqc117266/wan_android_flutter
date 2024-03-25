@@ -4,7 +4,7 @@ import 'package:wan_android_flutter/core/model/user_info_model.dart';
 import 'package:wan_android_flutter/core/utils/userinfo_storage.dart';
 
 class UserViewModel extends ChangeNotifier {
-  UserInfoModel? userInfo;
+  UserInfoModel? _userInfo;
 
   UserViewModel() {
     _initUserInfo();
@@ -14,10 +14,17 @@ class UserViewModel extends ChangeNotifier {
     updateUser();
   }
 
-  void updateUser() async {
-    userInfo = await UserUtils.getUserInfo();
+  Future<void> updateUser() async {
+    _userInfo = await UserUtils.getUserInfo();
     notifyListeners();
   }
+
+  Future<void> saveUser(UserInfoModel userInfoModel) async {
+    await UserUtils.saveUserInfo(userInfoModel);
+    updateUser();
+  }
+
+  UserInfoModel? get userInfo => _userInfo;
 
 
 }

@@ -1,12 +1,12 @@
 class UserInfoModel {
-  Data? data;
+  UserData? data;
   int? errorCode;
   String? errorMsg;
 
   UserInfoModel({this.data, this.errorCode, this.errorMsg});
 
   UserInfoModel.fromJson(Map<String, dynamic> json) {
-    data = json['data'] != null ? new Data.fromJson(json['data']) : null;
+    data = json['data'] != null ? new UserData.fromJson(json['data']) : null;
     errorCode = json['errorCode'];
     errorMsg = json['errorMsg'];
   }
@@ -22,7 +22,7 @@ class UserInfoModel {
   }
 }
 
-class Data {
+class UserData {
   bool? admin;
   List<String>? chapterTops;
   int? coinCount;
@@ -37,7 +37,7 @@ class Data {
   int? type;
   String? username;
 
-  Data(
+  UserData(
       {this.admin,
         this.chapterTops,
         this.coinCount,
@@ -52,7 +52,7 @@ class Data {
         this.type,
         this.username});
 
-  Data.fromJson(Map<String, dynamic> json) {
+  UserData.fromJson(Map<String, dynamic> json) {
     admin = json['admin'];
     chapterTops = json['chapterTops'].cast<String>();
     coinCount = json['coinCount'];

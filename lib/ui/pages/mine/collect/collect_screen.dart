@@ -1,8 +1,11 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:wan_android_flutter/core/lang/locale_keys.g.dart';
 import 'package:wan_android_flutter/core/model/collects_model.dart';
 import 'package:wan_android_flutter/core/utils/http_utils.dart';
+import 'package:wan_android_flutter/core/utils/userinfo_storage.dart';
+import 'package:wan_android_flutter/core/viewmodel/user_viewmodel.dart';
 import 'package:wan_android_flutter/network/http_creator.dart';
 import 'package:wan_android_flutter/ui/pages/mine/collect/coolect_item.dart';
 import 'package:wan_android_flutter/ui/shared/custom_future_builder.dart';
@@ -18,6 +21,7 @@ class CollectScreen extends StatefulWidget {
 }
 
 class _CollectScreenState extends State<CollectScreen> {
+  GlobalKey<RefreshableListViewState<Datas>> _refreshableListViewKey = GlobalKey();
 
   @override
   Widget build(BuildContext context) {
@@ -34,40 +38,59 @@ class _CollectScreenState extends State<CollectScreen> {
             final CollectsModel collectsModel =
             snapshot.data as CollectsModel;
 
-            return RefreshableListView<Datas>(
-              initialItems: collectsModel.data!.datas!,
-              maxPage: collectsModel.data!.pageCount!,
-              firstPage: 0,
-              loadMoreCallback: (page) async {
-                final CollectsModel? collectList = await HttpUtils.handleRequestData(() => HttpCreator.getCollectList(page));
+            return Consumer<UserViewModel>(
+              builder: (context, userViewModel, child) {
 
-                if (collectList != null) {
-                  if (page == 0) { //下拉刷新清除
-                  }
-                  return collectList.data!.datas;
-                }
-                return null;
-              },
-              itemBuilder: (context, data, index, length) {
-                final BorderRadius borderRadius;
-                bool isBottomLine = true;
-                if (index == 0) {
-                  borderRadius = BorderRadius.only(
-                      topLeft: Radius.circular(12),
-                      topRight: Radius.circular(12));
-                } else if (index == length - 1) {
-                  borderRadius = BorderRadius.only(
-                      bottomLeft: Radius.circular(12),
-                      bottomRight: Radius.circular(12));
-                  isBottomLine = false;
-                } else {
-                  borderRadius = BorderRadius.zero;
-                }
+                filterItemsAndRefreshListView(context, userViewModel);
 
-                return CollectItem(
-                  data: data,
-                  borderRadius: borderRadius,
-                  isBottomLine: isBottomLine,
+                return RefreshableListView<Datas>(
+                  key: _refreshableListViewKey,
+                  initialItems: collectsModel.data!.datas!,
+                  maxPage: collectsModel.data!.pageCount!,
+                  firstPage: 0,
+                  loadMoreCallback: (page) async {
+                    final CollectsModel? collectList = await HttpUtils.handleRequestData(() => HttpCreator.getCollectList(page));
+
+                    if (collectList != null) {
+                      return collectList.data!.datas;
+                    }
+                    return null;
+                  },
+                  itemBuilder: (context, data, index, length) {
+                    final BorderRadius borderRadius;
+                    bool isBottomLine = true;
+                    if (length == 1) {
+                      borderRadius = BorderRadius.all(Radius.circular(12));
+                      isBottomLine = false;
+                    } else if (index == 0) {
+                      borderRadius = BorderRadius.only(
+                          topLeft: Radius.circular(12),
+                          topRight: Radius.circular(12));
+                    } else if (index == length - 1) {
+                      borderRadius = BorderRadius.only(
+                          bottomLeft: Radius.circular(12),
+                          bottomRight: Radius.circular(12));
+                      isBottomLine = false;
+                    } else {
+                      borderRadius = BorderRadius.zero;
+                    }
+
+                    return CollectItem(
+                      data: data,
+                      borderRadius: borderRadius,
+                      isBottomLine: isBottomLine,
+                      onFavoriteClicked: (data) async {
+
+                        final userInfo = await UserUtils.getUserInfo();
+                        userInfo!.data!.collectIds!.remove(data.originId);
+
+                        userViewModel.saveUser(userInfo);
+                        // final state = _refreshableListViewKey.currentState;
+                        // state!.items.remove(data);
+                        // state.refreshListView();
+                      },
+                    );
+                  },
                 );
               },
             );
@@ -76,4 +99,35 @@ class _CollectScreenState extends State<CollectScreen> {
       ),
     );
   }
+
+  void filterItemsAndRefreshListView(BuildContext context, UserViewModel userViewModel) {
+    // 检查_refreshableListViewKey.currentState是否为空
+    if (_refreshableListViewKey.currentState != null) {
+      final state = _refreshableListViewKey.currentState;
+
+      // 获取items列表和collectIds
+      final items = state!.items;
+      final userInfo = userViewModel.userInfo;
+      final List<int> collectIds = userInfo!.data!.collectIds!;
+
+      // 使用collectIds过滤items列表
+      // final filteredItems = items.where((item) => collectIds.contains(item.originId)).toList();
+      // print(filteredItems);
+
+      List<Datas> filteredItems = [];
+
+      for (var item in items) {
+        // 检查 originId 是否不在 collectIds 中
+        if (collectIds.contains(item.originId)) {
+          filteredItems.add(item);
+        }
+      }
+      print(filteredItems);
+
+      state.refreshItems(filteredItems);
+    }
+  }
+
+
+
 }

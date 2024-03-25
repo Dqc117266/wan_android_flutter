@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_widget_from_html/flutter_widget_from_html.dart';
 import 'package:provider/provider.dart';
+import 'package:wan_android_flutter/core/utils/http_utils.dart';
 import 'package:wan_android_flutter/core/viewmodel/collects_viewmodel.dart';
+import 'package:wan_android_flutter/network/http_creator.dart';
 import 'package:wan_android_flutter/ui/pages/web/web_page.dart';
 
 import '../../../../core/model/collects_model.dart';
@@ -10,12 +12,14 @@ class CollectItem extends StatefulWidget {
   final Datas data;
   final BorderRadius borderRadius;
   final bool isBottomLine;
+  final void Function(Datas data)? onFavoriteClicked; // 修改为接受 Datas 参数的回调函数
 
   const CollectItem(
       {super.key,
       required this.data,
       required this.borderRadius,
-      required this.isBottomLine});
+      required this.isBottomLine,
+      this.onFavoriteClicked});
 
   @override
   State<CollectItem> createState() => _CollectItemState();
@@ -87,8 +91,12 @@ class _CollectItemState extends State<CollectItem> {
         ),
         InkWell(
             borderRadius: BorderRadius.all(Radius.circular(100)),
-            onTap: () {
-              Provider.of<CollectsViewModel>(context, listen: false).removeCollectedItem(widget.data);
+            onTap: () async {
+              final result = await HttpUtils.unMyCollectChapter(context, widget.data.id!, widget.data.originId!);
+              if (result != null && result.errorCode == 0) {
+                widget.onFavoriteClicked!(widget.data);
+              }
+              // Provider.of<CollectsViewModel>(context, listen: false).removeCollectedItem(widget.data);
             },
             child: Icon(Icons.favorite,
                 color: Theme.of(context).colorScheme.primary)),

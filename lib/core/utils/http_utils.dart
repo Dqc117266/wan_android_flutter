@@ -48,6 +48,23 @@ class HttpUtils {
     }
   }
 
+  static Future<ResultModel?> unMyCollectChapter(BuildContext context, int id, int originId) async {
+
+    try {
+      ResultModel resultModel = await HttpCreator.unMyCollect(id, originId);
+      print("HttpUtils errorCode ${resultModel.errorCode}");
+
+      //未登录的错误码为-1001，其他错误码为-1，成功为0
+      if (resultModel.errorCode == -1001) {
+        ToastUtils.showShortToast(resultModel.errorMsg!);
+      }
+      return resultModel;
+    } catch(e) {
+      ToastUtils.showShortToast(LocaleKeys.user_networkError.tr());
+      return null;
+    }
+  }
+
   static Future<T?> handleRequestData<T>(Future<T?> Function() fetchFunction) async { //目的是网络请求错误可以Toast
     try {
       final dataList = await fetchFunction();

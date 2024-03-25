@@ -1,9 +1,12 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_widget_from_html/flutter_widget_from_html.dart';
+import 'package:provider/provider.dart';
 
 import 'package:wan_android_flutter/core/model/front_articles_model.dart';
 import 'package:wan_android_flutter/core/utils/http_utils.dart';
+import 'package:wan_android_flutter/core/utils/userinfo_storage.dart';
+import 'package:wan_android_flutter/core/viewmodel/user_viewmodel.dart';
 import 'package:wan_android_flutter/ui/pages/web/web_page.dart';
 
 class ChapterListItem extends StatefulWidget {
@@ -124,23 +127,45 @@ class _SliverListItemState extends State<ChapterListItem> {
     );
   }
 
-  void _collecAndUnCollec() {
-    if (!widget.datas.collect!) {
-      HttpUtils.collectChapter(context, widget.datas.id!).then((value) {
-        if (value != null && value!.errorCode == 0) {
-          setState(() {
-            widget.datas.collect = !widget.datas.collect!;
-          });
-        }
-      });
-    } else {
-      HttpUtils.unCollectChapter(context, widget.datas.id!).then((value) {
+  void _collecAndUnCollec() async {
+    if (!widget.datas.collect!) { //收藏
+      final value = await HttpUtils.collectChapter(context, widget.datas.id!);
+      if (value != null && value.errorCode == 0) {
         setState(() {
-          if (value != null && value!.errorCode == 0) {
-            widget.datas.collect = !widget.datas.collect!;
-          }
+          widget.datas.collect = !widget.datas.collect!;
         });
-      });
+
+        final userInfo = await UserUtils.getUserInfo();
+        final ids = userInfo!.data!.collectIds!;
+        if (!ids.contains(widget.datas.id)) {
+          ids.add(widget.datas.id!);
+        }
+        await UserUtils.saveUserInfo(userInfo);
+        final u = await UserUtils.getUserInfo();
+
+        Provider.of<UserViewModel>(context, listen: false).updateUser();
+        print("collect save after: ${u!.data!.collectIds!}");
+      }
+    } else {//取消收藏
+      final value = await HttpUtils.unCollectChapter(context, widget.datas.id!);
+
+      if (value != null && value.errorCode == 0) {
+        setState(() {
+          widget.datas.collect = !widget.datas.collect!;
+        });
+
+        final userInfo = await UserUtils.getUserInfo();
+        final ids = userInfo!.data!.collectIds!;
+        if (ids.contains(widget.datas.id)) {
+          ids.remove(widget.datas.id!);
+        }
+        await UserUtils.saveUserInfo(userInfo);
+        final u = await UserUtils.getUserInfo();
+
+        Provider.of<UserViewModel>(context, listen: false).updateUser();
+        print("collect save after: ${u!.data!.collectIds!}");
+
+      }
     }
   }
 
