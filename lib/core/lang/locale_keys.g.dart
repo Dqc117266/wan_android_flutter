@@ -34,6 +34,13 @@ abstract class  LocaleKeys {
   static const user_rePasswordHint = 'user.rePasswordHint';
   static const user_notLogin = 'user.notLogin';
   static const user_networkError = 'user.networkError';
+  static const user_usernameError = 'user.usernameError';
+  static const user_passwordError = 'user.passwordError';
+  static const user_rePsswordError = 'user.rePsswordError';
+  static const user_registeing = 'user.registeing';
+  static const user_registed = 'user.registed';
+  static const user_logining = 'user.logining';
+  static const user_logined = 'user.logined';
   static const user = 'user';
   static const search_searchName = 'search.searchName';
   static const search_historyTitle = 'search.historyTitle';

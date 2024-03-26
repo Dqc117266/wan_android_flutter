@@ -13,13 +13,15 @@ class CollectItem extends StatefulWidget {
   final BorderRadius borderRadius;
   final bool isBottomLine;
   final void Function(Datas data)? onFavoriteClicked; // 修改为接受 Datas 参数的回调函数
+  final void Function(Datas data)? onItemClicked; // 修改为接受 Datas 参数的回调函数
 
   const CollectItem(
       {super.key,
       required this.data,
       required this.borderRadius,
       required this.isBottomLine,
-      this.onFavoriteClicked});
+      this.onFavoriteClicked,
+      this.onItemClicked});
 
   @override
   State<CollectItem> createState() => _CollectItemState();
@@ -44,12 +46,9 @@ class _CollectItemState extends State<CollectItem> {
         child: InkWell(
           borderRadius: widget.borderRadius,
           onTap: () {
-            Navigator.pushNamed(context, WebPageScreen.routeName, arguments: {
-              "title": widget.data.title,
-              "url": widget.data.link,
-              "id": widget.data.id,
-              "collect": true
-            });
+            if (widget.onItemClicked != null) {
+              widget.onItemClicked!(widget.data);
+            }
           },
           child: Padding(
             padding: EdgeInsets.fromLTRB(10, 16, 10, 16),

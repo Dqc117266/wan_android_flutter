@@ -1,11 +1,15 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:provider/provider.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:wan_android_flutter/core/lang/locale_keys.g.dart';
 import 'package:wan_android_flutter/core/utils/http_utils.dart';
 import 'package:wan_android_flutter/core/utils/toast_utils.dart';
+import 'package:wan_android_flutter/core/utils/userinfo_storage.dart';
+import 'package:wan_android_flutter/core/viewmodel/user_viewmodel.dart';
+import 'package:wan_android_flutter/network/api.dart';
 import 'package:wan_android_flutter/ui/shared/constants.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
@@ -114,6 +118,22 @@ class _WebPageScreenState extends State<WebPageScreen> {
       collect = datas!.collect!;
     }
 
+    if (!isURL(url!)) {
+      url = '${Api.baseUrl}$url';
+    }
+
+  }
+
+  bool isURL(String string) {
+    // URL 的正则表达式模式
+    final RegExp urlRegex = RegExp(
+      r'^(?:http|https):\/\/[\w\-_]+(?:\.[\w\-_]+)+(?:[\w\-\.,@?^=%&:/~\+#]*[\w\-\@?^=%&/~\+#])?$',
+      caseSensitive: false,
+      multiLine: false,
+    );
+
+    // 使用正则表达式匹配字符串
+    return urlRegex.hasMatch(string);
   }
 
   Future<void> _initWebViewController() async {
@@ -237,44 +257,45 @@ class _WebPageScreenState extends State<WebPageScreen> {
   void dispose() {
     // TODO: implement dispose
     _controller = null;
-
     super.dispose();
   }
 
-  // void _collecAndUnCollec() {
-  //   if (datas!.collect!) {
-  //     HttpUtils.collectChapter(context, datas!.id!).then((value) {
-  //       setState(() {
-  //         collect = !datas!.collect!;
-  //       });
-  //     });
-  //   } else {
-  //     HttpUtils.unCollectChapter(context, datas!.id!).then((value) {
-  //       setState(() {
-  //         collect = !datas!.collect!;
-  //       });
-  //     });
-  //   }
-  // }
-
-  void _collecAndUnCollec() {
-    if (datas!.collect!) {
-      HttpUtils.collectChapter(context, datas!.id!).then((value) {
-        if (value != null && value!.errorCode == 0) {
-          setState(() {
-            collect = !datas!.collect!;
-          });
-        }
-      });
-    } else {
-      HttpUtils.unCollectChapter(context, id!).then((value) {
+  void _collecAndUnCollec() async {
+    if (!collect) { //收藏
+      final value = await HttpUtils.collectChapter(context, id!);
+      if (value != null && value.errorCode == 0) {
         setState(() {
-          if (value != null && value!.errorCode == 0) {
-            collect = !datas!.collect!;
-          }
+          collect = !collect;
         });
-      });
+
+        final userInfo = await UserUtils.getUserInfo();
+        final ids = userInfo!.data!.collectIds!;
+        if (!ids.contains(id)) {
+          ids.add(id!);
+        }
+        await UserUtils.saveUserInfo(userInfo);
+
+        Provider.of<UserViewModel>(context, listen: false).updateUser();
+      }
+    } else {//取消收藏
+      final value = await HttpUtils.unCollectChapter(context, id!);
+
+      if (value != null && value.errorCode == 0) {
+        setState(() {
+          collect = !collect;
+        });
+
+        final userInfo = await UserUtils.getUserInfo();
+        final ids = userInfo!.data!.collectIds!;
+        if (ids.contains(id)) {
+          ids.remove(id!);
+        }
+        await UserUtils.saveUserInfo(userInfo);
+
+        Provider.of<UserViewModel>(context, listen: false).updateUser();
+      }
     }
   }
+
 
 }

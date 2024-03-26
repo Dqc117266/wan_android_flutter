@@ -28,8 +28,8 @@ class _LoginScreenState extends State<LoginScreen> {
   ValueNotifier<bool> userObscureTextNotifier = ValueNotifier<bool>(true);
   ValueNotifier<bool> passObscureTextNotifier = ValueNotifier<bool>(true);
 
-  String? _usernameError = "账号必须至少有6个字符";
-  String? _passwordError = "密码必须至少有6个字符";
+  String? _usernameError = LocaleKeys.user_usernameError.tr();
+  String? _passwordError = LocaleKeys.user_passwordError.tr();
 
   @override
   void initState() {
@@ -123,7 +123,8 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   void login() {
-    DialogHelper.showLoadingDialog(context, "正在登陆...");
+    FocusScope.of(context).requestFocus(FocusNode());
+    DialogHelper.showLoadingDialog(context, LocaleKeys.user_logining.tr());
 
     final login =
         HttpCreator.login(_controllerUsername.text, _controllerPassword.text);
@@ -131,6 +132,7 @@ class _LoginScreenState extends State<LoginScreen> {
       Navigator.of(context).pop();//关闭弹窗
 
       UserInfoModel userInfoModel = value;
+      print("pssword: ${_controllerPassword.text}");
 
       if (userInfoModel != null && userInfoModel.errorCode == 0) {
         UserUtils.saveUserInfo(userInfoModel)
@@ -138,7 +140,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
         Navigator.of(context).pop();//关闭当前页面
 
-        ToastUtils.showShortToast("登陆成功");
+        ToastUtils.showShortToast(LocaleKeys.user_logined.tr());
       } else {
         ToastUtils.showShortToast(userInfoModel.errorMsg!);
       }

@@ -30,9 +30,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
   ValueNotifier<bool> obscureTextNotifier = ValueNotifier<bool>(true);
   ValueNotifier<bool> reObscureTextNotifier = ValueNotifier<bool>(true);
 
-  String? _usernameError = "账号必须至少有6个字符";
-  String? _passwordError = "密码必须至少有6个字符";
-  String? _rePasswordError = "密码不相同";
+  String? _usernameError = LocaleKeys.user_usernameError.tr();
+  String? _passwordError = LocaleKeys.user_passwordError.tr();
+  String? _rePasswordError = LocaleKeys.user_rePsswordError.tr();
 
   @override
   void initState() {
@@ -124,14 +124,20 @@ class _RegisterScreenState extends State<RegisterScreen> {
   }
 
   void _register() {
-    DialogHelper.showLoadingDialog(context, "正在注册...");
+    FocusScope.of(context).requestFocus(FocusNode());
+    if (_controllerRePassword.text != _controllerPassword.text) {
+      ToastUtils.showShortToast(LocaleKeys.user_rePsswordError.tr());
+      return;
+    }
+
+    DialogHelper.showLoadingDialog(context, LocaleKeys.user_registeing.tr());
 
     HttpCreator.register(_controllerUsername.text, _controllerPassword.text,
             _controllerRePassword.text)
         .then((value) {
 
       if (value.errorCode == 0) {
-        ToastUtils.showShortToast("注册成功");
+        ToastUtils.showShortToast(LocaleKeys.user_registed.tr());
         Navigator.of(context).pop();
       } else {
         ToastUtils.showShortToast(value.errorMsg!);
@@ -151,7 +157,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
     setState(() {});
     return _controllerUsername.text.length >= 6 &&
         _controllerPassword.text.length >= 6 &&
-        _controllerRePassword.text.length >= 6 &&
-        _controllerRePassword.text == _controllerPassword.text;
+        _controllerRePassword.text.length >= 6;
   }
 }

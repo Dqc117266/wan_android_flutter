@@ -37,7 +37,14 @@
     "rePasswordLable": "确认密码",
     "rePasswordHint": "确认输入密码",
     "notLogin": "请先登录！",
-    "networkError": "网络错误，请稍后再试"
+    "networkError": "网络错误，请稍后再试",
+    "usernameError": "账号必须至少有6个字符",
+    "passwordError": "密码必须至少有6个字符",
+    "rePsswordError": "密码不相同",
+    "registeing": "正在注册...",
+    "registed": "注册成功",
+    "logining": "正在登陆...",
+    "logined": "登陆成功"
   },
   "search": {
     "searchName": "搜索",

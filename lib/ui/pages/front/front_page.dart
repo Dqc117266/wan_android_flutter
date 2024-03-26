@@ -1,14 +1,18 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:wan_android_flutter/core/lang/locale_keys.g.dart';
 import 'package:wan_android_flutter/core/model/front_articles_model.dart';
 import 'package:wan_android_flutter/core/model/front_banner_model.dart';
 import 'package:wan_android_flutter/core/model/front_top_artcles_model.dart';
+import 'package:wan_android_flutter/core/utils/http_utils.dart';
 import 'package:wan_android_flutter/core/utils/toast_utils.dart';
+import 'package:wan_android_flutter/core/viewmodel/user_viewmodel.dart';
 import 'package:wan_android_flutter/ui/pages/front/banner/create_carousel.dart';
 import 'package:wan_android_flutter/ui/shared/chapter_list_item.dart';
 import 'package:wan_android_flutter/ui/pages/search/custom_search_delegate.dart';
+import 'package:wan_android_flutter/ui/shared/custom_future_builder.dart';
 import 'package:wan_android_flutter/ui/shared/refreshable_listView.dart';
 import 'package:wan_android_flutter/ui/widgets/network_error_widget.dart';
 
@@ -24,6 +28,9 @@ class FrontScreen extends StatefulWidget {
 }
 
 class _FrontScreenState extends State<FrontScreen> {
+  GlobalKey<RefreshableListViewState<Datas>> _refreshableListViewKey =
+      GlobalKey();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -40,57 +47,74 @@ class _FrontScreenState extends State<FrontScreen> {
       ),
       backgroundColor:
           Theme.of(context).colorScheme.surfaceVariant.withOpacity(0.45),
-      body: FutureBuilder(
+      body: CustomFutureBuilder(
         future: Future.wait([
           HttpCreator.getBanner(),
           HttpCreator.getFrontTopList(),
           HttpCreator.getFrontList(0),
         ]),
         builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return Center(
-              child: CircularProgressIndicator(),
-            );
-          } else if (snapshot.hasError || snapshot.data == null) {
-            // 检查是否有错误或数据为空
-            return NetWorkErrorWidget(
-              onRefresh: () => setState(() {}),
-            );
-          } else {
-            final List<Object> data = snapshot.data as List<Object>;
-            final FrontBannerModel? bannerData = data[0] as FrontBannerModel?;
-            final FrontTopArtclesModel? frontTopListData =
-                data[1] as FrontTopArtclesModel?;
-            final FrontArtclesModel? frontListData =
-                data[2] as FrontArtclesModel?;
+          final List<Object> data = snapshot.data as List<Object>;
+          final FrontBannerModel? bannerData = data[0] as FrontBannerModel?;
+          final FrontTopArtclesModel? frontTopListData =
+              data[1] as FrontTopArtclesModel?;
+          final FrontArtclesModel? frontListData =
+              data[2] as FrontArtclesModel?;
 
-            return _buildLoadMoreListView(frontListData, bannerData,
-                frontTopListData, frontListData!.data!.pageCount!, 0);
-          }
+          return _buildLoadMoreListView(frontListData, bannerData,
+              frontTopListData, frontListData!.data!.pageCount!, 0);
         },
       ),
     );
   }
 
   Widget _buildLoadMoreListView(
-      FrontArtclesModel? frontListData,
-      FrontBannerModel? bannerData,
-      FrontTopArtclesModel? frontTopListData,
-      int maxPage,
-      int firstPage,
-      ) {
+    FrontArtclesModel? frontListData,
+    FrontBannerModel? bannerData,
+    FrontTopArtclesModel? frontTopListData,
+    int maxPage,
+    int firstPage,
+  ) {
     final List<Datas>? datas = frontTopListData!.data;
     datas!.addAll(frontListData!.data!.datas!);
 
-    return RefreshableListView(
-      initialItems: datas,
-      headWidget: _buildHeadView(bannerData!),
-      refreshHeadCallback: () => _refreshHead(bannerData),
-      loadMoreCallback: (page) => _loadMoreData(page, firstPage),
-      itemBuilder: (context, data, index, length) => _buildListItem(data, index, length),
-      maxPage: maxPage,
-      firstPage: firstPage,
+    return Consumer<UserViewModel>(
+      builder: (context, userViewModel, child) {
+        updateFavoriteItems(userViewModel);
+
+        return RefreshableListView(
+          key: _refreshableListViewKey,
+          initialItems: datas,
+          headWidget: _buildHeadView(bannerData!),
+          refreshHeadCallback: () => _refreshHead(bannerData),
+          loadMoreCallback: (page) => _loadMoreData(page, firstPage),
+          itemBuilder: (context, data, index, length) =>
+              _buildListItem(data, index, length),
+          maxPage: maxPage,
+          firstPage: firstPage,
+        );
+      },
     );
+  }
+
+  void updateFavoriteItems(UserViewModel userViewModel) {
+    if (_refreshableListViewKey.currentState != null) {
+      final state = _refreshableListViewKey.currentState;
+      final items = state!.items;
+      final collectIds = userViewModel.userInfo != null ? userViewModel.userInfo!.data!.collectIds : [];
+
+      // 遍历项目列表并更新收藏状态
+      for (var item in items) {
+        if (collectIds!.contains(item.id)) {
+          item.collect = true;
+        } else {
+          item.collect = false;
+        }
+      }
+
+      // 刷新列表视图以反映更改
+      state.refreshListView();
+    }
   }
 
   Future<List<Datas>?> _loadMoreData(int page, int startPage) async {
@@ -107,11 +131,12 @@ class _FrontScreenState extends State<FrontScreen> {
         return null;
       }
     }
-    try {
-      final list = await HttpCreator.getFrontList(page);
+    final list =
+        await HttpUtils.handleRequestData(() => HttpCreator.getFrontList(page));
+
+    if (list != null) {
       return list.data!.datas;
-    } catch (e) {
-      ToastUtils.showNetWorkErrorToast();
+    } else {
       return null;
     }
   }
@@ -124,8 +149,7 @@ class _FrontScreenState extends State<FrontScreen> {
           topLeft: Radius.circular(12), topRight: Radius.circular(12));
     } else if (index == length - 1) {
       borderRadius = BorderRadius.only(
-          bottomLeft: Radius.circular(12),
-          bottomRight: Radius.circular(12));
+          bottomLeft: Radius.circular(12), bottomRight: Radius.circular(12));
       isBottomLine = false;
     } else {
       borderRadius = BorderRadius.zero;

@@ -38,7 +38,7 @@ class UserInfoScreen extends StatelessWidget {
               Container(
                 margin: EdgeInsets.only(top: 60),
                 padding: EdgeInsets.all(16),
-                child: ElevatedButton(
+                child: OutlinedButton(
                   style: ButtonStyle(
                     side: MaterialStateProperty.all(BorderSide.none),
                   ),
