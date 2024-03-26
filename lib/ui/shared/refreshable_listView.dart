@@ -222,7 +222,7 @@ class RefreshableListViewState<T> extends State<RefreshableListView<T>> {
 
   Widget _buildEmptyIndicator() {
     return Center(
-      child: Text("无任何内容～"),
+      child: Text(LocaleKeys.front_dataEmpty.tr()),
     );
   }
 

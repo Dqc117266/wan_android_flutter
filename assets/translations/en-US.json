@@ -11,7 +11,7 @@
   "front": {
     "dataLoadingFailed": "Data loading failed, click to try again",
     "dataEnd": "It’s the end~",
-    "dataEmpty": "No search results～"
+    "dataEmpty": "No results～"
   },
   "webpage": {
     "labelList": {

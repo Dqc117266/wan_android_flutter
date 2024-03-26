@@ -2,11 +2,14 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:provider/provider.dart';
 import 'package:wan_android_flutter/core/lang/locale_keys.g.dart';
 import 'package:wan_android_flutter/core/model/rinks_model.dart';
 import 'package:wan_android_flutter/core/model/user_rink_model.dart';
 import 'package:wan_android_flutter/core/router/router.dart';
 import 'package:wan_android_flutter/core/utils/toast_utils.dart';
+import 'package:wan_android_flutter/core/utils/userinfo_storage.dart';
+import 'package:wan_android_flutter/core/viewmodel/user_viewmodel.dart';
 import 'package:wan_android_flutter/network/http_creator.dart';
 import 'package:wan_android_flutter/ui/pages/mine/integral/history/history_page.dart';
 import 'package:wan_android_flutter/ui/shared/custom_future_builder.dart';
@@ -45,6 +48,7 @@ class _IntegralScreenState extends State<IntegralScreen> {
 
           final RinksModel rinksModel = data[0] as RinksModel;
           final UserRinkModel userRinkModel = data[1] as UserRinkModel;
+          _updateUserInfo(context, userRinkModel);
 
           return Column(
             children: [
@@ -117,5 +121,16 @@ class _IntegralScreenState extends State<IntegralScreen> {
         },
       ),
     );
+  }
+
+  void _updateUserInfo(BuildContext context, UserRinkModel userRinkModel) async { //更新积分数
+    if (userRinkModel != null) {
+      final userInfo = await UserUtils.getUserInfo();
+      userInfo!.data!.coinCount = userRinkModel.data!.coinCount;
+      await UserUtils.saveUserInfo(userInfo);
+
+      Provider.of<UserViewModel>(context, listen: false).updateUser();
+
+    }
   }
 }

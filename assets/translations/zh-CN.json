@@ -11,7 +11,7 @@
   "front": {
     "dataLoadingFailed": "数据加载失败，点击重试",
     "dataEnd": "已经到底了～",
-    "dataEmpty": "无搜索内容～"
+    "dataEmpty": "无任何内容～"
   },
   "webpage": {
     "labelList": {
