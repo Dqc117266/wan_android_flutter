@@ -114,14 +114,17 @@ class _SliverListItemState extends State<ChapterListItem> {
                   .withOpacity(0.6)),
         ),
         InkWell(
-          borderRadius: BorderRadius.all(Radius.circular(100)),
+          borderRadius: BorderRadius.circular(16),
           onTap: () {
             // Your favorite onTap logic
             _collecAndUnCollec();
           },
-          child: widget.datas.collect! ? Icon(Icons.favorite,
-              color: Theme.of(context).colorScheme.primary) : Icon(Icons.favorite_border,
-              color: Theme.of(context).colorScheme.primary),
+          child: Container(
+            padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+            child: widget.datas.collect! ? Icon(Icons.favorite,
+                color: Theme.of(context).colorScheme.primary) : Icon(Icons.favorite_border,
+                color: Theme.of(context).colorScheme.primary),
+          )
         ),
       ],
     );

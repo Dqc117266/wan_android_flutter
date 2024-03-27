@@ -9,8 +9,9 @@ import 'package:wan_android_flutter/core/viewmodel/user_viewmodel.dart';
 import 'package:wan_android_flutter/network/http_creator.dart';
 import 'package:wan_android_flutter/ui/pages/mine/collect/coolect_item.dart';
 import 'package:wan_android_flutter/ui/pages/web/web_page.dart';
-import 'package:wan_android_flutter/ui/shared/custom_future_builder.dart';
-import 'package:wan_android_flutter/ui/shared/refreshable_listView.dart';
+import 'package:wan_android_flutter/ui/shared/constants.dart';
+import 'package:wan_android_flutter/ui/widgets/custom_future_builder.dart';
+import 'package:wan_android_flutter/ui/widgets/refreshable_listView.dart';
 
 class CollectScreen extends StatefulWidget {
   static const routeName = "/collect";
@@ -59,23 +60,9 @@ class _CollectScreenState extends State<CollectScreen> {
                     return null;
                   },
                   itemBuilder: (context, data, index, length) {
-                    final BorderRadius borderRadius;
-                    bool isBottomLine = true;
-                    if (length == 1) {
-                      borderRadius = BorderRadius.all(Radius.circular(12));
-                      isBottomLine = false;
-                    } else if (index == 0) {
-                      borderRadius = BorderRadius.only(
-                          topLeft: Radius.circular(12),
-                          topRight: Radius.circular(12));
-                    } else if (index == length - 1) {
-                      borderRadius = BorderRadius.only(
-                          bottomLeft: Radius.circular(12),
-                          bottomRight: Radius.circular(12));
-                      isBottomLine = false;
-                    } else {
-                      borderRadius = BorderRadius.zero;
-                    }
+                    final result = getItemBorderRadius(index, length);
+                    final BorderRadius borderRadius = result[0];
+                    final bool isBottomLine = result[1];
 
                     return CollectItem(
                       data: data,

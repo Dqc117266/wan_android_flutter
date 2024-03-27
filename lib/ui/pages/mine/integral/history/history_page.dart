@@ -4,8 +4,8 @@ import 'package:wan_android_flutter/core/lang/locale_keys.g.dart';
 import 'package:wan_android_flutter/core/model/user_rink_list_model.dart';
 import 'package:wan_android_flutter/core/utils/http_utils.dart';
 import 'package:wan_android_flutter/network/http_creator.dart';
-import 'package:wan_android_flutter/ui/shared/custom_future_builder.dart';
-import 'package:wan_android_flutter/ui/shared/refreshable_listView.dart';
+import 'package:wan_android_flutter/ui/widgets/custom_future_builder.dart';
+import 'package:wan_android_flutter/ui/widgets/refreshable_listView.dart';
 
 class HistoryScreen extends StatefulWidget {
   static const routeName = "/history";

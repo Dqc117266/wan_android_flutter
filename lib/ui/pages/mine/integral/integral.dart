@@ -12,8 +12,8 @@ import 'package:wan_android_flutter/core/utils/userinfo_storage.dart';
 import 'package:wan_android_flutter/core/viewmodel/user_viewmodel.dart';
 import 'package:wan_android_flutter/network/http_creator.dart';
 import 'package:wan_android_flutter/ui/pages/mine/integral/history/history_page.dart';
-import 'package:wan_android_flutter/ui/shared/custom_future_builder.dart';
-import 'package:wan_android_flutter/ui/shared/refreshable_listView.dart';
+import 'package:wan_android_flutter/ui/widgets/custom_future_builder.dart';
+import 'package:wan_android_flutter/ui/widgets/refreshable_listView.dart';
 import 'package:wan_android_flutter/ui/widgets/network_error_widget.dart';
 
 class IntegralScreen extends StatefulWidget {

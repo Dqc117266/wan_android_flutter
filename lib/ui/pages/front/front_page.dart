@@ -10,10 +10,11 @@ import 'package:wan_android_flutter/core/utils/http_utils.dart';
 import 'package:wan_android_flutter/core/utils/toast_utils.dart';
 import 'package:wan_android_flutter/core/viewmodel/user_viewmodel.dart';
 import 'package:wan_android_flutter/ui/pages/front/banner/create_carousel.dart';
-import 'package:wan_android_flutter/ui/shared/chapter_list_item.dart';
+import 'package:wan_android_flutter/ui/shared/constants.dart';
+import 'package:wan_android_flutter/ui/widgets/chapter_list_item.dart';
 import 'package:wan_android_flutter/ui/pages/search/custom_search_delegate.dart';
-import 'package:wan_android_flutter/ui/shared/custom_future_builder.dart';
-import 'package:wan_android_flutter/ui/shared/refreshable_listView.dart';
+import 'package:wan_android_flutter/ui/widgets/custom_future_builder.dart';
+import 'package:wan_android_flutter/ui/widgets/refreshable_listView.dart';
 import 'package:wan_android_flutter/ui/widgets/network_error_widget.dart';
 
 import '../../../network/http_creator.dart';
@@ -142,18 +143,10 @@ class _FrontScreenState extends State<FrontScreen> {
   }
 
   Widget _buildListItem(Datas data, int index, int length) {
-    final BorderRadius borderRadius;
-    bool isBottomLine = true;
-    if (index == 0) {
-      borderRadius = BorderRadius.only(
-          topLeft: Radius.circular(12), topRight: Radius.circular(12));
-    } else if (index == length - 1) {
-      borderRadius = BorderRadius.only(
-          bottomLeft: Radius.circular(12), bottomRight: Radius.circular(12));
-      isBottomLine = false;
-    } else {
-      borderRadius = BorderRadius.zero;
-    }
+    final result = getItemBorderRadius(index, length);
+    final BorderRadius borderRadius = result[0];
+    final bool isBottomLine = result[1];
+
     return ChapterListItem(
       datas: data,
       borderRadius: borderRadius,

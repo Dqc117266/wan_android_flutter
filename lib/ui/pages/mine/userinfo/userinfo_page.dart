@@ -7,7 +7,7 @@ import 'package:wan_android_flutter/core/utils/toast_utils.dart';
 import 'package:wan_android_flutter/core/utils/userinfo_storage.dart';
 import 'package:wan_android_flutter/core/viewmodel/user_viewmodel.dart';
 import 'package:wan_android_flutter/network/http_creator.dart';
-import 'package:wan_android_flutter/ui/shared/custom_future_builder.dart';
+import 'package:wan_android_flutter/ui/widgets/custom_future_builder.dart';
 import 'package:wan_android_flutter/ui/shared/dialog_helper.dart';
 
 class UserInfoScreen extends StatelessWidget {

@@ -28,6 +28,28 @@ final List<Widget> bottomNavigationBarItems = [
   )
 ];
 
+List<dynamic> getItemBorderRadius(int index, int length) {
+  final BorderRadius borderRadius;
+  bool isBottomLine = true;
+
+  if (length == 1) {
+    borderRadius = BorderRadius.all(Radius.circular(12));
+    isBottomLine = false;
+  } else if (index == 0) {
+    borderRadius = BorderRadius.only(
+        topLeft: Radius.circular(12),
+        topRight: Radius.circular(12));
+  } else if (index == length - 1) {
+    borderRadius = BorderRadius.only(
+        bottomLeft: Radius.circular(12),
+        bottomRight: Radius.circular(12));
+    isBottomLine = false;
+  } else {
+    borderRadius = BorderRadius.zero;
+  }
+  return [borderRadius, isBottomLine];
+}
+
 final List<String> appBarNames = [
   LocaleKeys.tableNames_frontPage.tr(),
   LocaleKeys.tableNames_projects.tr(),
@@ -98,4 +120,12 @@ enum LoadState {
 enum ToWebSource {
   bannerPage,
   articlePage;
+}
+
+enum TodoType {
+  normal(0),
+  star(1);
+
+  const TodoType(this.value);
+  final int value;
 }
