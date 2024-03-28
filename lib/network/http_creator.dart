@@ -218,6 +218,21 @@ class HttpCreator {
         queryParameters: {});
   }
 
+  static Future<TodoListModel> todoListByTypeAndStatus(int page, int type, int status) {
+
+    return fetchData(Api.todoList.addCeilUrl(page), (json) => TodoListModel.fromJson(json),
+        queryParameters: {"type": type, "status": status});
+  }
+
+  /*
+  * status: 0 // 0为未完成，1为完成
+  * */
+  static Future<TodoListModel> todoListByStatus(int page, int status) {
+
+    return fetchData(Api.todoList.addCeilUrl(page), (json) => TodoListModel.fromJson(json),
+        queryParameters: {"status" : status});
+  }
+
   static Future<UserInfoModel> getUserInfo() {
 
     return fetchData(Api.userInfo, (json) => UserInfoModel.fromJson(json));

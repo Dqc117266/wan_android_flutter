@@ -89,16 +89,19 @@ class _CollectItemState extends State<CollectItem> {
                   .withOpacity(0.6)),
         ),
         InkWell(
-            borderRadius: BorderRadius.all(Radius.circular(100)),
+            borderRadius: BorderRadius.circular(16),
             onTap: () async {
-              final result = await HttpUtils.unMyCollectChapter(context, widget.data.id!, widget.data.originId!);
+              final result = await HttpUtils.unMyCollectChapter(
+                  context, widget.data.id!, widget.data.originId!);
               if (result != null && result.errorCode == 0) {
                 widget.onFavoriteClicked!(widget.data);
               }
-              // Provider.of<CollectsViewModel>(context, listen: false).removeCollectedItem(widget.data);
             },
-            child: Icon(Icons.favorite,
-                color: Theme.of(context).colorScheme.primary)),
+            child: Container(
+              padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+              child: Icon(Icons.favorite,
+                  color: Theme.of(context).colorScheme.primary),
+            ))
       ],
     );
   }

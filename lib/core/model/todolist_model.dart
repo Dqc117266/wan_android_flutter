@@ -71,7 +71,7 @@ class Data {
 }
 
 class Datas {
-  String? completeDate;
+  int? completeDate;
   String? completeDateStr;
   String? content;
   int? date;

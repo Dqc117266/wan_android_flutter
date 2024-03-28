@@ -29,13 +29,16 @@ class RefreshableListView<T> extends StatefulWidget {
   RefreshableListViewState<T> createState() => RefreshableListViewState<T>();
 }
 
-class RefreshableListViewState<T> extends State<RefreshableListView<T>> {
+class RefreshableListViewState<T> extends State<RefreshableListView<T>> with AutomaticKeepAliveClientMixin {
   late List<T> items;
   late bool isLoading;
   late ScrollController _scrollController;
   int currentPage = 0; // 添加当前页数
   late LoadState _loadState;
   int headlength = 0;
+
+  @override
+  bool get wantKeepAlive => true;
 
   @override
   void initState() {
@@ -67,6 +70,8 @@ class RefreshableListViewState<T> extends State<RefreshableListView<T>> {
     setState(() {
       if (items.length == 0) {
         _loadState = LoadState.empty;
+      } else {
+        _loadState = LoadState.end;
       }
     });
   }
@@ -119,7 +124,7 @@ class RefreshableListViewState<T> extends State<RefreshableListView<T>> {
       widget.headWidget = await widget.refreshHeadCallback!();
     }
     setState(() {
-      if (refreshedItems != null && !refreshedItems.isEmpty) {
+      if (refreshedItems != null) {
         items = refreshedItems;
         currentPage = widget.firstPage + 1; // 重置当前页数
         _loadState = LoadState.success;

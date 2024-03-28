@@ -129,3 +129,11 @@ enum TodoType {
   const TodoType(this.value);
   final int value;
 }
+
+enum TodoStatus {
+  unDone(0),
+  done(1);
+
+  const TodoStatus(this.value);
+  final int value;
+}
