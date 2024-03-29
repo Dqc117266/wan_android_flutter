@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:wan_android_flutter/core/utils/TimeUtils.dart';
 
 class AddTodoModalBottomSheet {
   static void show(BuildContext context) {
@@ -12,7 +13,25 @@ class AddTodoModalBottomSheet {
   }
 }
 
-class _ModalBottomSheetContent extends StatelessWidget {
+class _ModalBottomSheetContent extends StatefulWidget {
+  @override
+  State<_ModalBottomSheetContent> createState() =>
+      _ModalBottomSheetContentState();
+}
+
+class _ModalBottomSheetContentState extends State<_ModalBottomSheetContent> {
+  bool isAddDetailContent = false;
+  bool isMarkStar = false;
+  late DateTime selectDate;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    final now = DateTime.now();
+    selectDate = DateTime(now.year, now.month, now.day);
+  }
+
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
@@ -23,9 +42,10 @@ class _ModalBottomSheetContent extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 8),
+              padding: const EdgeInsets.only(top: 12, left: 24),
               child: TextField(
                 keyboardType: TextInputType.text,
                 autofocus: true,
@@ -33,6 +53,37 @@ class _ModalBottomSheetContent extends StatelessWidget {
                   hintText: '新建待办事项',
                   border: InputBorder.none,
                 ),
+              ),
+            ),
+            if (isAddDetailContent)
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 24),
+                child: TextField(
+                  keyboardType: TextInputType.text,
+                  autofocus: true,
+                  decoration: InputDecoration(
+                    hintText: '添加详细内容',
+                    border: InputBorder.none,
+                  ),
+                  style: Theme.of(context).textTheme.titleSmall!.copyWith(
+                      color: Theme.of(context).colorScheme.onSurfaceVariant),
+                ),
+              ),
+            Padding(
+              padding: const EdgeInsets.only(left: 24),
+              child: OutlinedButton(
+                style: ButtonStyle(
+                  shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                    RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12), // 设置圆角大小
+                    ),
+                  ),
+                ),
+                onPressed: () async {
+                  selectDate = await _selectTime(context);
+                  setState(() {});
+                },
+                child: Text(TimeUtils.formatRelativeDate(selectDate)),
               ),
             ),
             Row(
@@ -43,24 +94,29 @@ class _ModalBottomSheetContent extends StatelessWidget {
                     SizedBox(
                       width: 10,
                     ),
-                    IconButton(onPressed: () {}, icon: Icon(Icons.sort)),
-                    IconButton(onPressed: () {}, icon: Icon(Icons.access_time)),
                     IconButton(
-                        onPressed: () {},
-                        icon: Icon(Icons.star_border_outlined)),
+                        onPressed: () {
+                          if (!isAddDetailContent) {
+                            setState(() {
+                              isAddDetailContent = true;
+                            });
+                          }
+                        },
+                        icon: Icon(Icons.notes_outlined)),
+                    IconButton(
+                        onPressed: () {
+                          setState(() {
+                            isMarkStar = !isMarkStar;
+                          });
+                        },
+                        icon: isMarkStar
+                            ? Icon(
+                                Icons.star,
+                                color: Theme.of(context).colorScheme.primary,
+                              )
+                            : Icon(Icons.star_border_outlined)),
                   ],
                 ),
-                // Container(
-                //   margin: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                //   child: InkWell(
-                //     borderRadius: BorderRadius.circular(16),
-                //     onTap: () {},
-                //     child: Padding(
-                //       padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                //       child: Text("保存"),
-                //     ),
-                //   ),
-                // )
 
                 Container(
                   margin: EdgeInsets.only(right: 8),
@@ -78,4 +134,17 @@ class _ModalBottomSheetContent extends StatelessWidget {
       ),
     );
   }
+
+  Future<DateTime> _selectTime(BuildContext context) async {
+    // Show the time picker dialog
+    final DateTime? selectedDate = await showDatePicker(
+      context: context,
+      initialDate: DateTime.now(), // Set the initial date
+      firstDate: DateTime(2020), // Set the first allowable date
+      lastDate: DateTime(2025), // Set the last allowable date
+    );
+
+    return selectedDate!;
+  }
+
 }
