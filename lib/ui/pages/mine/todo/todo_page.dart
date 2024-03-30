@@ -5,6 +5,7 @@ import 'package:flutter/widgets.dart';
 import 'package:wan_android_flutter/core/lang/locale_keys.g.dart';
 import 'package:wan_android_flutter/core/model/todo_model.dart';
 import 'package:wan_android_flutter/core/model/todolist_model.dart';
+import 'package:wan_android_flutter/core/utils/TimeUtils.dart';
 import 'package:wan_android_flutter/core/utils/http_utils.dart';
 import 'package:wan_android_flutter/network/http_creator.dart';
 import 'package:wan_android_flutter/ui/pages/mine/todo/addtodo/modal_bottom_sheet.dart';
@@ -71,7 +72,14 @@ class _TodoScreenState extends State<TodoScreen>
         ),
         floatingActionButton: FloatingActionButton(
           onPressed: () {
-            AddTodoModalBottomSheet.show(context);
+            AddTodoModalBottomSheet.show(context, (todoModel) {
+              if (todoModel != null) {
+                if (todoModel.data!.type == TodoType.star) {
+                  addToList(todoModel.data!, starTodokey);
+                }
+                addToList(todoModel.data!, unDoneTodokey);
+              }
+            });
           },
           child: Icon(Icons.add),
         ),
@@ -101,8 +109,8 @@ class _TodoScreenState extends State<TodoScreen>
           key: unDoneTodokey,
           initialItems: todoListModel.data!.datas!,
           loadMoreCallback: (page) async {
-            final todoList = await HttpUtils.handleRequestData(
-                () => HttpCreator.todoListByStatus(page, TodoStatus.unDone.value));
+            final todoList = await HttpUtils.handleRequestData(() =>
+                HttpCreator.todoListByStatus(page, TodoStatus.unDone.value));
             if (todoList != null) {
               return todoList.data!.datas;
             }
@@ -179,7 +187,8 @@ class _TodoScreenState extends State<TodoScreen>
     }
   }
 
-  void removeFromList(Datas item, int index, GlobalKey<RefreshableListViewState<Datas>> key) {
+  void removeFromList(
+      Datas item, int index, GlobalKey<RefreshableListViewState<Datas>> key) {
     if (key.currentState != null) {
       key.currentState!.items.removeWhere((element) => element.id == item.id);
       key.currentState!.refreshListView();
@@ -194,7 +203,8 @@ class _TodoScreenState extends State<TodoScreen>
     }
   }
 
-  void addToStarList(Datas item, GlobalKey<RefreshableListViewState<Datas>> key) {
+  void addToStarList(
+      Datas item, GlobalKey<RefreshableListViewState<Datas>> key) {
     if (key.currentState != null) {
       key.currentState!.items.removeWhere((element) => element.id == item.id);
       key.currentState!.items.add(item);
@@ -225,9 +235,47 @@ class _TodoScreenState extends State<TodoScreen>
     }).toList();
   }
 
+  void updateTodoDate(Datas item, int index, DateTime selectDate) async {
+    if (!TimeUtils.isSameDay(item.date!, selectDate)) {
+      final todoModel =
+          await HttpUtils.handleRequestData(() => HttpCreator.todoUpdate(
+                item.id!,
+                item.title!,
+                item.content!,
+                TimeUtils.formatDateYearTime(selectDate),
+                item.status!,
+                item.type!,
+                item.priority!,
+              ));
+
+      if (todoModel != null) {
+        updateTodoItem(todoModel, index);
+      }
+    }
+  }
+
+  void updateTodoItem(TodoModel todoModel, int index) {
+    if (unDoneTodokey.currentState != null) {
+      unDoneTodokey.currentState!.items[index] = todoModel.data!;
+      sortTodoList(unDoneTodokey.currentState!.items);
+      unDoneTodokey.currentState!.refreshListView();
+    }
+
+    if (starTodokey.currentState != null) {
+      final items = starTodokey.currentState!.items;
+      final findIndex = items.indexWhere((todo) => todo.id == todoModel.data!.id);
+
+      items[findIndex] = todoModel.data!;
+
+      sortTodoList(starTodokey.currentState!.items);
+      starTodokey.currentState!.refreshListView();
+    }
+  }
+
   Widget _buildTabStarContent(BuildContext context, int firstPage) {
     return CustomFutureBuilder(
-      future: HttpCreator.todoListByTypeAndStatus(firstPage, TodoType.star.value, TodoStatus.unDone.value),
+      future: HttpCreator.todoListByTypeAndStatus(
+          firstPage, TodoType.star.value, TodoStatus.unDone.value),
       onRefresh: () {
         setState(() {});
       },
@@ -238,8 +286,9 @@ class _TodoScreenState extends State<TodoScreen>
           key: starTodokey,
           initialItems: todoListModel.data!.datas!,
           loadMoreCallback: (page) async {
-            final todoList = await HttpUtils.handleRequestData(
-                () => HttpCreator.todoListByTypeAndStatus(page, TodoType.star.value, TodoStatus.unDone.value));
+            final todoList = await HttpUtils.handleRequestData(() =>
+                HttpCreator.todoListByTypeAndStatus(
+                    page, TodoType.star.value, TodoStatus.unDone.value));
             if (todoList != null) {
               return todoList.data!.datas;
             }
@@ -256,6 +305,32 @@ class _TodoScreenState extends State<TodoScreen>
   }
 
   Widget _buildTodoListTile(Datas item, index) {
+    DateTime dateTime = DateTime.fromMillisecondsSinceEpoch(item.date!);
+
+    OutlinedButton outlineBtn = OutlinedButton(
+      style: ButtonStyle(
+        shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+          RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12), // 设置圆角大小
+          ),
+        ),
+      ),
+      onPressed: () async {
+        final selectDate = await TimeUtils.selectTime(context, dateTime);
+        if (selectDate != null) {
+          updateTodoDate(item, index, selectDate);
+        }
+      },
+      child: Text(
+        TimeUtils.formatRelativeDate(dateTime),
+        style: TextStyle(
+          color: TimeUtils.isLateTime(dateTime)
+              ? Theme.of(context).colorScheme.error
+              : Theme.of(context).colorScheme.primary,
+        ),
+      ),
+    );
+
     return ListTile(
       onTap: () {},
       leading: Checkbox(
@@ -263,11 +338,17 @@ class _TodoScreenState extends State<TodoScreen>
         value: false,
         onChanged: (bool? value) {
           markDoneAndupdateList(item, index);
-          print('chenge $value');
         },
       ),
       title: Text(item.title!),
-      subtitle: item.content!.trim().isNotEmpty ? Text(item.content!) : null,
+      subtitle: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          if (item.content!.trim().isNotEmpty) Text(item.content!),
+          outlineBtn,
+        ],
+      ),
       trailing: InkWell(
         borderRadius: BorderRadius.circular(16),
         onTap: () {

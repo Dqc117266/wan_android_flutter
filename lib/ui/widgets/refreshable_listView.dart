@@ -70,7 +70,7 @@ class RefreshableListViewState<T> extends State<RefreshableListView<T>> with Aut
     setState(() {
       if (items.length == 0) {
         _loadState = LoadState.empty;
-      } else {
+      } else if (items.length == 1) {
         _loadState = LoadState.end;
       }
     });

@@ -1,25 +1,37 @@
 import 'package:flutter/material.dart';
+import 'package:wan_android_flutter/core/model/todo_model.dart';
 import 'package:wan_android_flutter/core/utils/TimeUtils.dart';
+import 'package:wan_android_flutter/core/utils/http_utils.dart';
+import 'package:wan_android_flutter/network/http_creator.dart';
+import 'package:wan_android_flutter/ui/shared/constants.dart';
 
 class AddTodoModalBottomSheet {
-  static void show(BuildContext context) {
+  static void show(BuildContext context, Function(TodoModel?) callback) {
     showModalBottomSheet(
       isScrollControlled: true,
       context: context,
       builder: (BuildContext context) {
-        return _ModalBottomSheetContent();
+        return _ModalBottomSheetContent(callback: callback,);
       },
     );
   }
 }
 
 class _ModalBottomSheetContent extends StatefulWidget {
+  final Function(TodoModel?) callback;
+
+  const _ModalBottomSheetContent({required this.callback});
+
   @override
   State<_ModalBottomSheetContent> createState() =>
       _ModalBottomSheetContentState();
 }
 
 class _ModalBottomSheetContentState extends State<_ModalBottomSheetContent> {
+  final TextEditingController _titleEditcontroller = TextEditingController();
+  final TextEditingController _contentEditcontroller = TextEditingController();
+
+  bool isTitleNotEmpty = false;
   bool isAddDetailContent = false;
   bool isMarkStar = false;
   late DateTime selectDate;
@@ -47,6 +59,12 @@ class _ModalBottomSheetContentState extends State<_ModalBottomSheetContent> {
             Padding(
               padding: const EdgeInsets.only(top: 12, left: 24),
               child: TextField(
+                controller: _titleEditcontroller,
+                onChanged: (value) {
+                  setState(() {
+                    isTitleNotEmpty = value.isNotEmpty;
+                  });
+                },
                 keyboardType: TextInputType.text,
                 autofocus: true,
                 decoration: InputDecoration(
@@ -61,6 +79,7 @@ class _ModalBottomSheetContentState extends State<_ModalBottomSheetContent> {
                 child: TextField(
                   keyboardType: TextInputType.text,
                   autofocus: true,
+                  controller: _contentEditcontroller,
                   decoration: InputDecoration(
                     hintText: '添加详细内容',
                     border: InputBorder.none,
@@ -80,10 +99,10 @@ class _ModalBottomSheetContentState extends State<_ModalBottomSheetContent> {
                   ),
                 ),
                 onPressed: () async {
-                  selectDate = await _selectTime(context);
+                  selectDate = (await TimeUtils.selectTime(context, selectDate))!;
                   setState(() {});
                 },
-                child: Text(TimeUtils.formatRelativeDate(selectDate)),
+                child: Text(TimeUtils.formatDateTime(selectDate)),
               ),
             ),
             Row(
@@ -117,14 +136,15 @@ class _ModalBottomSheetContentState extends State<_ModalBottomSheetContent> {
                             : Icon(Icons.star_border_outlined)),
                   ],
                 ),
-
                 Container(
                   margin: EdgeInsets.only(right: 8),
                   child: OutlinedButton(
                       style: ButtonStyle(
                         side: MaterialStateProperty.all(BorderSide.none),
                       ),
-                      onPressed: () {},
+                      onPressed: isTitleNotEmpty ? () {
+                        _addTodo(context);
+                      } : null,
                       child: Text("保存")),
                 ),
               ],
@@ -135,16 +155,20 @@ class _ModalBottomSheetContentState extends State<_ModalBottomSheetContent> {
     );
   }
 
-  Future<DateTime> _selectTime(BuildContext context) async {
-    // Show the time picker dialog
-    final DateTime? selectedDate = await showDatePicker(
-      context: context,
-      initialDate: DateTime.now(), // Set the initial date
-      firstDate: DateTime(2020), // Set the first allowable date
-      lastDate: DateTime(2025), // Set the last allowable date
-    );
+  void _addTodo(BuildContext context) async {
+    final content = _contentEditcontroller.text;
 
-    return selectedDate!;
+    final TodoModel? todoModel = await HttpUtils.handleRequestData(() => HttpCreator.todoAdd(
+        _titleEditcontroller.text,
+        content.isNotEmpty? content : " ",
+        TimeUtils.formatDateYearTime(selectDate),
+        isMarkStar ? TodoType.star.value : TodoType.normal.value,
+        0));
+
+    if (todoModel != null) {
+      widget.callback(todoModel);
+      Navigator.of(context).pop();
+    }
+
   }
-
 }
