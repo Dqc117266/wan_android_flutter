@@ -54,6 +54,9 @@ class _FrontScreenState extends State<FrontScreen> {
           HttpCreator.getFrontTopList(),
           HttpCreator.getFrontList(0),
         ]),
+        onRefresh: () {
+          setState(() {});
+        },
         builder: (context, snapshot) {
           final List<Object> data = snapshot.data as List<Object>;
           final FrontBannerModel? bannerData = data[0] as FrontBannerModel?;

@@ -22,6 +22,10 @@ class TimeUtils {
         return '$yearsAgo年前';
       }
     } else {
+      print("difference.inDays ${difference.inDays}");
+      if (difference.inDays == 0) {
+        return '明天';
+      }
       return formatDateTime(date);
     }
 

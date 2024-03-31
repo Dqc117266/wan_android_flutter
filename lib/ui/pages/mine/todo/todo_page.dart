@@ -3,15 +3,15 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:wan_android_flutter/core/lang/locale_keys.g.dart';
-import 'package:wan_android_flutter/core/model/todo_model.dart';
 import 'package:wan_android_flutter/core/model/todolist_model.dart';
 import 'package:wan_android_flutter/core/utils/TimeUtils.dart';
 import 'package:wan_android_flutter/core/utils/http_utils.dart';
 import 'package:wan_android_flutter/network/http_creator.dart';
-import 'package:wan_android_flutter/ui/pages/mine/todo/addtodo/modal_bottom_sheet.dart';
 import 'package:wan_android_flutter/ui/shared/constants.dart';
 import 'package:wan_android_flutter/ui/widgets/custom_future_builder.dart';
 import 'package:wan_android_flutter/ui/widgets/refreshable_listView.dart';
+
+import 'todolist_helper.dart';
 
 class TodoScreen extends StatefulWidget {
   static const routeName = "/todo";
@@ -24,6 +24,7 @@ class TodoScreen extends StatefulWidget {
 
 class _TodoScreenState extends State<TodoScreen>
     with SingleTickerProviderStateMixin {
+  late TodoListHelper _todoListHelper;
   late TabController _tabController;
   int firstPage = 1;
 
@@ -37,6 +38,7 @@ class _TodoScreenState extends State<TodoScreen>
     super.initState();
     _tabController = TabController(length: 3, vsync: this, initialIndex: 1);
     _tabController.addListener(_handleTabChange);
+    _todoListHelper = TodoListHelper(starTodokey, unDoneTodokey, doneTodokey);
   }
 
   void _handleTabChange() {
@@ -72,14 +74,7 @@ class _TodoScreenState extends State<TodoScreen>
         ),
         floatingActionButton: FloatingActionButton(
           onPressed: () {
-            AddTodoModalBottomSheet.show(context, (todoModel) {
-              if (todoModel != null) {
-                if (todoModel.data!.type == TodoType.star) {
-                  addToList(todoModel.data!, starTodokey);
-                }
-                addToList(todoModel.data!, unDoneTodokey);
-              }
-            });
+            _todoListHelper.showAddTodoModalBottom(context);
           },
           child: Icon(Icons.add),
         ),
@@ -124,152 +119,6 @@ class _TodoScreenState extends State<TodoScreen>
         );
       },
     );
-  }
-
-  void markStarAndUpdateList(Datas item, index) async {
-    final type = item.type! == TodoType.star.value
-        ? TodoType.normal.value
-        : TodoType.star.value;
-
-    final TodoModel? todoModel = await HttpUtils.handleRequestData(() =>
-        HttpCreator.todoUpdate(item.id!, item.title!, item.content!,
-            item.dateStr!, item.status!, type, item.priority!));
-
-    if (todoModel != null && unDoneTodokey.currentState != null) {
-      unDoneTodokey.currentState!.items =
-          setUnStarMark(unDoneTodokey.currentState!.items, todoModel.data!);
-      unDoneTodokey.currentState!.refreshListView();
-
-      if (starTodokey.currentState != null) {
-        final items = starTodokey.currentState!.items;
-        if (type == TodoType.star.value) {
-          if (!items.contains(todoModel.data!)) {
-            starTodokey.currentState!.items.add(todoModel.data!);
-
-            sortTodoList(starTodokey.currentState!.items);
-            starTodokey.currentState!.refreshListView();
-          }
-        } else {
-          items.removeWhere((item) => item.id == todoModel.data!.id);
-
-          unDoneTodokey.currentState!.items =
-              setUnStarMark(unDoneTodokey.currentState!.items, todoModel.data!);
-          unDoneTodokey.currentState!.refreshListView();
-
-          starTodokey.currentState!.refreshListView();
-        }
-      }
-    }
-  }
-
-  void markDoneAndupdateList(Datas item, index) async {
-    final status = item.status! == TodoStatus.done.value
-        ? TodoStatus.unDone.value
-        : TodoStatus.done.value;
-
-    final TodoModel? todoModel = await HttpUtils.handleRequestData(() =>
-        HttpCreator.todoUpdate(item.id!, item.title!, item.content!,
-            item.dateStr!, status, item.type!, item.priority!));
-
-    if (todoModel != null) {
-      if (status == TodoStatus.done.value) {
-        removeFromList(item, index, unDoneTodokey);
-        removeFromList(item, index, starTodokey);
-        addToList(todoModel.data!, doneTodokey);
-      } else {
-        removeFromList(item, index, doneTodokey);
-        addToList(todoModel.data!, unDoneTodokey);
-        if (todoModel.data!.type == TodoType.star.value) {
-          addToList(todoModel.data!, starTodokey);
-        }
-      }
-      // addToStarList(todoModel.data!, starTodokey);
-    }
-  }
-
-  void removeFromList(
-      Datas item, int index, GlobalKey<RefreshableListViewState<Datas>> key) {
-    if (key.currentState != null) {
-      key.currentState!.items.removeWhere((element) => element.id == item.id);
-      key.currentState!.refreshListView();
-    }
-  }
-
-  void addToList(Datas item, GlobalKey<RefreshableListViewState<Datas>> key) {
-    if (key.currentState != null && !key.currentState!.items.contains(item)) {
-      key.currentState!.items.add(item);
-      sortTodoList(key.currentState!.items);
-      key.currentState!.refreshListView();
-    }
-  }
-
-  void addToStarList(
-      Datas item, GlobalKey<RefreshableListViewState<Datas>> key) {
-    if (key.currentState != null) {
-      key.currentState!.items.removeWhere((element) => element.id == item.id);
-      key.currentState!.items.add(item);
-      key.currentState!.refreshListView();
-    }
-  }
-
-  void sortTodoList(List<Datas> items) {
-    items.sort((a, b) {
-      // 先按照 date 从大到小排序
-      int dateComparison = b.date!.compareTo(a.date!);
-      if (dateComparison != 0) {
-        return dateComparison;
-      } else {
-        // 如果 date 相等，则按照 id 从小到大排序
-        return a.id!.compareTo(b.id!);
-      }
-    });
-  }
-
-  List<Datas> setUnStarMark(List<Datas> items, Datas data) {
-    return items.map((item) {
-      if (item.id == data.id) {
-        return data;
-      } else {
-        return item;
-      }
-    }).toList();
-  }
-
-  void updateTodoDate(Datas item, int index, DateTime selectDate) async {
-    if (!TimeUtils.isSameDay(item.date!, selectDate)) {
-      final todoModel =
-          await HttpUtils.handleRequestData(() => HttpCreator.todoUpdate(
-                item.id!,
-                item.title!,
-                item.content!,
-                TimeUtils.formatDateYearTime(selectDate),
-                item.status!,
-                item.type!,
-                item.priority!,
-              ));
-
-      if (todoModel != null) {
-        updateTodoItem(todoModel, index);
-      }
-    }
-  }
-
-  void updateTodoItem(TodoModel todoModel, int index) {
-    if (unDoneTodokey.currentState != null) {
-      unDoneTodokey.currentState!.items[index] = todoModel.data!;
-      sortTodoList(unDoneTodokey.currentState!.items);
-      unDoneTodokey.currentState!.refreshListView();
-    }
-
-    if (starTodokey.currentState != null) {
-      final items = starTodokey.currentState!.items;
-      final findIndex = items.indexWhere((todo) => todo.id == todoModel.data!.id);
-
-      items[findIndex] = todoModel.data!;
-
-      sortTodoList(starTodokey.currentState!.items);
-      starTodokey.currentState!.refreshListView();
-    }
   }
 
   Widget _buildTabStarContent(BuildContext context, int firstPage) {
@@ -318,7 +167,7 @@ class _TodoScreenState extends State<TodoScreen>
       onPressed: () async {
         final selectDate = await TimeUtils.selectTime(context, dateTime);
         if (selectDate != null) {
-          updateTodoDate(item, index, selectDate);
+          _todoListHelper.updateTodoDate(item, index, selectDate);
         }
       },
       child: Text(
@@ -337,7 +186,7 @@ class _TodoScreenState extends State<TodoScreen>
         shape: CircleBorder(),
         value: false,
         onChanged: (bool? value) {
-          markDoneAndupdateList(item, index);
+          _todoListHelper.markDoneAndupdateList(item, index);
         },
       ),
       title: Text(item.title!),
@@ -352,7 +201,7 @@ class _TodoScreenState extends State<TodoScreen>
       trailing: InkWell(
         borderRadius: BorderRadius.circular(16),
         onTap: () {
-          markStarAndUpdateList(item, index);
+          _todoListHelper.markStarAndUpdateList(item, index);
         },
         child: Container(
           decoration: BoxDecoration(
@@ -402,7 +251,7 @@ class _TodoScreenState extends State<TodoScreen>
                   color: Theme.of(context).colorScheme.primary,
                 ),
                 onPressed: () {
-                  markDoneAndupdateList(item, index);
+                  _todoListHelper.markDoneAndupdateList(item, index);
                 },
               ),
               title: Text(
