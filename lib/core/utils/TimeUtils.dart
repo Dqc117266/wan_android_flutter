@@ -76,6 +76,9 @@ class TimeUtils {
     return formattedYearDate.format(dateTime);
   }
 
+  static DateTime getDateTime(int dateMillis) {
+    return DateTime.fromMillisecondsSinceEpoch(dateMillis);
+  }
 
   static Future<DateTime?> selectTime(
       BuildContext context, DateTime initialDate) async {

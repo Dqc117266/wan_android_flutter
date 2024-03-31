@@ -6,12 +6,12 @@ import 'package:wan_android_flutter/network/http_creator.dart';
 import 'package:wan_android_flutter/ui/shared/constants.dart';
 
 class AddTodoModalBottomSheet {
-  static void show(BuildContext context, Function(TodoModel?) callback) {
+  static void show(BuildContext context, int tabIndex, Function(TodoModel?) callback) {
     showModalBottomSheet(
       isScrollControlled: true,
       context: context,
       builder: (BuildContext context) {
-        return _ModalBottomSheetContent(callback: callback,);
+        return _ModalBottomSheetContent(callback: callback, tabIndex: tabIndex,);
       },
     );
   }
@@ -19,8 +19,9 @@ class AddTodoModalBottomSheet {
 
 class _ModalBottomSheetContent extends StatefulWidget {
   final Function(TodoModel?) callback;
+  final int tabIndex;
 
-  const _ModalBottomSheetContent({required this.callback});
+  const _ModalBottomSheetContent({required this.callback, required this.tabIndex});
 
   @override
   State<_ModalBottomSheetContent> createState() =>
@@ -34,6 +35,7 @@ class _ModalBottomSheetContentState extends State<_ModalBottomSheetContent> {
   bool isTitleNotEmpty = false;
   bool isAddDetailContent = false;
   bool isMarkStar = false;
+  bool alwaysMarkStar = false;
   late DateTime selectDate;
 
   @override
@@ -42,6 +44,9 @@ class _ModalBottomSheetContentState extends State<_ModalBottomSheetContent> {
     super.initState();
     final now = DateTime.now();
     selectDate = DateTime(now.year, now.month, now.day);
+
+    alwaysMarkStar = widget.tabIndex == 0; //当从星号页面进来的时候星号永远为标记状态
+    isMarkStar = alwaysMarkStar;
   }
 
   @override
@@ -124,9 +129,11 @@ class _ModalBottomSheetContentState extends State<_ModalBottomSheetContent> {
                         icon: Icon(Icons.notes_outlined)),
                     IconButton(
                         onPressed: () {
-                          setState(() {
-                            isMarkStar = !isMarkStar;
-                          });
+                          if (!alwaysMarkStar) {
+                            setState(() {
+                              isMarkStar = !isMarkStar;
+                            });
+                          }
                         },
                         icon: isMarkStar
                             ? Icon(

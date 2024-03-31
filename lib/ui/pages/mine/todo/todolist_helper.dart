@@ -153,10 +153,10 @@ class TodoListHelper {
     }
   }
 
-  void showAddTodoModalBottom(BuildContext context) {
-    AddTodoModalBottomSheet.show(context, (todoModel) {
+  void showAddTodoModalBottom(BuildContext context, int tabIndex) {
+    AddTodoModalBottomSheet.show(context, tabIndex, (todoModel) {
       if (todoModel != null) {
-        if (todoModel.data!.type == TodoType.star) {
+        if (todoModel.data!.type == TodoType.star.value) {
           addToList(todoModel.data!, starTodokey);
         }
         addToList(todoModel.data!, unDoneTodokey);

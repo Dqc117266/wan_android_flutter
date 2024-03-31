@@ -7,6 +7,7 @@ import 'package:wan_android_flutter/core/model/todolist_model.dart';
 import 'package:wan_android_flutter/core/utils/TimeUtils.dart';
 import 'package:wan_android_flutter/core/utils/http_utils.dart';
 import 'package:wan_android_flutter/network/http_creator.dart';
+import 'package:wan_android_flutter/ui/pages/mine/todo/todo_detail/todo_detail_page.dart';
 import 'package:wan_android_flutter/ui/shared/constants.dart';
 import 'package:wan_android_flutter/ui/widgets/custom_future_builder.dart';
 import 'package:wan_android_flutter/ui/widgets/refreshable_listView.dart';
@@ -27,6 +28,7 @@ class _TodoScreenState extends State<TodoScreen>
   late TodoListHelper _todoListHelper;
   late TabController _tabController;
   int firstPage = 1;
+  int tabIndex = 1;
 
   GlobalKey<RefreshableListViewState<Datas>> starTodokey = GlobalKey();
   GlobalKey<RefreshableListViewState<Datas>> unDoneTodokey = GlobalKey();
@@ -42,6 +44,8 @@ class _TodoScreenState extends State<TodoScreen>
   }
 
   void _handleTabChange() {
+    tabIndex = _tabController.index;
+
     // 在这里处理选项卡切换的逻辑
     //第一次切换页面currentState为空导致该无法更新，所以这种情况重新build页面
     if (_tabController.index == 0 && starTodokey.currentState == null ||
@@ -74,7 +78,7 @@ class _TodoScreenState extends State<TodoScreen>
         ),
         floatingActionButton: FloatingActionButton(
           onPressed: () {
-            _todoListHelper.showAddTodoModalBottom(context);
+            _todoListHelper.showAddTodoModalBottom(context, tabIndex);
           },
           child: Icon(Icons.add),
         ),
@@ -181,7 +185,9 @@ class _TodoScreenState extends State<TodoScreen>
     );
 
     return ListTile(
-      onTap: () {},
+      onTap: () {
+        _toDetailPage(item);
+      },
       leading: Checkbox(
         shape: CircleBorder(),
         value: false,
@@ -244,7 +250,9 @@ class _TodoScreenState extends State<TodoScreen>
           },
           itemBuilder: (context, item, index, length) {
             return ListTile(
-              onTap: () {},
+              onTap: () {
+                _toDetailPage(item);
+              },
               leading: IconButton(
                 icon: Icon(
                   Icons.done,
@@ -268,4 +276,18 @@ class _TodoScreenState extends State<TodoScreen>
       },
     );
   }
+
+  void _toDetailPage(Datas item) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => TodoDetailScreen(
+          key: GlobalKey(),
+          data: item,
+        ),
+      ),
+    );
+  }
+
+
 }
