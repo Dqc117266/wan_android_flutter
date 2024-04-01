@@ -192,7 +192,7 @@ class _TodoScreenState extends State<TodoScreen>
         shape: CircleBorder(),
         value: false,
         onChanged: (bool? value) {
-          _todoListHelper.markDoneAndupdateList(item, index);
+          _todoListHelper.markDoneAndupdateList(item);
         },
       ),
       title: Text(item.title!),
@@ -207,7 +207,7 @@ class _TodoScreenState extends State<TodoScreen>
       trailing: InkWell(
         borderRadius: BorderRadius.circular(16),
         onTap: () {
-          _todoListHelper.markStarAndUpdateList(item, index);
+          _todoListHelper.markStarAndUpdateList(item);
         },
         child: Container(
           decoration: BoxDecoration(
@@ -259,7 +259,7 @@ class _TodoScreenState extends State<TodoScreen>
                   color: Theme.of(context).colorScheme.primary,
                 ),
                 onPressed: () {
-                  _todoListHelper.markDoneAndupdateList(item, index);
+                  _todoListHelper.markDoneAndupdateList(item);
                 },
               ),
               title: Text(
@@ -284,6 +284,9 @@ class _TodoScreenState extends State<TodoScreen>
         builder: (context) => TodoDetailScreen(
           key: GlobalKey(),
           data: item,
+          unDoneTodokey: unDoneTodokey,
+          doneTodokey: doneTodokey,
+          starTodokey: starTodokey,
         ),
       ),
     );

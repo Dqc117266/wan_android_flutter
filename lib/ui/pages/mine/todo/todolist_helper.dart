@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:wan_android_flutter/core/model/result_model.dart';
 import 'package:wan_android_flutter/core/model/todo_model.dart';
 import 'package:wan_android_flutter/core/utils/TimeUtils.dart';
 import 'package:wan_android_flutter/core/utils/http_utils.dart';
@@ -16,7 +17,7 @@ class TodoListHelper {
 
   TodoListHelper(this.starTodokey, this.unDoneTodokey, this.doneTodokey);
 
-  void markStarAndUpdateList(Datas item, index) async {
+  void markStarAndUpdateList(Datas item) async {
     final type = item.type! == TodoType.star.value
         ? TodoType.normal.value
         : TodoType.star.value;
@@ -52,7 +53,7 @@ class TodoListHelper {
     }
   }
 
-  void markDoneAndupdateList(Datas item, index) async {
+  Future<bool> markDoneAndupdateList(Datas item) async {
     final status = item.status! == TodoStatus.done.value
         ? TodoStatus.unDone.value
         : TodoStatus.done.value;
@@ -63,22 +64,32 @@ class TodoListHelper {
 
     if (todoModel != null) {
       if (status == TodoStatus.done.value) {
-        removeFromList(item, index, unDoneTodokey);
-        removeFromList(item, index, starTodokey);
+        removeFromList(item, unDoneTodokey);
+        removeFromList(item, starTodokey);
         addToList(todoModel.data!, doneTodokey);
       } else {
-        removeFromList(item, index, doneTodokey);
+        removeFromList(item, doneTodokey);
         addToList(todoModel.data!, unDoneTodokey);
         if (todoModel.data!.type == TodoType.star.value) {
           addToList(todoModel.data!, starTodokey);
         }
       }
+      return Future(() => true);
       // addToStarList(todoModel.data!, starTodokey);
     }
+
+    return Future(() => false);
   }
 
   void addToList(Datas item, GlobalKey<RefreshableListViewState<Datas>> key) {
-    if (key.currentState != null && !key.currentState!.items.contains(item)) {
+    int findIdIndex = -1;
+    if (key.currentState != null) {
+      findIdIndex =
+          key.currentState!.items.indexWhere((todo) => todo.id == item.id!);
+    }
+
+    if (key.currentState != null && findIdIndex == -1) {
+      //找不到id就不继续执行
       key.currentState!.items.add(item);
       sortTodoList(key.currentState!.items);
       key.currentState!.refreshListView();
@@ -86,7 +97,7 @@ class TodoListHelper {
   }
 
   void removeFromList(
-      Datas item, int index, GlobalKey<RefreshableListViewState<Datas>> key) {
+      Datas item, GlobalKey<RefreshableListViewState<Datas>> key) {
     if (key.currentState != null) {
       key.currentState!.items.removeWhere((element) => element.id == item.id);
       key.currentState!.refreshListView();
@@ -119,15 +130,15 @@ class TodoListHelper {
   void updateTodoDate(Datas item, int index, DateTime selectDate) async {
     if (!TimeUtils.isSameDay(item.date!, selectDate)) {
       final todoModel =
-      await HttpUtils.handleRequestData(() => HttpCreator.todoUpdate(
-        item.id!,
-        item.title!,
-        item.content!,
-        TimeUtils.formatDateYearTime(selectDate),
-        item.status!,
-        item.type!,
-        item.priority!,
-      ));
+          await HttpUtils.handleRequestData(() => HttpCreator.todoUpdate(
+                item.id!,
+                item.title!,
+                item.content!,
+                TimeUtils.formatDateYearTime(selectDate),
+                item.status!,
+                item.type!,
+                item.priority!,
+              ));
 
       if (todoModel != null) {
         updateTodoItem(todoModel, index);
@@ -144,7 +155,8 @@ class TodoListHelper {
 
     if (starTodokey.currentState != null) {
       final items = starTodokey.currentState!.items;
-      final findIndex = items.indexWhere((todo) => todo.id == todoModel.data!.id);
+      final findIndex =
+          items.indexWhere((todo) => todo.id == todoModel.data!.id);
 
       items[findIndex] = todoModel.data!;
 
@@ -164,5 +176,60 @@ class TodoListHelper {
     });
   }
 
+  void deleteTodoItem(Datas item) async {
+    ResultModel? resultModel = await HttpUtils.handleRequestData(
+        () => HttpCreator.todoDelete(item.id!));
+    if (resultModel != null) {
+      if (item.status == TodoStatus.done.value) {
+        removeFromList(item, doneTodokey);
+      } else {
+        removeFromList(item, unDoneTodokey);
+        removeFromList(item, starTodokey);
+      }
+    }
+  }
 
+  void changedTitleAndContentUpdateTodo(
+      String titleInputText, String contentInputText, Datas item) async {
+    if (titleInputText.trim() != item.title ||
+        contentInputText.trim() != item.content) {
+      TodoModel? todoModel = await HttpUtils.handleRequestData(
+        () => HttpCreator.todoUpdate(
+            item.id!,
+            titleInputText.trim(),
+            contentInputText.trim(),
+            item.dateStr!,
+            item.status!,
+            item.type!,
+            item.priority!),
+      );
+
+      if (todoModel != null) {
+        if (todoModel.data!.status == TodoStatus.done.value) {
+          updateItemTitleAndContent(doneTodokey, titleInputText.trim(),
+              contentInputText.trim(), item);
+        } else {
+          updateItemTitleAndContent(unDoneTodokey, titleInputText.trim(),
+              contentInputText.trim(), item);
+
+          updateItemTitleAndContent(starTodokey, titleInputText.trim(),
+              contentInputText.trim(), item);
+
+        }
+      }
+    }
+  }
+
+  void updateItemTitleAndContent(GlobalKey<RefreshableListViewState<Datas>> key,
+      String title, String content, Datas item) {
+    if (key.currentState != null) {
+      final findIndex =
+          key.currentState!.items.indexWhere((todo) => todo.id == item.id);
+      if (findIndex != -1) {
+        key.currentState!.items[findIndex].title = title;
+        key.currentState!.items[findIndex].content = content;
+        key.currentState!.refreshListView();
+      }
+    }
+  }
 }
