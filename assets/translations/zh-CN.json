@@ -77,6 +77,43 @@
     "coin": "积分",
     "outLogin": "退出登陆",
     "outLoginContent": "是否退出当前登陆？"
+  },
+  "todo": {
+    "tabsUnDoneName": "待办事项",
+    "tabsDoneName": "已完成",
+    "bottomSheet": {
+      "titleHint": "新建待办事项",
+      "contentHint": "添加详细内容",
+      "saveButtonName": "保存"
+    },
+    "detail": {
+      "delete": "删除",
+      "titleHint": "输入标题",
+      "contentHint": "添加详细内容",
+      "markUnDoned": "已标记为未完成",
+      "markDoned": "已标记为已完成",
+      "markUnDone": "标记为未完成",
+      "markDone": "标记为已完成"
+    },
+    "date": {
+      "today": "今天",
+      "yesterday": "昨天",
+      "dayAgo": "天前",
+      "weekAgo": "周前",
+      "yearAgo": "年前",
+      "tomorrow": "明天",
+      "monthDay": "M月d日E",
+      "yearMonthDay": "yyyy年MM月dd日E",
+      "localeIdentifier": "zh_CN"
+    }
+  },
+  "settings": {
+    "theme": {
+      "title": "主题色",
+      "content": "更改应用程序的主题颜色",
+      "dialogTitle": "选择主题颜色",
+      "close": "关闭"
+    }
   }
 
 }

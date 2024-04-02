@@ -1,4 +1,6 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:wan_android_flutter/core/lang/locale_keys.g.dart';
 import 'package:wan_android_flutter/core/model/todolist_model.dart';
 import 'package:wan_android_flutter/core/utils/time_utils.dart';
 import 'package:wan_android_flutter/core/utils/toast_utils.dart';
@@ -55,7 +57,6 @@ class _TodoDetailScreenState extends State<TodoDetailScreen> {
     isDonedTodo = widget.data!.status == TodoStatus.done.value;
 
     curDateTime = TimeUtils.getDateTime(widget.data!.date!);
-    print("type: ..${widget.data!.type}");
   }
 
   @override
@@ -102,7 +103,7 @@ class _TodoDetailScreenState extends State<TodoDetailScreen> {
             itemBuilder: (context) => [
               PopupMenuItem(
                 value: deleteValue,
-                child: Text('删除'),
+                child: Text(LocaleKeys.todo_detail_delete.tr()),
               ),
             ],
           ),
@@ -115,7 +116,7 @@ class _TodoDetailScreenState extends State<TodoDetailScreen> {
             padding: const EdgeInsets.only(left: 16),
             child: TextField(
               decoration: InputDecoration(
-                hintText: '输入标题',
+                hintText: LocaleKeys.todo_detail_titleHint.tr(),
                 border: InputBorder.none,
               ),
               controller: _titleController,
@@ -133,7 +134,7 @@ class _TodoDetailScreenState extends State<TodoDetailScreen> {
                 child: TextField(
                   controller: _contentController,
                   decoration: InputDecoration(
-                    hintText: '添加详细信息',
+                    hintText: LocaleKeys.todo_detail_contentHint.tr(),
                     border: InputBorder.none,
                   ),
                   style: TextStyle(
@@ -183,7 +184,7 @@ class _TodoDetailScreenState extends State<TodoDetailScreen> {
                     setState(() {
                       isDonedTodo = !isDonedTodo;
                     });
-                    ToastUtils.showShortToast('已标记为未完成');
+                    ToastUtils.showShortToast(LocaleKeys.todo_detail_markUnDoned.tr());
                   }
                 } else {
                   bool isChanged =
@@ -192,7 +193,7 @@ class _TodoDetailScreenState extends State<TodoDetailScreen> {
                     setState(() {
                       isDonedTodo = !isDonedTodo;
                     });
-                    ToastUtils.showShortToast('已标记为已完成');
+                    ToastUtils.showShortToast(LocaleKeys.todo_detail_markDoned.tr());
                   }
                 }
 
@@ -203,7 +204,7 @@ class _TodoDetailScreenState extends State<TodoDetailScreen> {
               child: Padding(
                 padding: const EdgeInsets.all(16.0),
                 child: Text(
-                  isDonedTodo ? "标记为未完成" : "标记为已完成",
+                  isDonedTodo ? LocaleKeys.todo_detail_markUnDone.tr() : LocaleKeys.todo_detail_markDone.tr(),
                   style: Theme.of(context)
                       .textTheme
                       .titleSmall!

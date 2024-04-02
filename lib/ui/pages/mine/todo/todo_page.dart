@@ -71,8 +71,8 @@ class _TodoScreenState extends State<TodoScreen>
               Tab(
                 child: Icon(Icons.star),
               ), // 第一个选项卡
-              Tab(text: '待办事项'), // 第二个选项卡
-              Tab(text: '已完成'), // 第二个选项卡
+              Tab(text: LocaleKeys.todo_tabsUnDoneName.tr()), // 第二个选项卡
+              Tab(text: LocaleKeys.todo_tabsDoneName.tr()), // 第二个选项卡
             ],
           ),
         ),

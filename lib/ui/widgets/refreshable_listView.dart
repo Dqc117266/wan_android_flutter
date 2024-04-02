@@ -89,7 +89,7 @@ class RefreshableListViewState<T> extends State<RefreshableListView<T>> with Aut
   Widget build(BuildContext context) {
     return Scrollbar(
       child: RefreshIndicator(
-        onRefresh: _refresh,
+        onRefresh: refresh,
         child: ListView.builder(
           padding: EdgeInsets.only(top: 16),
           physics: AlwaysScrollableScrollPhysics(),
@@ -117,7 +117,7 @@ class RefreshableListViewState<T> extends State<RefreshableListView<T>> with Aut
     );
   }
 
-  Future<void> _refresh() async {
+  Future<void> refresh() async {
     final List<T>? refreshedItems = await widget.loadMoreCallback(widget.firstPage); // 刷新时重置当前页数
     //刷新headview
     if (widget.refreshHeadCallback != null) {

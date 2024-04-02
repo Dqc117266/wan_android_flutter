@@ -39,7 +39,7 @@ class _OfficialAccountsScreenState extends State<OfficialAccountsScreen>
 
           return Scaffold(
             appBar: AppBar(
-              title: Text(LocaleKeys.tableNames_projects.tr()),
+              title: Text(LocaleKeys.tableNames_officialAccounts.tr()),
               bottom: TabBar(
                 controller: _tabController,
                 isScrollable: true,

@@ -77,6 +77,43 @@
     "coin": "Points",
     "outLogin": "Log Out",
     "outLoginContent": "Are you sure you want to log out?"
+  },
+  "todo": {
+    "tabsUnDoneName": "To-do items",
+    "tabsDoneName": "Done",
+    "bottomSheet": {
+      "titleHint": "New to-do item",
+      "contentHint": "Add detailed content",
+      "saveButtonName": "Save"
+    },
+    "detail": {
+      "delete": "delete",
+      "titleHint": "Enter title",
+      "contentHint": "Add detailed content",
+      "markUnDoned": "Marked as not completed",
+      "markDoned": "Marked as Done",
+      "markUnDone": "Mark as undone",
+      "markDone": "Mark as done"
+    },
+    "date": {
+      "today": "today",
+      "yesterday": "yesterday",
+      "dayAgo": "day ago",
+      "weekAgo": "week ago",
+      "yearAgo": "year ago",
+      "tomorrow": "tomorrow",
+      "monthDay": "MMM d, E",
+      "yearMonthDay": "yyyy MMM d, E",
+      "localeIdentifier": "en_US"
+    }
+  },
+  "settings": {
+    "theme": {
+      "title": "Theme Color",
+      "content": "Change the theme color of the app",
+      "dialogTitle": "Select Theme Color",
+      "close": "Close"
+    }
   }
 
 }

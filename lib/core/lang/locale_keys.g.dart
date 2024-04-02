@@ -70,5 +70,36 @@ abstract class  LocaleKeys {
   static const userInfo_outLogin = 'userInfo.outLogin';
   static const userInfo_outLoginContent = 'userInfo.outLoginContent';
   static const userInfo = 'userInfo';
+  static const todo_tabsUnDoneName = 'todo.tabsUnDoneName';
+  static const todo_tabsDoneName = 'todo.tabsDoneName';
+  static const todo_bottomSheet_titleHint = 'todo.bottomSheet.titleHint';
+  static const todo_bottomSheet_contentHint = 'todo.bottomSheet.contentHint';
+  static const todo_bottomSheet_saveButtonName = 'todo.bottomSheet.saveButtonName';
+  static const todo_bottomSheet = 'todo.bottomSheet';
+  static const todo_detail_delete = 'todo.detail.delete';
+  static const todo_detail_titleHint = 'todo.detail.titleHint';
+  static const todo_detail_contentHint = 'todo.detail.contentHint';
+  static const todo_detail_markUnDoned = 'todo.detail.markUnDoned';
+  static const todo_detail_markDoned = 'todo.detail.markDoned';
+  static const todo_detail_markUnDone = 'todo.detail.markUnDone';
+  static const todo_detail_markDone = 'todo.detail.markDone';
+  static const todo_detail = 'todo.detail';
+  static const todo_date_today = 'todo.date.today';
+  static const todo_date_yesterday = 'todo.date.yesterday';
+  static const todo_date_dayAgo = 'todo.date.dayAgo';
+  static const todo_date_weekAgo = 'todo.date.weekAgo';
+  static const todo_date_yearAgo = 'todo.date.yearAgo';
+  static const todo_date_tomorrow = 'todo.date.tomorrow';
+  static const todo_date_monthDay = 'todo.date.monthDay';
+  static const todo_date_yearMonthDay = 'todo.date.yearMonthDay';
+  static const todo_date_localeIdentifier = 'todo.date.localeIdentifier';
+  static const todo_date = 'todo.date';
+  static const todo = 'todo';
+  static const settings_theme_title = 'settings.theme.title';
+  static const settings_theme_content = 'settings.theme.content';
+  static const settings_theme_dialogTitle = 'settings.theme.dialogTitle';
+  static const settings_theme_close = 'settings.theme.close';
+  static const settings_theme = 'settings.theme';
+  static const settings = 'settings';
 
 }

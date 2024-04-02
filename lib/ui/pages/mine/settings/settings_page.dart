@@ -27,8 +27,8 @@ class SettingsScreen extends StatelessWidget {
                 onTap: () {
                   _showSelectColorDialog(context, viewModel);
                 },
-                title: '主题色',
-                subtitle: '更改应用程序的主题颜色',
+                title: LocaleKeys.settings_theme_title.tr(),
+                subtitle: LocaleKeys.settings_theme_content.tr(),
                 trailing: Icon(
                   Icons.circle,
                   size: 64,
@@ -45,7 +45,7 @@ class SettingsScreen extends StatelessWidget {
   void _showSelectColorDialog(BuildContext context, ThemeViewModel viewModel) {
     DialogHelper.showAlertDialog(
       context: context,
-      title: Text("选择主题颜色"),
+      title: Text(LocaleKeys.settings_theme_dialogTitle.tr()),
       content: Container(
         height: 200,
         width: 200,
@@ -62,7 +62,7 @@ class SettingsScreen extends StatelessWidget {
           },
         ),
       ),
-      actionText: "关闭",
+      actionText: LocaleKeys.settings_theme_close.tr(),
     );
   }
 

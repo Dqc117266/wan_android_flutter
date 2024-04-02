@@ -1,4 +1,6 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:wan_android_flutter/core/lang/locale_keys.g.dart';
 import 'package:wan_android_flutter/core/model/todo_model.dart';
 import 'package:wan_android_flutter/core/utils/time_utils.dart';
 import 'package:wan_android_flutter/core/utils/http_utils.dart';
@@ -73,7 +75,7 @@ class _ModalBottomSheetContentState extends State<_ModalBottomSheetContent> {
                 keyboardType: TextInputType.text,
                 autofocus: true,
                 decoration: InputDecoration(
-                  hintText: '新建待办事项',
+                  hintText: LocaleKeys.todo_bottomSheet_titleHint.tr(),
                   border: InputBorder.none,
                 ),
               ),
@@ -86,7 +88,7 @@ class _ModalBottomSheetContentState extends State<_ModalBottomSheetContent> {
                   autofocus: true,
                   controller: _contentEditcontroller,
                   decoration: InputDecoration(
-                    hintText: '添加详细内容',
+                    hintText: LocaleKeys.todo_bottomSheet_contentHint.tr(),
                     border: InputBorder.none,
                   ),
                   style: Theme.of(context).textTheme.titleSmall!.copyWith(
@@ -152,7 +154,7 @@ class _ModalBottomSheetContentState extends State<_ModalBottomSheetContent> {
                       onPressed: isTitleNotEmpty ? () {
                         _addTodo(context);
                       } : null,
-                      child: Text("保存")),
+                      child: Text(LocaleKeys.todo_bottomSheet_saveButtonName.tr())),
                 ),
               ],
             ),

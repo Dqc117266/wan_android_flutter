@@ -1,5 +1,7 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:wan_android_flutter/core/lang/locale_keys.g.dart';
 
 class TimeUtils {
 
@@ -9,22 +11,21 @@ class TimeUtils {
 
     if (now.isAfter(date)) {
       if (difference.inDays == 0) {
-        return '今天';
+        return LocaleKeys.todo_date_today.tr();
       } else if (difference.inDays == 1) {
-        return '昨天';
+        return LocaleKeys.todo_date_yesterday.tr();
       } else if (difference.inDays.abs() < 7) {
-        return '${difference.inDays.abs()}天前';
+        return '${difference.inDays.abs()}${LocaleKeys.todo_date_dayAgo.tr()}';
       } else if (difference.inDays.abs() >= 7 && difference.inDays.abs() <= 365) {
         final weeksAgo = (difference.inDays.abs() / 7).floor();
-        return '$weeksAgo周前';
+        return '$weeksAgo${LocaleKeys.todo_date_weekAgo.tr()}';
       } else {
         final yearsAgo = (difference.inDays.abs() / 365).floor();
-        return '$yearsAgo年前';
+        return '$yearsAgo${LocaleKeys.todo_date_yearAgo.tr()}';
       }
     } else {
-      print("difference.inDays ${difference.inDays}");
       if (difference.inDays == 0) {
-        return '明天';
+        return LocaleKeys.todo_date_tomorrow.tr();
       }
       return formatDateTime(date);
     }
@@ -48,7 +49,6 @@ class TimeUtils {
     // 将毫秒数转换为 DateTime 对象
     DateTime itemDate = DateTime.fromMillisecondsSinceEpoch(dateMillis);
 
-    print("itemDate ${itemDate} selectDate ${selectDate}");
     // 比较日期部分是否相等
     if (itemDate.year == selectDate.year &&
         itemDate.month == selectDate.month &&
@@ -61,8 +61,8 @@ class TimeUtils {
 
   static String formatDateTime(DateTime dateTime) {
     final now = DateTime.now();
-    final formattedMonthDate = DateFormat('M月d日E', 'zh_CN');
-    final formattedYearDate = DateFormat('yyyy年MM月dd日E', 'zh_CN');
+    final formattedMonthDate = DateFormat(LocaleKeys.todo_date_monthDay.tr(), LocaleKeys.todo_date_localeIdentifier.tr());
+    final formattedYearDate = DateFormat(LocaleKeys.todo_date_yearMonthDay.tr(), LocaleKeys.todo_date_localeIdentifier.tr());
 
     if (dateTime.year == now.year) {
       return formattedMonthDate.format(dateTime);
@@ -72,7 +72,7 @@ class TimeUtils {
   }
 
   static String formatDateYearTime(DateTime dateTime) {
-    final formattedYearDate = DateFormat('yyyy-MM-dd', 'zh_CN');
+    final formattedYearDate = DateFormat('yyyy-MM-dd');
     return formattedYearDate.format(dateTime);
   }
 

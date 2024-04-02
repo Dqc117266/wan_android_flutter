@@ -1,10 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_widget_from_html/flutter_widget_from_html.dart';
-import 'package:provider/provider.dart';
 import 'package:wan_android_flutter/core/utils/http_utils.dart';
-import 'package:wan_android_flutter/core/viewmodel/collects_viewmodel.dart';
-import 'package:wan_android_flutter/network/http_creator.dart';
-import 'package:wan_android_flutter/ui/pages/web/web_page.dart';
 
 import '../../../../core/model/collects_model.dart';
 
