@@ -6,6 +6,7 @@ import 'package:wan_android_flutter/core/lang/locale_keys.g.dart';
 import 'package:wan_android_flutter/core/model/front_articles_model.dart';
 import 'package:wan_android_flutter/core/model/front_banner_model.dart';
 import 'package:wan_android_flutter/core/model/front_top_artcles_model.dart';
+import 'package:wan_android_flutter/core/utils/article_utils.dart';
 import 'package:wan_android_flutter/core/utils/http_utils.dart';
 import 'package:wan_android_flutter/core/utils/toast_utils.dart';
 import 'package:wan_android_flutter/core/viewmodel/user_viewmodel.dart';
@@ -84,7 +85,7 @@ class _FrontScreenState extends State<FrontScreen> {
 
     return Consumer<UserViewModel>(
       builder: (context, userViewModel, child) {
-        updateFavoriteItems(userViewModel);
+        ArticleUtils.updateFavoriteItems(userViewModel, _refreshableListViewKey);
 
         return RefreshableListView(
           key: _refreshableListViewKey,
@@ -99,26 +100,6 @@ class _FrontScreenState extends State<FrontScreen> {
         );
       },
     );
-  }
-
-  void updateFavoriteItems(UserViewModel userViewModel) {
-    if (_refreshableListViewKey.currentState != null) {
-      final state = _refreshableListViewKey.currentState;
-      final items = state!.items;
-      final collectIds = userViewModel.userInfo != null ? userViewModel.userInfo!.data!.collectIds : [];
-
-      // 遍历项目列表并更新收藏状态
-      for (var item in items) {
-        if (collectIds!.contains(item.id)) {
-          item.collect = true;
-        } else {
-          item.collect = false;
-        }
-      }
-
-      // 刷新列表视图以反映更改
-      state.refreshListView();
-    }
   }
 
   Future<List<Datas>?> _loadMoreData(int page, int startPage) async {

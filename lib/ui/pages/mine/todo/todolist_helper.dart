@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:wan_android_flutter/core/model/result_model.dart';
 import 'package:wan_android_flutter/core/model/todo_model.dart';
-import 'package:wan_android_flutter/core/utils/TimeUtils.dart';
+import 'package:wan_android_flutter/core/utils/time_utils.dart';
 import 'package:wan_android_flutter/core/utils/http_utils.dart';
 import 'package:wan_android_flutter/network/http_creator.dart';
 import 'package:wan_android_flutter/ui/shared/constants.dart';

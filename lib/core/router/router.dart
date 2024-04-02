@@ -17,6 +17,7 @@ class MyRouter {
   static const initalRoute = MainScreen.routeName;
 
   static final Map<String, WidgetBuilder> routes = {
+    MainScreen.routeName: (context) => MainScreen(),
     WebPageScreen.routeName: (context) => WebPageScreen(),
     LoginScreen.routeName: (context) => LoginScreen(),
     RegisterScreen.routeName: (context) => RegisterScreen(),

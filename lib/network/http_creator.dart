@@ -239,9 +239,9 @@ class HttpCreator {
   }
 
   //获取公众号列表
-  static Future<WxartcleModel> wxarticleChapters() {
+  static Future<TreeModel> wxarticleChapters() {
 
-    return fetchData(Api.wxarticleChapters, (json) => WxartcleModel.fromJson(json));
+    return fetchData(Api.wxarticleChapters, (json) => TreeModel.fromJson(json));
   }
 
   //查看某个公众号历史数据

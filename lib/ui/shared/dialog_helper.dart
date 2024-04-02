@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 class DialogHelper {
   static void showAlertDialog({
     required BuildContext context,
-    String? title,
-    String? content,
+    Widget? title,
+    Widget? content,
     String? dismissText,
     String? actionText,
     VoidCallback? onDismiss,
@@ -13,8 +13,8 @@ class DialogHelper {
     showDialog<void>(
       context: context,
       builder: (context) => AlertDialog(
-        title: title != null ? Text(title) : null,
-        content: content != null ? Text(content) : null,
+        title: title != null ? title : null,
+        content: content != null ? content : null,
         actions: <Widget>[
           if (dismissText != null)
             TextButton(

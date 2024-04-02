@@ -224,8 +224,8 @@ class CustomSearchDelegate extends SearchDelegate<String> {
   void _openClearHistoryDialog(BuildContext context) {
     DialogHelper.showAlertDialog(
       context: context,
-      title: LocaleKeys.search_clearHistoryDialogTitle.tr(),
-      content: LocaleKeys.search_clearHistoryDialogContent.tr(),
+      title: Text(LocaleKeys.search_clearHistoryDialogTitle.tr()),
+      content: Text(LocaleKeys.search_clearHistoryDialogContent.tr()),
       dismissText: LocaleKeys.dialogDismiss.tr(),
       actionText: LocaleKeys.dialogAction.tr(),
       onAction: () {
@@ -239,8 +239,8 @@ class CustomSearchDelegate extends SearchDelegate<String> {
   void _removeAtHistoryDialog(BuildContext context, String content) {
     DialogHelper.showAlertDialog(
       context: context,
-      title: LocaleKeys.search_removeHistoryDialogTitle.tr(),
-      content: LocaleKeys.search_removeHistoryDialogContent.tr(),
+      title: Text(LocaleKeys.search_removeHistoryDialogTitle.tr()),
+      content: Text(LocaleKeys.search_removeHistoryDialogContent.tr()),
       dismissText: LocaleKeys.dialogDismiss.tr(),
       actionText: LocaleKeys.dialogAction.tr(),
       onAction: () {

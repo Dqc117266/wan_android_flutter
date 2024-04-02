@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:easy_localization/easy_localization.dart';
 import 'package:provider/provider.dart';
+import 'package:wan_android_flutter/core/viewmodel/theme_viewmodel.dart';
 import 'package:wan_android_flutter/core/viewmodel/user_viewmodel.dart';
 import 'core/utils/translations.dart';
 import 'ui/app.dart';
@@ -19,7 +20,8 @@ void main() async {
       fallbackLocale: const Locale('zh'),
       child: MultiProvider(
         providers: [
-          ChangeNotifierProvider(create: (context) => UserViewModel())
+          ChangeNotifierProvider(create: (context) => UserViewModel()),
+          ChangeNotifierProvider(create: (context) => ThemeViewModel()),
         ],
         child: const MyApp(),
       ),

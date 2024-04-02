@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:wan_android_flutter/core/lang/locale_keys.g.dart';
 import 'package:wan_android_flutter/core/model/todolist_model.dart';
-import 'package:wan_android_flutter/core/utils/TimeUtils.dart';
+import 'package:wan_android_flutter/core/utils/time_utils.dart';
 import 'package:wan_android_flutter/core/utils/http_utils.dart';
 import 'package:wan_android_flutter/network/http_creator.dart';
 import 'package:wan_android_flutter/ui/pages/mine/todo/todo_detail/todo_detail_page.dart';

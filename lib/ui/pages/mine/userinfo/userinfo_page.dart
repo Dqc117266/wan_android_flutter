@@ -45,7 +45,7 @@ class UserInfoScreen extends StatelessWidget {
                   onPressed: () {
                     _showLogoutDialog(context);
                   },
-                  child: Text(LocaleKeys.userInfo_outLogin.tr(), style: Theme.of(context).textTheme.bodyLarge!.copyWith(color: Theme.of(context).colorScheme.error),),
+                  child: Text(LocaleKeys.userInfo_outLogin.tr(), style: Theme.of(context).textTheme.bodyLarge!.copyWith(color: Theme.of(context).colorScheme.primary),),
                 ),
               ),
             ],
@@ -59,8 +59,8 @@ class UserInfoScreen extends StatelessWidget {
   void _showLogoutDialog(BuildContext context) {
     DialogHelper.showAlertDialog(
       context: context,
-      title: LocaleKeys.userInfo_outLogin.tr(),
-      content: LocaleKeys.userInfo_outLoginContent.tr(),
+      title: Text(LocaleKeys.userInfo_outLogin.tr()),
+      content: Text(LocaleKeys.userInfo_outLoginContent.tr()),
       dismissText: LocaleKeys.dialogDismiss.tr(),
       actionText: LocaleKeys.dialogAction.tr(),
       onAction: () => logoutAndClearUser(context),

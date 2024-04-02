@@ -1,4 +1,4 @@
-class TreeModel {
+class Children {
   List<String>? articleList;
   String? author;
   List<String>? children;
@@ -12,10 +12,10 @@ class TreeModel {
   int? order;
   int? parentChapterId;
   int? type;
-  String? userControlSetTop;
+  bool? userControlSetTop;
   int? visible;
 
-  TreeModel({
+  Children({
     this.articleList,
     this.author,
     this.children,
@@ -33,7 +33,7 @@ class TreeModel {
     this.visible,
   });
 
-  factory TreeModel.fromJson(Map<String, dynamic> json) => TreeModel(
+  factory Children.fromJson(Map<String, dynamic> json) => Children(
     articleList: List<String>.from(json["articleList"] ?? []),
     author: json["author"],
     children: List<String>.from(json["children"] ?? []),
@@ -73,7 +73,7 @@ class TreeModel {
 class DataItem {
   List<String>? articleList;
   String? author;
-  List<TreeModel>? children;
+  List<Children>? children;
   int? courseId;
   String? cover;
   String? desc;
@@ -84,7 +84,7 @@ class DataItem {
   int? order;
   int? parentChapterId;
   int? type;
-  String? userControlSetTop;
+  bool? userControlSetTop;
   int? visible;
 
   DataItem({
@@ -108,8 +108,8 @@ class DataItem {
   factory DataItem.fromJson(Map<String, dynamic> json) => DataItem(
     articleList: List<String>.from(json["articleList"] ?? []),
     author: json["author"],
-    children: List<TreeModel>.from(
-        (json["children"] ?? []).map((x) => TreeModel.fromJson(x))),
+    children: List<Children>.from(
+        (json["children"] ?? []).map((x) => Children.fromJson(x))),
     courseId: json["courseId"],
     cover: json["cover"],
     desc: json["desc"],
@@ -143,18 +143,18 @@ class DataItem {
   };
 }
 
-class Root {
+class TreeModel {
   List<DataItem>? data;
   int? errorCode;
   String? errorMsg;
 
-  Root({
+  TreeModel({
     this.data,
     this.errorCode,
     this.errorMsg,
   });
 
-  factory Root.fromJson(Map<String, dynamic> json) => Root(
+  factory TreeModel.fromJson(Map<String, dynamic> json) => TreeModel(
     data: List<DataItem>.from(
         (json["data"] ?? []).map((x) => DataItem.fromJson(x))),
     errorCode: json["errorCode"],
