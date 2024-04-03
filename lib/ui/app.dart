@@ -2,11 +2,8 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:wan_android_flutter/core/viewmodel/theme_viewmodel.dart';
-import 'package:wan_android_flutter/ui/pages/web/web_page.dart';
 import '../core/lang/locale_keys.g.dart';
 import '../core/router/router.dart';
-import 'pages/main/main_page.dart';
-import 'shared/constants.dart';
 
 class MyApp extends StatefulWidget {
   const MyApp({super.key});

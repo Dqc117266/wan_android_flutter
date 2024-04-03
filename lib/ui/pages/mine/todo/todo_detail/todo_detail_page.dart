@@ -43,7 +43,6 @@ class _TodoDetailScreenState extends State<TodoDetailScreen> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
 
     _titleController = TextEditingController(text: widget.data!.title);
@@ -162,6 +161,8 @@ class _TodoDetailScreenState extends State<TodoDetailScreen> {
                       (await TimeUtils.selectTime(context, curDateTime))!;
 
                   widget.data!.dateStr = TimeUtils.formatDateYearTime(curDateTime);
+
+                  _todoListHelper.updateTodoDate(widget.data!, curDateTime);
                   setState(() {});
                 },
                 child: Text(TimeUtils.formatDateTime(curDateTime)),

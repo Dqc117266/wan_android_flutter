@@ -157,7 +157,7 @@ class RefreshableListViewState<T> extends State<RefreshableListView<T>> with Aut
           isLoading = false;
           // errorMessage = "Failed to load data"; // Customize the error message
         });
-      } else if (newItems != null && currentPage == widget.maxPage) { //到达最后一页
+      } else if (currentPage == widget.maxPage) { //到达最后一页
         setState(() {
           items.addAll(newItems);
           _loadState = LoadState.end;

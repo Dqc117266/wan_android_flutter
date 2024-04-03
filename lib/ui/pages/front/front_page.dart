@@ -16,7 +16,6 @@ import 'package:wan_android_flutter/ui/widgets/chapter_list_item.dart';
 import 'package:wan_android_flutter/ui/pages/search/custom_search_delegate.dart';
 import 'package:wan_android_flutter/ui/widgets/custom_future_builder.dart';
 import 'package:wan_android_flutter/ui/widgets/refreshable_listView.dart';
-import 'package:wan_android_flutter/ui/widgets/network_error_widget.dart';
 
 import '../../../network/http_creator.dart';
 

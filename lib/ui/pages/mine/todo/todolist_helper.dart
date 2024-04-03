@@ -127,7 +127,7 @@ class TodoListHelper {
     });
   }
 
-  void updateTodoDate(Datas item, int index, DateTime selectDate) async {
+  void updateTodoDate(Datas item, DateTime selectDate) async {
     if (!TimeUtils.isSameDay(item.date!, selectDate)) {
       final todoModel =
           await HttpUtils.handleRequestData(() => HttpCreator.todoUpdate(
@@ -141,28 +141,23 @@ class TodoListHelper {
               ));
 
       if (todoModel != null) {
-        updateTodoItem(todoModel, index);
+        findIndexUpdateItem(unDoneTodokey, todoModel);
+        findIndexUpdateItem(starTodokey, todoModel);
       }
     }
   }
 
-  void updateTodoItem(TodoModel todoModel, int index) {
-    if (unDoneTodokey.currentState != null) {
-      unDoneTodokey.currentState!.items[index] = todoModel.data!;
-      sortTodoList(unDoneTodokey.currentState!.items);
-      unDoneTodokey.currentState!.refreshListView();
-    }
-
-    if (starTodokey.currentState != null) {
-      final items = starTodokey.currentState!.items;
+  findIndexUpdateItem(GlobalKey<RefreshableListViewState<Datas>> key, TodoModel todoModel) {
+    if (key.currentState != null) {
+      final items = key.currentState!.items;
       final findIndex =
-          items.indexWhere((todo) => todo.id == todoModel.data!.id);
+      items.indexWhere((todo) => todo.id == todoModel.data!.id);
 
       if (findIndex != -1) {
         items[findIndex] = todoModel.data!;
 
-        sortTodoList(starTodokey.currentState!.items);
-        starTodokey.currentState!.refreshListView();
+        sortTodoList(key.currentState!.items);
+        key.currentState!.refreshListView();
       }
     }
   }

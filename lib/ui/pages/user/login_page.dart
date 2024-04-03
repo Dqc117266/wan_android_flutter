@@ -134,7 +134,7 @@ class _LoginScreenState extends State<LoginScreen> {
       UserInfoModel userInfoModel = value;
       print("pssword: ${_controllerPassword.text}");
 
-      if (userInfoModel != null && userInfoModel.errorCode == 0) {
+      if (userInfoModel.errorCode == 0) {
         UserUtils.saveUserInfo(userInfoModel)
             .then((value) => Provider.of<UserViewModel>(context, listen: false).updateUser());
 

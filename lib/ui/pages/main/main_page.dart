@@ -33,6 +33,7 @@ class _MainScreenState extends State<MainScreen>
       key: scaffoldKey,
       body: PageView(
         controller: _keepActiveVC,
+        physics: NeverScrollableScrollPhysics(),
         children: pages,
         onPageChanged: (index) {
           screenIndex = index;

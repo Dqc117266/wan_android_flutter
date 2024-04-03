@@ -123,7 +123,7 @@ class _IntegralScreenState extends State<IntegralScreen> {
   }
 
   void _updateUserInfo(BuildContext context, UserRinkModel userRinkModel) async { //更新积分数
-    if (userRinkModel != null) {
+    if (userRinkModel.data != null) {
       final userInfo = await UserUtils.getUserInfo();
       userInfo!.data!.coinCount = userRinkModel.data!.coinCount;
       await UserUtils.saveUserInfo(userInfo);

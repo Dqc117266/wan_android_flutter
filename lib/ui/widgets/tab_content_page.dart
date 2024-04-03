@@ -68,7 +68,7 @@ class _TabContentPageState extends State<TabContentPage> with AutomaticKeepAlive
           },
         );
       },
-    );;
+    );
   }
 
 }

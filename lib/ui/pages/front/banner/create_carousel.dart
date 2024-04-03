@@ -25,7 +25,7 @@ class _CreateCarouselState extends State<CreateCarousel> {
     // TODO: implement initState
     super.initState();
     _imageWidgets = widget.frontBannerModel.data!
-        .map((item) => CachedNetworkImage(imageUrl: item!.imagePath!))
+        .map((item) => CachedNetworkImage(imageUrl: item.imagePath!))
         .toList();
   }
 

@@ -10,7 +10,6 @@ import 'package:wan_android_flutter/core/utils/toast_utils.dart';
 import 'package:wan_android_flutter/core/utils/userinfo_storage.dart';
 import 'package:wan_android_flutter/core/viewmodel/user_viewmodel.dart';
 import 'package:wan_android_flutter/network/api.dart';
-import 'package:wan_android_flutter/ui/shared/constants.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
 import '../../../core/model/front_articles_model.dart';

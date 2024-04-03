@@ -116,7 +116,7 @@ class _TodoScreenState extends State<TodoScreen>
             return null;
           },
           itemBuilder: (context, item, index, length) {
-            return _buildTodoListTile(item, index);
+            return _buildTodoListTile(item);
           },
           maxPage: todoListModel.data!.pageCount!,
           firstPage: firstPage,
@@ -148,7 +148,7 @@ class _TodoScreenState extends State<TodoScreen>
             return null;
           },
           itemBuilder: (context, item, index, length) {
-            return _buildTodoListTile(item, index);
+            return _buildTodoListTile(item);
           },
           maxPage: todoListModel.data!.pageCount!,
           firstPage: firstPage,
@@ -157,7 +157,7 @@ class _TodoScreenState extends State<TodoScreen>
     );
   }
 
-  Widget _buildTodoListTile(Datas item, index) {
+  Widget _buildTodoListTile(Datas item) {
     DateTime dateTime = DateTime.fromMillisecondsSinceEpoch(item.date!);
 
     OutlinedButton outlineBtn = OutlinedButton(
@@ -171,7 +171,7 @@ class _TodoScreenState extends State<TodoScreen>
       onPressed: () async {
         final selectDate = await TimeUtils.selectTime(context, dateTime);
         if (selectDate != null) {
-          _todoListHelper.updateTodoDate(item, index, selectDate);
+          _todoListHelper.updateTodoDate(item, selectDate);
         }
       },
       child: Text(
