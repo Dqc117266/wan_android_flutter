@@ -2,10 +2,12 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:wan_android_flutter/core/lang/locale_keys.g.dart';
-import 'package:wan_android_flutter/core/viewmodel/theme_viewmodel.dart';
+import 'package:wan_android_flutter/core/viewmodel/app_settings_viewmodel.dart';
+import 'package:wan_android_flutter/ui/pages/mine/settings/dialog/language_dialog.dart';
+import 'package:wan_android_flutter/ui/pages/mine/settings/dialog/select_color_dialog.dart';
+import 'package:wan_android_flutter/ui/pages/mine/settings/dialog/theme_model_dialog.dart';
 import 'package:wan_android_flutter/ui/pages/mine/settings/settings_item.dart';
 import 'package:wan_android_flutter/ui/shared/constants.dart';
-import 'package:wan_android_flutter/ui/shared/dialog_helper.dart';
 
 class SettingsScreen extends StatelessWidget {
   static const routeName = "/settings";
@@ -18,11 +20,13 @@ class SettingsScreen extends StatelessWidget {
       appBar: AppBar(
         title: Text(LocaleKeys.mine_settings.tr()),
       ),
-      body: Consumer<ThemeViewModel>(
+      body: Consumer<AppSettingsViewModel>(
         builder: (context, viewModel, child) {
+          String curLanguage = languages[viewModel.languageType.value];
+          String curMode = _getCurModeString(viewModel.themeMode);
+
           return ListView(
             children: [
-              // Divider(),
               SettingsItem(
                 onTap: () {
                   _showSelectColorDialog(context, viewModel);
@@ -35,6 +39,30 @@ class SettingsScreen extends StatelessWidget {
                   color: viewModel.colorSeed.color,
                 ),
               ),
+              Divider(),
+              SettingsItem(
+                  onTap: () {
+                    _showThemeModeDialog(context, viewModel);
+                  },
+                  title: LocaleKeys.settings_themeMode_title.tr(),
+                  subtitle: LocaleKeys.settings_themeMode_content.tr(),
+                  trailing: Text(
+                    curMode,
+                    style: Theme.of(context).textTheme.titleSmall,
+                  )
+              ),
+              Divider(),
+              SettingsItem(
+                onTap: () {
+                  _showSelectLanguageDialog(context, viewModel);
+                },
+                title: LocaleKeys.settings_language_title.tr(),
+                subtitle: LocaleKeys.settings_language_content.tr(),
+                trailing: Text(
+                  curLanguage,
+                  style: Theme.of(context).textTheme.titleSmall,
+                ),
+              ),
             ],
           );
         },
@@ -42,54 +70,49 @@ class SettingsScreen extends StatelessWidget {
     );
   }
 
-  void _showSelectColorDialog(BuildContext context, ThemeViewModel viewModel) {
-    DialogHelper.showAlertDialog(
+  void _showSelectColorDialog(BuildContext context, AppSettingsViewModel viewModel) {
+    showDialog(
       context: context,
-      title: Text(LocaleKeys.settings_theme_dialogTitle.tr()),
-      content: Container(
-        height: 200,
-        width: 200,
-        child: GridView.builder(
-          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: 4,
-            mainAxisSpacing: 8.0,
-            crossAxisSpacing: 8.0,
-          ),
-          itemCount: ColorSeed.values.length,
-          itemBuilder: (BuildContext context, int index) {
-            final colorSeed = ColorSeed.values[index];
-            return _buildColorSelectItem(context, index, viewModel, colorSeed);
-          },
-        ),
-      ),
-      actionText: LocaleKeys.settings_theme_close.tr(),
+      builder: (BuildContext context) {
+        return SelectColorDialog(viewModel: viewModel);
+      },
     );
   }
 
-  Widget _buildColorSelectItem(BuildContext context, int index,
-      ThemeViewModel viewModel, ColorSeed colorSeed) {
-    return GestureDetector(
-      onTap: () {
-        // 将选择的颜色保存起来或执行其他操作
-        // 例如，更新主题颜色
-        final themeProvider =
-            Provider.of<ThemeViewModel>(context, listen: false);
-        themeProvider.setColorSeed(index);
-        Navigator.of(context).pop(); // 关闭对话框
+  void _showSelectLanguageDialog(BuildContext context, AppSettingsViewModel viewModel) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return LanguageDialog(viewModel);
       },
-      child: Container(
-        padding: EdgeInsets.all(4),
-        decoration: ColorSeed.values[index] == viewModel.colorSeed
-            ? BoxDecoration(
-                shape: BoxShape.circle,
-                border:
-                    Border.all(color: viewModel.colorSeed.color, width: 4.0))
-            : null,
-        child: CircleAvatar(
-          backgroundColor: colorSeed.color,
-          radius: 16.0,
-        ),
-      ),
     );
   }
+
+  void _showThemeModeDialog(BuildContext context, AppSettingsViewModel viewModel) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return ThemeModelDialog(viewModel);
+      },
+    );
+  }
+
+  String _getCurModeString(ThemeMode themeMode) {
+    String mode;
+    switch (themeMode) {
+      case ThemeMode.system:
+        mode = LocaleKeys.settings_themeMode_system.tr();
+        break;
+      case ThemeMode.light:
+        mode = LocaleKeys.settings_themeMode_light.tr();
+        break;
+      case ThemeMode.dark:
+        mode = LocaleKeys.settings_themeMode_dark.tr();
+        break;
+    }
+
+    return mode;
+  }
+
+
 }

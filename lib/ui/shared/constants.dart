@@ -5,29 +5,6 @@ import 'package:easy_localization/easy_localization.dart';
 
 const double transitionLength = 500;
 
-final List<Widget> bottomNavigationBarItems = [
-  NavigationDestination(
-    tooltip: LocaleKeys.tableNames_frontPage.tr(),
-    icon: Icon(Icons.home),
-    label: LocaleKeys.tableNames_frontPage.tr(),
-  ),
-  NavigationDestination(
-    tooltip: LocaleKeys.tableNames_projects.tr(),
-    icon: Icon(Icons.layers),
-    label: LocaleKeys.tableNames_projects.tr(),
-  ),
-  NavigationDestination(
-    tooltip: LocaleKeys.tableNames_officialAccounts.tr(),
-    icon: Icon(Icons.wechat),
-    label: LocaleKeys.tableNames_officialAccounts.tr(),
-  ),
-  NavigationDestination(
-    tooltip: LocaleKeys.tableNames_mine.tr(),
-    icon: Icon(Icons.person),
-    label: LocaleKeys.tableNames_mine.tr(),
-  )
-];
-
 List<dynamic> getItemBorderRadius(int index, int length) {
   final BorderRadius borderRadius;
   bool isBottomLine = true;
@@ -55,6 +32,17 @@ final List<String> appBarNames = [
   LocaleKeys.tableNames_projects.tr(),
   LocaleKeys.tableNames_officialAccounts.tr(),
   LocaleKeys.tableNames_mine.tr(),
+];
+
+final List<String> languages = [
+  LocaleKeys.settings_language_chinese.tr(),
+  LocaleKeys.settings_language_english.tr(),
+];
+
+final List<String> modes = [
+  LocaleKeys.settings_themeMode_system.tr(),
+  LocaleKeys.settings_themeMode_light.tr(),
+  LocaleKeys.settings_themeMode_dark.tr(),
 ];
 
 enum ColorSelectionMethod {
@@ -115,5 +103,38 @@ enum TodoStatus {
   done(1);
 
   const TodoStatus(this.value);
+  final int value;
+}
+
+enum ThemeModeType {
+  system(0),
+  light(1),
+  dark(2);
+
+  const ThemeModeType(this.value);
+  final int value;
+}
+
+enum UseMaterial {
+  materialDesign2(false),
+  materialDesign3(true);
+
+  const UseMaterial(this.value);
+  final bool value;
+}
+
+enum ChapterType {
+  normal(0),
+  top(1);
+
+  const ChapterType(this.value);
+  final int value;
+}
+
+enum LanguageType {
+  chinese(0),
+  english(1);
+
+  const LanguageType(this.value);
   final int value;
 }

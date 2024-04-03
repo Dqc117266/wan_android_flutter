@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 
 class DialogHelper {
@@ -12,32 +13,53 @@ class DialogHelper {
   }) {
     showDialog<void>(
       context: context,
-      builder: (context) => AlertDialog(
-        title: title != null ? title : null,
-        content: content != null ? content : null,
-        actions: <Widget>[
-          if (dismissText != null)
-            TextButton(
-              child: Text(dismissText),
-              onPressed: () {
-                Navigator.of(context).pop();
-                if (onDismiss != null) {
-                  onDismiss();
-                }
-              },
-            ),
-          if (actionText != null)
-            FilledButton(
-              child: Text(actionText),
-              onPressed: () {
-                Navigator.of(context).pop();
-                if (onAction != null) {
-                  onAction();
-                }
-              },
-            ),
-        ],
-      ),
+      builder: (context) => CustomAlertDialog(
+          context: context,
+          title: title,
+          content: content,
+          dismissText: dismissText,
+          actionText: actionText,
+          onDismiss: onDismiss,
+          onAction: onAction),
+    );
+  }
+
+  static Widget CustomAlertDialog({
+    required BuildContext context,
+    Widget? title,
+    Widget? content,
+    String? dismissText,
+    String? actionText,
+    VoidCallback? onDismiss,
+    VoidCallback? onAction,
+    bool? isCanClickDismiss = true,
+    bool? isCanClickAction = true,
+  }) {
+    return AlertDialog(
+      title: title != null ? title : null,
+      content: content != null ? content : null,
+      actions: <Widget>[
+        if (dismissText != null)
+          TextButton(
+            child: Text(dismissText),
+            onPressed: isCanClickDismiss! ? () {
+              Navigator.of(context).pop();
+              if (onDismiss != null) {
+                onDismiss();
+              }
+            } : null,
+          ),
+        if (actionText != null)
+          FilledButton(
+            child: Text(actionText),
+            onPressed: isCanClickAction! ? () {
+              Navigator.of(context).pop();
+              if (onAction != null) {
+                onAction();
+              }
+            } : null,
+          ),
+      ],
     );
   }
 
@@ -58,5 +80,4 @@ class DialogHelper {
       },
     );
   }
-
 }

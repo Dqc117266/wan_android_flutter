@@ -1,4 +1,6 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:wan_android_flutter/core/lang/locale_keys.g.dart';
 import '../../shared/constants.dart';
 import 'initalize_items.dart';
 
@@ -16,8 +18,8 @@ class MainScreen extends StatefulWidget {
 class _MainScreenState extends State<MainScreen>
     with SingleTickerProviderStateMixin {
   final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
-  late PageController _keepActiveVC;
 
+  late PageController _keepActiveVC;
   int screenIndex = ScreenSelected.front.value;
 
   @override
@@ -49,9 +51,35 @@ class _MainScreenState extends State<MainScreen>
               _keepActiveVC.jumpToPage(index);
             });
           },
-          destinations: bottomNavigationBarItems,
+          destinations: getBottomNavigationBarItems(),
         ),
       ),
     );
   }
+
+  List<NavigationDestination> getBottomNavigationBarItems() {
+    return [
+      NavigationDestination(
+        tooltip: LocaleKeys.tableNames_frontPage.tr(),
+        icon: Icon(Icons.home),
+        label: LocaleKeys.tableNames_frontPage.tr(),
+      ),
+      NavigationDestination(
+        tooltip: LocaleKeys.tableNames_projects.tr(),
+        icon: Icon(Icons.layers),
+        label: LocaleKeys.tableNames_projects.tr(),
+      ),
+      NavigationDestination(
+        tooltip: LocaleKeys.tableNames_officialAccounts.tr(),
+        icon: Icon(Icons.wechat),
+        label: LocaleKeys.tableNames_officialAccounts.tr(),
+      ),
+      NavigationDestination(
+        tooltip: LocaleKeys.tableNames_mine.tr(),
+        icon: Icon(Icons.person),
+        label: LocaleKeys.tableNames_mine.tr(),
+      )
+    ];
+  }
+
 }

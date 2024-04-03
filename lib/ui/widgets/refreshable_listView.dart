@@ -80,14 +80,17 @@ class RefreshableListViewState<T> extends State<RefreshableListView<T>> with Aut
     //只有一页或者只有0页数据为0的时候 为加载到底状态
     if ((currentPage >= widget.maxPage && items.isNotEmpty) || (widget.maxPage == 0 && items.isNotEmpty)) {
       _loadState = LoadState.end;
-    } else {
+    } else if(widget.maxPage == 0 && items.isEmpty) {
       _loadState = LoadState.empty;
+    } else {
+      _loadState = LoadState.success;
     }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scrollbar(
+      controller: _scrollController,
       child: RefreshIndicator(
         onRefresh: refresh,
         child: ListView.builder(

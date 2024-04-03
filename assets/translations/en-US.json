@@ -11,7 +11,8 @@
   "front": {
     "dataLoadingFailed": "Data loading failed, click to try again",
     "dataEnd": "It’s the end~",
-    "dataEmpty": "No results～"
+    "dataEmpty": "No results～",
+    "top": "Top"
   },
   "webpage": {
     "labelList": {
@@ -113,6 +114,19 @@
       "content": "Change the theme color of the app",
       "dialogTitle": "Select Theme Color",
       "close": "Close"
+    },
+    "language": {
+      "title": "Select Language",
+      "content": "Please select your preferred language setting",
+      "chinese": "中文",
+      "english": "English"
+    },
+    "themeMode": {
+      "title": "Theme",
+      "content": "Please select your preferred theme mode",
+      "system": "System",
+      "light": "Light",
+      "dark": "Dark"
     }
   }
 

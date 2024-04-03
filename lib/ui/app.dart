@@ -1,7 +1,7 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:wan_android_flutter/core/viewmodel/theme_viewmodel.dart';
+import 'package:wan_android_flutter/core/viewmodel/app_settings_viewmodel.dart';
 import '../core/lang/locale_keys.g.dart';
 import '../core/router/router.dart';
 
@@ -17,7 +17,7 @@ class _MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
-    final themeProvider = Provider.of<ThemeViewModel>(context);
+    final themeProvider = Provider.of<AppSettingsViewModel>(context);
 
     return MaterialApp(
       debugShowCheckedModeBanner: false,
@@ -25,6 +25,7 @@ class _MyAppState extends State<MyApp> {
       localizationsDelegates: context.localizationDelegates,
       supportedLocales: context.supportedLocales,
       locale: context.locale,
+      themeMode: themeProvider.themeMode,
       theme: ThemeData(
         colorSchemeSeed: themeProvider.colorSeed.color,
         useMaterial3: useMaterial3,

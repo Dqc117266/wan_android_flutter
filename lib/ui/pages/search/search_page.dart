@@ -61,7 +61,7 @@ class _SearchScreenState extends State<SearchScreen> {
                 initialItems: frontListData.data!.datas!,
                 loadMoreCallback: (page) async {
                   final list = await HttpUtils.handleRequestData(
-                      () => HttpCreator.getFrontList(page));
+                      () => HttpCreator.query(page, widget.query!));
 
                   if (list != null) {
                     return list.data!.datas;

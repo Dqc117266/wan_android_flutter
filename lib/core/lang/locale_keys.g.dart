@@ -12,6 +12,7 @@ abstract class  LocaleKeys {
   static const front_dataLoadingFailed = 'front.dataLoadingFailed';
   static const front_dataEnd = 'front.dataEnd';
   static const front_dataEmpty = 'front.dataEmpty';
+  static const front_top = 'front.top';
   static const front = 'front';
   static const webpage_labelList_refresh = 'webpage.labelList.refresh';
   static const webpage_labelList_toBrowser = 'webpage.labelList.toBrowser';
@@ -100,6 +101,17 @@ abstract class  LocaleKeys {
   static const settings_theme_dialogTitle = 'settings.theme.dialogTitle';
   static const settings_theme_close = 'settings.theme.close';
   static const settings_theme = 'settings.theme';
+  static const settings_language_title = 'settings.language.title';
+  static const settings_language_content = 'settings.language.content';
+  static const settings_language_chinese = 'settings.language.chinese';
+  static const settings_language_english = 'settings.language.english';
+  static const settings_language = 'settings.language';
+  static const settings_themeMode_title = 'settings.themeMode.title';
+  static const settings_themeMode_content = 'settings.themeMode.content';
+  static const settings_themeMode_system = 'settings.themeMode.system';
+  static const settings_themeMode_light = 'settings.themeMode.light';
+  static const settings_themeMode_dark = 'settings.themeMode.dark';
+  static const settings_themeMode = 'settings.themeMode';
   static const settings = 'settings';
 
 }

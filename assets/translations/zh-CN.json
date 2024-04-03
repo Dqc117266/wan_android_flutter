@@ -11,7 +11,8 @@
   "front": {
     "dataLoadingFailed": "数据加载失败，点击重试",
     "dataEnd": "已经到底了～",
-    "dataEmpty": "无任何内容～"
+    "dataEmpty": "无任何内容～",
+    "top": "置顶"
   },
   "webpage": {
     "labelList": {
@@ -113,6 +114,19 @@
       "content": "更改应用程序的主题颜色",
       "dialogTitle": "选择主题颜色",
       "close": "关闭"
+    },
+    "language": {
+      "title": "选择语言",
+      "content": "请选择您偏好的语言设置",
+      "chinese": "中文",
+      "english": "English"
+    },
+    "themeMode": {
+      "title": "主题模式",
+      "content": "请选择您偏好的主题模式",
+      "system": "跟随系统",
+      "light": "浅色模式",
+      "dark": "深色模式"
     }
   }
 
