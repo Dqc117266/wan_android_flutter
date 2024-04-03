@@ -29,9 +29,12 @@ class FrontScreen extends StatefulWidget {
   State<FrontScreen> createState() => _FrontScreenState();
 }
 
-class _FrontScreenState extends State<FrontScreen> {
+class _FrontScreenState extends State<FrontScreen> with AutomaticKeepAliveClientMixin {
   GlobalKey<RefreshableListViewState<Datas>> _refreshableListViewKey =
       GlobalKey();
+
+  @override
+  bool get wantKeepAlive => true;
 
   @override
   Widget build(BuildContext context) {

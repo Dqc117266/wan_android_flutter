@@ -244,7 +244,7 @@ class HttpCreator {
   }
 
   //查看某个公众号历史数据
-  static Future<FrontArtclesModel> wxarticleList(int id, int page) {
+  static Future<FrontArtclesModel> wxarticleList(int page, int id) {
 
     return fetchData("${Api.wxarticleList}$id/$page/json", (json) => FrontArtclesModel.fromJson(json));
   }

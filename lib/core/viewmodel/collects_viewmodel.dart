@@ -15,7 +15,6 @@ class CollectsViewModel with ChangeNotifier {
   List<Datas> get collectedItems => _collectedItems;
 
   Future<void> fetchCollectedItems() async {
-    print('_fetchCollectedItems');
     final CollectsModel? collectList = await HttpUtils.handleRequestData(() => HttpCreator.getCollectList(0));
 
     if (collectList != null) {

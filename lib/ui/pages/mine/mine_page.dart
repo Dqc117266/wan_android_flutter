@@ -21,8 +21,12 @@ class MineScreen extends StatefulWidget {
   State<MineScreen> createState() => _MineScreenState();
 }
 
-class _MineScreenState extends State<MineScreen> {
+class _MineScreenState extends State<MineScreen> with AutomaticKeepAliveClientMixin {
   UserInfoModel? userInfo;
+
+  @override
+  bool get wantKeepAlive => true;
+
 
   @override
   Widget build(BuildContext context) {

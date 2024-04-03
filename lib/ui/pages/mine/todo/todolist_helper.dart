@@ -158,10 +158,12 @@ class TodoListHelper {
       final findIndex =
           items.indexWhere((todo) => todo.id == todoModel.data!.id);
 
-      items[findIndex] = todoModel.data!;
+      if (findIndex != -1) {
+        items[findIndex] = todoModel.data!;
 
-      sortTodoList(starTodokey.currentState!.items);
-      starTodokey.currentState!.refreshListView();
+        sortTodoList(starTodokey.currentState!.items);
+        starTodokey.currentState!.refreshListView();
+      }
     }
   }
 
