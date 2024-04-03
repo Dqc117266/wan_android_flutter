@@ -10,6 +10,7 @@ import 'package:wan_android_flutter/network/http_creator.dart';
 import 'package:wan_android_flutter/ui/pages/search/search_page.dart';
 import 'package:wan_android_flutter/ui/shared/dialog_helper.dart';
 import 'package:wan_android_flutter/ui/shared/shared_preferences_helper.dart';
+import 'package:wan_android_flutter/ui/widgets/custom_future_builder.dart';
 
 class CustomSearchDelegate extends SearchDelegate<String> {
   static final String historyKeysName = "history_keys";
@@ -70,20 +71,15 @@ class CustomSearchDelegate extends SearchDelegate<String> {
   @override
   Widget buildSuggestions(BuildContext context) {
     return query.trim().isEmpty
-        ? FutureBuilder(
+        ? CustomFutureBuilder(
             future: _getHotKey(),
             builder: (context, snapshot) {
-              if (snapshot.connectionState == ConnectionState.waiting) {
-                return Center(child: CircularProgressIndicator());
-              } else {
-                // final List<String?>? hotKeys = snapshot.data as List<String>;
-                final List<String>? filteredSuggestions = _historyKeys;
+              final List<String>? filteredSuggestions = _historyKeys;
 
-                return SingleChildScrollView(
-                  child: _buildSuggestionsLayout(
-                      context, filteredSuggestions!, _hotKeys),
-                );
-              }
+              return SingleChildScrollView(
+                child: _buildSuggestionsLayout(
+                    context, filteredSuggestions!, _hotKeys),
+              );
             },
           )
         : _buildSearchingWidget(context);

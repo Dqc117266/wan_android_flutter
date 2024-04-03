@@ -169,7 +169,7 @@ class _ModalBottomSheetContentState extends State<_ModalBottomSheetContent> {
 
     final TodoModel? todoModel = await HttpUtils.handleRequestData(() => HttpCreator.todoAdd(
         _titleEditcontroller.text,
-        content.isNotEmpty? content : " ",
+        content,
         TimeUtils.formatDateYearTime(selectDate),
         isMarkStar ? TodoType.star.value : TodoType.normal.value,
         0));
