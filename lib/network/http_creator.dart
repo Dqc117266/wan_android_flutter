@@ -6,6 +6,7 @@ import 'package:wan_android_flutter/core/model/hotkey_model.dart';
 import 'package:wan_android_flutter/core/model/rinks_model.dart';
 import 'package:wan_android_flutter/core/model/todo_model.dart';
 import 'package:wan_android_flutter/core/model/tree_model.dart';
+import 'package:wan_android_flutter/core/model/user_model.dart';
 import 'package:wan_android_flutter/core/model/user_rink_list_model.dart';
 import 'package:wan_android_flutter/core/model/user_rink_model.dart';
 import 'package:wan_android_flutter/core/utils/userinfo_storage.dart';
@@ -232,9 +233,9 @@ class HttpCreator {
         queryParameters: {"status" : status});
   }
 
-  static Future<UserInfoModel> getUserInfo() {
+  static Future<UserModel> getUserInfo() {
 
-    return fetchData(Api.userInfo, (json) => UserInfoModel.fromJson(json));
+    return fetchData(Api.userInfo, (json) => UserModel.fromJson(json));
   }
 
   //获取公众号列表

@@ -1,7 +1,5 @@
 import 'package:easy_localization/easy_localization.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
 import 'package:wan_android_flutter/core/lang/locale_keys.g.dart';
 import 'package:wan_android_flutter/core/model/rinks_model.dart';
@@ -25,6 +23,8 @@ class IntegralScreen extends StatefulWidget {
 }
 
 class _IntegralScreenState extends State<IntegralScreen> {
+  int _firstPage = 1;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -39,7 +39,7 @@ class _IntegralScreenState extends State<IntegralScreen> {
       ),
       body: CustomFutureBuilder(
         future: Future.wait([
-          HttpCreator.getRinksTop(1),
+          HttpCreator.getRinksTop(_firstPage),
           HttpCreator.getUserRink(),
         ]),
         builder: (context, snapshot) {
@@ -55,7 +55,7 @@ class _IntegralScreenState extends State<IntegralScreen> {
                 child: RefreshableListView<Datas>(
                   initialItems: rinksModel.data.datas,
                   maxPage: rinksModel.data.pageCount,
-                  firstPage: 1,
+                  firstPage: _firstPage,
                   loadMoreCallback: (page) async {
                     try {
                       final RinksModel nextPageUsers =
@@ -99,20 +99,20 @@ class _IntegralScreenState extends State<IntegralScreen> {
                     style: Theme.of(context)
                         .textTheme
                         .titleMedium!
-                        .copyWith(color: Theme.of(context).primaryColor),
+                        .copyWith(color: Theme.of(context).colorScheme.primary),
                   ),
                   title: Text(
                     "${LocaleKeys.integral_me.tr()}${userRinkModel.data!.username}",
-                    style: TextStyle(color: Theme.of(context).primaryColor),
+                    style: TextStyle(color: Theme.of(context).colorScheme.primary),
                   ),
                   subtitle: Text("${LocaleKeys.integral_coin.tr()}${userRinkModel.data!.coinCount}",
                       style:
-                      TextStyle(color: Theme.of(context).primaryColor)),
+                      TextStyle(color: Theme.of(context).colorScheme.primary)),
                   trailing: Text("${LocaleKeys.integral_leve.tr()}${userRinkModel.data!.level}",
                       style: Theme.of(context)
                           .textTheme
                           .bodySmall!
-                          .copyWith(color: Theme.of(context).primaryColor)),
+                          .copyWith(color: Theme.of(context).colorScheme.primary)),
                 ), // 替换 YourBottomWidget() 为您自己的底部 widget
               ),
             ],

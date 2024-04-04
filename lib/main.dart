@@ -17,7 +17,7 @@ void main() async {
     EasyLocalization(
       supportedLocales: Translations.supportedLocales,
       path: Translations.localesPath,
-      fallbackLocale: const Locale('zh'),
+      fallbackLocale: Translations.supportedLocales[1],
       child: MultiProvider(
         providers: [
           ChangeNotifierProvider(create: (context) => UserViewModel()),

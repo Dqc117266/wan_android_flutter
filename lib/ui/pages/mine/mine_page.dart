@@ -30,24 +30,23 @@ class _MineScreenState extends State<MineScreen> with AutomaticKeepAliveClientMi
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(LocaleKeys.tableNames_mine.tr()),
-      ),
-      body: Consumer<UserViewModel>(
-        builder: (context, userViewModel, child) {
-          userInfo = userViewModel.userInfo;
-          final isUserInfoEmpty = userInfo == null;
-          print('user_info ${userInfo != null}');
+    return Consumer<UserViewModel>(
+      builder: (context, userViewModel, child) {
+        userInfo = userViewModel.userInfo;
+        final isUserInfoEmpty = userInfo == null;
+        print('user_info ${userInfo != null}');
 
-          return ListView(
+        return Scaffold(
+          appBar: AppBar(
+            title: Text(LocaleKeys.tableNames_mine.tr()),),
+          body: ListView(
             children: [
               _buildHeadItem(
                 context,
                 isUserInfoEmpty,
                 isUserInfoEmpty
-                      ? () => _navigateToLogin(context)
-                      : () => _navigateToUserInfo(context),
+                    ? () => _navigateToLogin(context)
+                    : () => _navigateToUserInfo(context),
               ),
               _buildBodyItem(
                 context,
@@ -81,12 +80,12 @@ class _MineScreenState extends State<MineScreen> with AutomaticKeepAliveClientMi
                 context,
                 LocaleKeys.mine_settings.tr(),
                 Icons.settings_outlined,
-                () => _navigateToSettings(context),
+                    () => _navigateToSettings(context),
               ),
             ],
-          );
-        },
-      ),
+          ),
+        );
+      },
     );
   }
 

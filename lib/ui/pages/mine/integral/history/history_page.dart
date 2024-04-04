@@ -17,6 +17,8 @@ class HistoryScreen extends StatefulWidget {
 }
 
 class _HistoryScreenState extends State<HistoryScreen> {
+  int _firstPage = 1;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -24,14 +26,14 @@ class _HistoryScreenState extends State<HistoryScreen> {
         title: Text(LocaleKeys.integral_history.tr()),
       ),
       body: CustomFutureBuilder(
-        future: HttpCreator.getCoinUserList(1),
+        future: HttpCreator.getCoinUserList(_firstPage),
         onRefresh: () => setState(() {}),
         builder: (BuildContext context, AsyncSnapshot snapshot) {
           final userRinkListModel = snapshot.data as UserRinkListModel;
           return RefreshableListView(
             initialItems: userRinkListModel.data!.datas!,
             maxPage: userRinkListModel.data!.pageCount!,
-            firstPage: 1,
+            firstPage: _firstPage,
             loadMoreCallback: (page) async {
               final UserRinkListModel? fetchData = await HttpUtils.handleRequestData(
                   () => HttpCreator.getCoinUserList(page));

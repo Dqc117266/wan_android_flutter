@@ -1,7 +1,9 @@
 
 import 'package:flutter/material.dart';
 import 'package:wan_android_flutter/core/model/user_info_model.dart';
+import 'package:wan_android_flutter/core/model/user_model.dart';
 import 'package:wan_android_flutter/core/utils/userinfo_storage.dart';
+import 'package:wan_android_flutter/network/http_creator.dart';
 
 class UserViewModel extends ChangeNotifier {
   UserInfoModel? _userInfo;
@@ -10,8 +12,13 @@ class UserViewModel extends ChangeNotifier {
     _initUserInfo();
   }
 
-  void _initUserInfo() {
-    updateUser();
+  void _initUserInfo() async {
+    UserModel userInfoModel = await HttpCreator.getUserInfo();//更新用户信息
+    if (userInfoModel.data!.userData != null) {
+      await saveUser(UserInfoModel(data: userInfoModel.data!.userData!));
+    } else {
+      updateUser();
+    }
   }
 
   Future<void> updateUser() async {

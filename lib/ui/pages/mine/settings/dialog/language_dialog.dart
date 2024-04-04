@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:provider/provider.dart';
 import 'package:wan_android_flutter/core/lang/locale_keys.g.dart';
+import 'package:wan_android_flutter/core/utils/translations.dart';
 import 'package:wan_android_flutter/core/viewmodel/app_settings_viewmodel.dart';
 import 'package:wan_android_flutter/ui/shared/constants.dart';
 import 'package:wan_android_flutter/ui/shared/dialog_helper.dart';
@@ -56,6 +57,7 @@ class _LanguageDialogState extends State<LanguageDialog> {
         onChanged: (value) {
           setState(() {
             languageType = value!;
+            isCanClickAction = languageType != widget.viewModel.languageType;
           });
         },
       ),
@@ -71,13 +73,13 @@ class _LanguageDialogState extends State<LanguageDialog> {
   void _onConfirm() {
     switch (languageType) {
       case LanguageType.chinese:
-        Locale chineseLocale = Locale('zh', 'CN');
+        Locale chineseLocale = Translations.supportedLocales[1];
         if (EasyLocalization.of(context)!.supportedLocales.contains(chineseLocale)) {
           EasyLocalization.of(context)!.setLocale(chineseLocale);
         }
         break;
       case LanguageType.english:
-        Locale englishLocale = Locale('en', 'US');
+        Locale englishLocale = Translations.supportedLocales[0];
         if (EasyLocalization.of(context)!.supportedLocales.contains(englishLocale)) {
           EasyLocalization.of(context)!.setLocale(englishLocale);
         }

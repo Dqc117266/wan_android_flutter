@@ -1,7 +1,5 @@
 import 'package:easy_localization/easy_localization.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:wan_android_flutter/core/lang/locale_keys.g.dart';
 import 'package:wan_android_flutter/core/model/todolist_model.dart';
 import 'package:wan_android_flutter/core/utils/time_utils.dart';
@@ -29,6 +27,8 @@ class _TodoScreenState extends State<TodoScreen>
   late TabController _tabController;
   int firstPage = 1;
   int tabIndex = 1;
+  bool isLoadedStarPage = false;
+  bool isLoadedDonePage = false;
 
   GlobalKey<RefreshableListViewState<Datas>> starTodokey = GlobalKey();
   GlobalKey<RefreshableListViewState<Datas>> unDoneTodokey = GlobalKey();
@@ -46,11 +46,14 @@ class _TodoScreenState extends State<TodoScreen>
   void _handleTabChange() {
     tabIndex = _tabController.index;
 
-    // 在这里处理选项卡切换的逻辑
-    //第一次切换页面currentState为空导致该无法更新，所以这种情况重新build页面
-    if (_tabController.index == 0 && starTodokey.currentState == null ||
-        _tabController.index == 2 && doneTodokey.currentState == null) {
+    if (tabIndex == 0 && !isLoadedStarPage) {
       setState(() {});
+      isLoadedStarPage = true;
+    }
+
+    if (tabIndex == 2 && !isLoadedDonePage) {
+      setState(() {});
+      isLoadedDonePage = true;
     }
   }
 

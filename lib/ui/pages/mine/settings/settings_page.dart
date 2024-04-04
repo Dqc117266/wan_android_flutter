@@ -16,16 +16,16 @@ class SettingsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(LocaleKeys.mine_settings.tr()),
-      ),
-      body: Consumer<AppSettingsViewModel>(
-        builder: (context, viewModel, child) {
-          String curLanguage = languages[viewModel.languageType.value];
-          String curMode = _getCurModeString(viewModel.themeMode);
+    return Consumer<AppSettingsViewModel>(
+      builder: (context, viewModel, child) {
+        String curLanguage = languages[viewModel.languageType.value];
+        String curMode = _getCurModeString(viewModel.themeMode);
 
-          return ListView(
+        return Scaffold(
+          appBar: AppBar(
+            title: Text(LocaleKeys.mine_settings.tr()),
+          ),
+          body: ListView(
             children: [
               SettingsItem(
                 onTap: () {
@@ -64,9 +64,9 @@ class SettingsScreen extends StatelessWidget {
                 ),
               ),
             ],
-          );
-        },
-      ),
+          ),
+        );
+      },
     );
   }
 

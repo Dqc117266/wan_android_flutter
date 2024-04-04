@@ -56,6 +56,7 @@ class _ThemeModelDialogState extends State<ThemeModelDialog> {
         onChanged: (value) {
           setState(() {
             modeType = value!;
+            isCanClickAction = modeType != widget.viewModel.themeMode;
           });
         },
       ),
