@@ -9,6 +9,10 @@ import 'package:wan_android_flutter/ui/shared/shared_preferences_helper.dart';
 /// the standard cookie policy declared in RFC.
 /// [PersistCookieJar]  persists the cookies in files, if the application exit,
 /// the cookies always exist unless user explicitly called [delete].
+///
+///
+/// 使用SharedPreferences来存储 Cookie
+///
 class PersistCookieJarSp extends DefaultCookieJar {
   /// [persistSession] is whether persisting the cookies that without
   /// "expires" or "max-age" attribute.

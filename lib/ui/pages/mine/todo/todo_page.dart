@@ -101,9 +101,7 @@ class _TodoScreenState extends State<TodoScreen>
   Widget _buildTabUndoneContent(BuildContext context, int firstPage) {
     return CustomFutureBuilder(
       future: HttpCreator.todoListByStatus(firstPage, TodoStatus.unDone.value),
-      onRefresh: () {
-        setState(() {});
-      },
+      onRefresh: ()=> setState(() {}),
       builder: (context, snapshot) {
         final TodoListModel todoListModel = snapshot.data;
 
@@ -132,9 +130,7 @@ class _TodoScreenState extends State<TodoScreen>
     return CustomFutureBuilder(
       future: HttpCreator.todoListByTypeAndStatus(
           firstPage, TodoType.star.value, TodoStatus.unDone.value),
-      onRefresh: () {
-        setState(() {});
-      },
+      onRefresh: ()=> setState(() {}),
       builder: (context, snapshot) {
         final TodoListModel todoListModel = snapshot.data;
 
@@ -234,9 +230,7 @@ class _TodoScreenState extends State<TodoScreen>
   Widget _buildTabDoneContent(BuildContext context, int firstPage) {
     return CustomFutureBuilder(
       future: HttpCreator.todoListByStatus(firstPage, TodoStatus.done.value),
-      onRefresh: () {
-        setState(() {});
-      },
+      onRefresh: ()=> setState(() {}),
       builder: (context, snapshot) {
         final TodoListModel todoListModel = snapshot.data;
 

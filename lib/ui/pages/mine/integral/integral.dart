@@ -38,6 +38,7 @@ class _IntegralScreenState extends State<IntegralScreen> {
         ],
       ),
       body: CustomFutureBuilder(
+        onRefresh: ()=> setState(() {}),
         future: Future.wait([
           HttpCreator.getRinksTop(_firstPage),
           HttpCreator.getUserRink(),

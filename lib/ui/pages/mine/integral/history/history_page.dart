@@ -27,7 +27,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
       ),
       body: CustomFutureBuilder(
         future: HttpCreator.getCoinUserList(_firstPage),
-        onRefresh: () => setState(() {}),
+        onRefresh: ()=> setState(() {}),
         builder: (BuildContext context, AsyncSnapshot snapshot) {
           final userRinkListModel = snapshot.data as UserRinkListModel;
           return RefreshableListView(

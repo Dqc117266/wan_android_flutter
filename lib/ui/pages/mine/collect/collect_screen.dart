@@ -36,6 +36,9 @@ class _CollectScreenState extends State<CollectScreen> {
       body: Container(
         color: Theme.of(context).colorScheme.surfaceVariant.withOpacity(0.3),
         child: CustomFutureBuilder(
+          onRefresh: () {
+            setState(() {});
+          },
           future: HttpCreator.getCollectList(0),
           builder: (context, snapshot) {
             final CollectsModel collectsModel = snapshot.data as CollectsModel;

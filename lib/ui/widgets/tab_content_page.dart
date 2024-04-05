@@ -29,9 +29,7 @@ class _TabContentPageState extends State<TabContentPage> with AutomaticKeepAlive
   @override
   Widget build(BuildContext context) {
     return CustomFutureBuilder(
-      onRefresh: () {
-        setState(() {});
-      },
+      onRefresh: ()=> setState(() {}),
       future: widget.getDataList(0, widget.dataItem.id!),
       builder: (context, snapshot) {
         final frontArtclesModel = snapshot.data as FrontArtclesModel;
